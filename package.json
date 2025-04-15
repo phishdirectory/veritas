@@ -1,0 +1,17 @@
+{
+  "name": "@phishdirectory/auth",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Authentication service for phish.directory",
+  "maintainers": [
+    {
+      "name": "Jasper Mayone",
+      "email": "jasper.mayone@phish.directory"
+    }
+  ],
+  "keywords": [],
+  "author": "Jasper Mayone <jasper.mayone@phish.directory>",
+  "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^4.6.2"
+  }
+}
