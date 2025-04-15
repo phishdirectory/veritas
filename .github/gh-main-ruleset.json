@@ -1,0 +1,69 @@
+{
+  "id": 4789787,
+  "name": "main",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "phishdirectory/template",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "exclude": [],
+      "include": [
+        "~DEFAULT_BRANCH",
+        "refs/heads/main"
+      ]
+    }
+  },
+  "rules": [
+    {
+      "type": "non_fast_forward"
+    },
+    {
+      "type": "deletion"
+    },
+    {
+      "type": "pull_request",
+      "parameters": {
+        "required_approving_review_count": 1,
+        "dismiss_stale_reviews_on_push": true,
+        "require_code_owner_review": true,
+        "require_last_push_approval": true,
+        "required_review_thread_resolution": true,
+        "automatic_copilot_code_review_enabled": true,
+        "allowed_merge_methods": [
+          "squash"
+        ]
+      }
+    },
+    {
+      "type": "update"
+    },
+    {
+      "type": "creation"
+    },
+    {
+      "type": "merge_queue",
+      "parameters": {
+        "merge_method": "SQUASH",
+        "max_entries_to_build": 5,
+        "min_entries_to_merge": 1,
+        "max_entries_to_merge": 5,
+        "min_entries_to_merge_wait_minutes": 5,
+        "grouping_strategy": "ALLGREEN",
+        "check_response_timeout_minutes": 60
+      }
+    }
+  ],
+  "bypass_actors": [
+    {
+      "actor_id": null,
+      "actor_type": "OrganizationAdmin",
+      "bypass_mode": "always"
+    },
+    {
+      "actor_id": 12762180,
+      "actor_type": "Team",
+      "bypass_mode": "always"
+    }
+  ]
+}
