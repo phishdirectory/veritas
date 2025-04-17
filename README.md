@@ -1,6 +1,6 @@
 # phishdirectory/auth
-
-**Central authentication microservice for all phish.directory services**
+**Central authentication microservice for all phish.directory services**<br>
+<sub>Maintainer: <a href="mailto:jasper.mayone@phish.directory">@jaspermayone</a></sub>
 
 ```
 ┌───────────────────┐      ┌────────────────────┐
@@ -91,5 +91,3 @@ Please follow our [Code of Conduct](./CODE_OF_CONDUCT.md).
 GPL-3.0 License. See [LICENSE](./LICENSE) for details.
 
 ---
-
-Maintainer: [@jaspermayone](mailto:jasper.mayone@phish.directory)
