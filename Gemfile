@@ -123,6 +123,6 @@ gem "audits1984"
 
 # IRB is pinned to 1.14.3 because Console1984 is incompatible with >=1.15.0.
 # https://github.com/basecamp/console1984/issues/127
-gem "irb", "~> 1.14.3"
+gem "irb", "~> 1.15.2"
 
 gem "validates_email_format_of" # email address validations
