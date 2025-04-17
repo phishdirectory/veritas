@@ -75,8 +75,7 @@ rails server
 ```
 
 ## Deployment
-
-This service is deployed using [Kamal](https://kamal-deploy.org/). See the `.kamal` directory for configuration.
+We don't quite have this figured out yet :) 
 
 ## Contributing
 
