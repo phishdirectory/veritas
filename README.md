@@ -2,6 +2,24 @@
 
 **Central authentication microservice for all phish.directory services**
 
+```
+┌───────────────────┐      ┌────────────────────┐
+│                   │      │                    │
+│ Central Auth      │◄────►│  Service A         │
+│ (auth.p.d)        │      │  (api.p.d)         │
+│                   │      │                    │
+└─────────┬─────────┘      └────────────────────┘
+          │                           ▲
+          │                           │
+          ▼                           │
+┌───────────────────┐      ┌────────────────────┐
+│                   │      │                    │
+│ User Database     │      │  Service B         │
+│                   │      │  (dashboard.p.d)   │
+│                   │      │                    │
+└───────────────────┘      └────────────────────┘
+```
+
 ---
 
 ## Overview
