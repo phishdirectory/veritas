@@ -39,7 +39,7 @@ gem 'aasm'
 gem "friendly_id", "~> 5.5.1" # slugs
 gem "hashid-rails", "~> 1.0" # obfuscate IDs in URLs
 
-gem "sidekiq", "~> 7.3.8" # background jobs
+gem "sidekiq", "~> 8.0.2" # background jobs
 gem "sidekiq-cron", "~> 2.1" # run Sidekiq jobs at scheduled intervals
 gem "pg_search" # full-text search
 
