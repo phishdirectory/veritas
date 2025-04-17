@@ -102,7 +102,7 @@ group :development do
   gem "letter_opener_web" # preview emails
 
   gem "solargraph", require: false
-  gem "solargraph-rails", "~> 0.2.0", require: false
+  gem "solargraph-rails", "~> 1.1.0", require: false
 
   gem "htmlbeautifier", require: false # for https://marketplace.visualstudio.com/items?itemName=tomclose.format-erb
 
