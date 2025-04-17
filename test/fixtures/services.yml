@@ -1,0 +1,27 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# == Schema Information
+#
+# Table name: services
+#
+#  id         :bigint           not null, primary key
+#  name       :string           not null
+#  status     :string           default("active"), not null
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+# Indexes
+#
+#  index_services_on_name  (name) UNIQUE
+#
+one:
+  name: MyString
+  api_key: MyString
+  hash_key: MyString
+  active: false
+
+two:
+  name: MyString
+  api_key: MyString
+  hash_key: MyString
+  active: false

@@ -1,0 +1,19 @@
+<!-- app/views/home/index.html.erb -->
+<div class="dashboard">
+  <h1>Welcome to Auth.P.D</h1>
+
+  <div class="card">
+    <div class="card-body">
+      <h2>Authentication Service Dashboard</h2>
+      <p>This is the centralized authentication service for P.D microservices.</p>
+
+      <div class="user-info">
+        <h3>Your Account</h3>
+        <p><strong>Email:</strong> <%= current_user.email %></p>
+        <p><strong>Global ID:</strong> <%= current_user.pd_id %></p>
+      </div>
+
+      <%= button_to "Log Out", logout_path, method: :delete, class: "btn btn-danger" %>
+    </div>
+  </div>
+</div>
