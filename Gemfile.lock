@@ -239,7 +239,8 @@ GEM
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
     io-console (0.8.0)
-    irb (1.14.3)
+    irb (1.15.2)
+      pp (>= 0.6.0)
       rdoc (>= 4.0.0)
       reline (>= 0.4.2)
     jaro_winkler (1.6.0)
@@ -359,6 +360,9 @@ GEM
     pg_search (2.3.7)
       activerecord (>= 6.1)
       activesupport (>= 6.1)
+    pp (0.6.2)
+      prettyprint
+    prettyprint (0.2.0)
     prism (1.4.0)
     propshaft (1.1.0)
       actionpack (>= 7.0.0)
@@ -646,7 +650,7 @@ DEPENDENCIES
   hashid-rails (~> 1.0)
   htmlbeautifier
   importmap-rails
-  irb (~> 1.14.3)
+  irb (~> 1.15.2)
   jbuilder
   kamal
   kaminari
