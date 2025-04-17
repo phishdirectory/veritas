@@ -1,0 +1,77 @@
+<!-- app/views/admin/keys/show.html.erb -->
+<div class="container">
+  <h1>Key Details</h1>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h2>Key Information</h2>
+    </div>
+    <div class="card-body">
+      <p><strong>Service:</strong> <%= link_to @key.service.name, admin_service_path(@key.service) %></p>
+      <p><strong>Key ID:</strong> <%= @key.id %></p>
+      <p><strong>Status:</strong> <span class="badge bg-<%= @key.active? ? 'success' : (@key.deprecated? ? 'warning' : 'danger') %>"><%= @key.status %></span></p>
+      <p><strong>API Key:</strong> <code><%= @key.api_key %></code></p>
+      <p><strong>Hash Key:</strong> <code><%= @key.hash_key %></code></p>
+      <p><strong>Created:</strong> <%= @key.created_at %></p>
+
+      <% if @key.notes.present? %>
+        <p><strong>Notes:</strong></p>
+        <pre><%= @key.notes %></pre>
+      <% end %>
+
+      <div class="btn-group">
+        <% if @key.active? %>
+          <%= button_to 'Deprecate', deprecate_admin_service_key_path(@key.service, @key), class: 'btn btn-warning' %>
+        <% end %>
+
+        <% unless @key.revoked? %>
+          <%= button_to 'Revoke', revoke_admin_service_key_path(@key.service, @key), class: 'btn btn-danger', data: { confirm: 'Are you sure? This cannot be undone!' } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <h2>Usage History</h2>
+    </div>
+    <div class="card-body">
+      <% usages = @key.usages.recent.limit(100) %>
+
+      <% if usages.any? %>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Date/Time</th>
+              <th>Path</th>
+              <th>Method</th>
+              <th>IP Address</th>
+              <th>Response</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% usages.each do |usage| %>
+              <tr>
+                <td><%= usage.requested_at %></td>
+                <td><code><%= usage.request_path %></code></td>
+                <td><%= usage.request_method %></td>
+                <td><%= usage.ip_address %></td>
+                <td>
+                  <span class="badge bg-<%= usage.response_code < 400 ? 'success' : 'danger' %>">
+                    <%= usage.response_code %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+        <% if @key.usages.count > 100 %>
+          <p class="text-muted">Showing the 100 most recent requests. Total requests: <%= @key.usages.count %></p>
+        <% end %>
+      <% else %>
+        <p>No usage records found for this key.</p>
+      <% end %>
+    </div>
+  </div>
+</div>

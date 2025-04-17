@@ -1,0 +1,78 @@
+<!-- app/views/admin/services/show.html.erb -->
+<div class="container">
+  <h1>Service: <%= @service.name %></h1>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      <h2>Service Details</h2>
+    </div>
+    <div class="card-body">
+      <p><strong>Name:</strong> <%= @service.name %></p>
+      <p><strong>Status:</strong> <span class="badge bg-<%= @service.active? ? 'success' : (@service.suspended? ? 'warning' : 'danger') %>"><%= @service.status %></span></p>
+      <p><strong>Created:</strong> <%= @service.created_at %></p>
+
+      <div class="btn-group">
+        <%= link_to 'Edit', edit_admin_service_path(@service), class: 'btn btn-primary' %>
+
+        <% if @service.active? %>
+          <%= button_to 'Suspend', suspend_admin_service_path(@service), class: 'btn btn-warning', data: { confirm: 'Are you sure?' } %>
+        <% end %>
+
+        <% if @service.suspended? %>
+          <%= button_to 'Reactivate', reactivate_admin_service_path(@service), class: 'btn btn-success' %>
+        <% end %>
+
+        <% unless @service.decommissioned? %>
+          <%= button_to 'Decommission', decommission_admin_service_path(@service), class: 'btn btn-danger', data: { confirm: 'Are you sure? This cannot be undone!' } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h2>API Keys</h2>
+
+      <div class="btn-group">
+        <%= button_to 'Generate New Key', admin_service_service_keys_path(@service), class: 'btn btn-success' %>
+        <%= button_to 'Rotate Current Key', rotate_admin_service_service_keys_path(@service), class: 'btn btn-primary' %>
+      </div>
+    </div>
+    <div class="card-body">
+      <% if @keys.any? %>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Status</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @keys.each do |key| %>
+              <tr>
+                <td><%= key.id %></td>
+                <td><span class="badge bg-<%= key.active? ? 'success' : (key.deprecated? ? 'warning' : 'danger') %>"><%= key.status %></span></td>
+                <td><%= key.created_at %></td>
+                <td>
+                  <%= link_to 'View', admin_service_service_key_path(@service, key), class: 'btn btn-sm btn-primary' %>
+
+                  <% if key.active? %>
+                    <%= button_to 'Deprecate', deprecate_admin_service_service_key_path(@service, key), class: 'btn btn-sm btn-warning' %>
+                  <% end %>
+
+                  <% unless key.revoked? %>
+                    <%= button_to 'Revoke', revoke_admin_service_service_key_path(@service, key), class: 'btn btn-sm btn-danger', data: { confirm: 'Are you sure? This cannot be undone!' } %>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      <% else %>
+        <p>No keys found for this service.</p>
+      <% end %>
+    </div>
+  </div>
+</div>
