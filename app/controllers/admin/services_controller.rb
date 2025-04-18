@@ -1,7 +1,7 @@
 # app/controllers/admin/services_controller.rb
 class Admin::ServicesController < ApplicationController
   before_action :require_admin
-  before_action :set_service, only: [:show, :edit, :update, :suspend, :reactivate, :decommission]
+  before_action :set_service, only: [ :show, :edit, :update, :suspend, :reactivate, :decommission ]
 
   def index
     @services = Service.all.order(:name)
@@ -21,7 +21,7 @@ class Admin::ServicesController < ApplicationController
     if @service.save
       # Generate initial key
       @service.generate_key("Initial key")
-      redirect_to admin_service_path(@service), notice: 'Service was successfully created.'
+      redirect_to admin_service_path(@service), notice: "Service was successfully created."
     else
       render :new
     end
@@ -32,7 +32,7 @@ class Admin::ServicesController < ApplicationController
 
   def update
     if @service.update(service_params)
-      redirect_to admin_service_path(@service), notice: 'Service was successfully updated.'
+      redirect_to admin_service_path(@service), notice: "Service was successfully updated."
     else
       render :edit
     end
@@ -40,17 +40,17 @@ class Admin::ServicesController < ApplicationController
 
   def suspend
     @service.suspend!
-    redirect_to admin_service_path(@service), notice: 'Service was suspended.'
+    redirect_to admin_service_path(@service), notice: "Service was suspended."
   end
 
   def reactivate
     @service.reactivate!
-    redirect_to admin_service_path(@service), notice: 'Service was reactivated.'
+    redirect_to admin_service_path(@service), notice: "Service was reactivated."
   end
 
   def decommission
     @service.decommission!
-    redirect_to admin_service_path(@service), notice: 'Service was decommissioned.'
+    redirect_to admin_service_path(@service), notice: "Service was decommissioned."
   end
 
   private

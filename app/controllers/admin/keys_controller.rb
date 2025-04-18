@@ -2,7 +2,7 @@
 class Admin::KeysController < ApplicationController
   before_action :require_admin
   before_action :set_service
-  before_action :set_key, only: [:show, :deprecate, :revoke]
+  before_action :set_key, only: [ :show, :deprecate, :revoke ]
 
   def show
   end
@@ -11,9 +11,9 @@ class Admin::KeysController < ApplicationController
     @key = @service.generate_key(params[:notes])
 
     if @key.persisted?
-      redirect_to admin_service_path(@service), notice: 'New key was generated.'
+      redirect_to admin_service_path(@service), notice: "New key was generated."
     else
-      redirect_to admin_service_path(@service), alert: 'Failed to generate key.'
+      redirect_to admin_service_path(@service), alert: "Failed to generate key."
     end
   end
 
@@ -22,21 +22,21 @@ class Admin::KeysController < ApplicationController
 
     if current_key
       new_key = current_key.rotate!(params[:notes])
-      redirect_to admin_service_path(@service), notice: 'Key was rotated.'
+      redirect_to admin_service_path(@service), notice: "Key was rotated."
     else
       @key = @service.generate_key(params[:notes])
-      redirect_to admin_service_path(@service), notice: 'New key was generated.'
+      redirect_to admin_service_path(@service), notice: "New key was generated."
     end
   end
 
   def deprecate
     @key.deprecate!
-    redirect_to admin_service_key_path(@service, @key), notice: 'Key was deprecated.'
+    redirect_to admin_service_key_path(@service, @key), notice: "Key was deprecated."
   end
 
   def revoke
     @key.revoke!
-    redirect_to admin_service_key_path(@service, @key), notice: 'Key was revoked.'
+    redirect_to admin_service_key_path(@service, @key), notice: "Key was revoked."
   end
 
   private

@@ -2,16 +2,16 @@
 module AuthPd
   class Auth < Grape::API
     resource :auth do
-      desc 'Authenticate a user'
+      desc "Authenticate a user"
       params do
-        requires :credentials, type: String, desc: 'Hashed credentials'
+        requires :credentials, type: String, desc: "Hashed credentials"
       end
       post do
         authenticate_service!
 
         credentials = dehash_credentials(params[:credentials])
 
-        error!('Invalid credentials format', 400) unless credentials &&
+        error!("Invalid credentials format", 400) unless credentials &&
                                                         credentials[:email] &&
                                                         credentials[:password]
 

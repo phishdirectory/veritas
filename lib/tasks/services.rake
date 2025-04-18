@@ -1,7 +1,7 @@
 # lib/tasks/services.rake
 namespace :services do
   desc "Create a new service"
-  task :create, [:name] => :environment do |t, args|
+  task :create, [ :name ] => :environment do |t, args|
     name = args[:name]
 
     if name.blank?
@@ -27,7 +27,7 @@ namespace :services do
   end
 
   desc "Generate a new key for a service"
-  task :generate_key, [:service_name, :notes] => :environment do |t, args|
+  task :generate_key, [ :service_name, :notes ] => :environment do |t, args|
     name = args[:service_name]
     notes = args[:notes]
 
@@ -60,7 +60,7 @@ namespace :services do
   end
 
   desc "Rotate a service's active key"
-  task :rotate_key, [:service_name, :notes] => :environment do |t, args|
+  task :rotate_key, [ :service_name, :notes ] => :environment do |t, args|
     name = args[:service_name]
     notes = args[:notes]
 
@@ -115,7 +115,7 @@ namespace :services do
   end
 
   desc "Revoke a specific key"
-  task :revoke_key, [:service_name, :key_id, :notes] => :environment do |t, args|
+  task :revoke_key, [ :service_name, :key_id, :notes ] => :environment do |t, args|
     name = args[:service_name]
     key_id = args[:key_id]
     notes = args[:notes]

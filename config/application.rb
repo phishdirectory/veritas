@@ -15,9 +15,9 @@ module Auth
     # not contain `.rb` files, or that should not be reloaded or eager loaded.
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
-    config.autoload_paths += %W(#{config.root}/app/api)
+    config.autoload_paths += %W[#{config.root}/app/api]
 
-    config.eager_load_paths += %W(#{config.root}/app/api)
+    config.eager_load_paths += %W[#{config.root}/app/api]
 
 
     # TODO: Pre-load grape API
@@ -41,6 +41,5 @@ module Auth
     config.active_record.encryption.primary_key = Rails.application.credentials.dig(:active_record, :encryption, :primary_key)
     config.active_record.encryption.deterministic_key = Rails.application.credentials.dig(:active_record, :encryption, :deterministic_key)
     config.active_record.encryption.key_derivation_salt = Rails.application.credentials.dig(:active_record, :encryption, :key_derivation_salt)
-
   end
 end
