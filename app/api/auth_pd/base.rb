@@ -1,15 +1,15 @@
 # app/api/auth_pd/base.rb
 module AuthPd
   class Base < Grape::API
-    version 'v1', using: :path
+    version "v1", using: :path
     format :json
     prefix :api
 
     helpers do
       def authenticate_service!
-        api_key = headers['X-Api-Key']
+        api_key = headers["X-Api-Key"]
 
-        error!('API key missing', 401) unless api_key.present?
+        error!("API key missing", 401) unless api_key.present?
 
         # Find the key
         key = Service::Key.find_by(api_key: api_key)
@@ -37,7 +37,7 @@ module AuthPd
         @current_service = key&.may_use? ? key.service : nil
         @current_service = nil unless @current_service&.active?
 
-        error!('Invalid API key', 401) unless @current_service
+        error!("Invalid API key", 401) unless @current_service
       end
 
       def current_service
@@ -45,7 +45,7 @@ module AuthPd
       end
 
       def current_key
-        api_key = headers['X-Api-Key']
+        api_key = headers["X-Api-Key"]
         Service::Key.find_by(api_key: api_key)
       end
 

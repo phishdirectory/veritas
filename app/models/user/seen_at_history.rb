@@ -9,18 +9,16 @@ class User
   # Ex.
   # ```sql
   # SELECT distinct (date_trunc('hour', period_end_at), user_id) FROM "user_seen_at_histories"
-# == Schema Information
-#
-# Table name: user_seen_at_histories
-#
-#  id         :bigint           not null, primary key
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#
+  # == Schema Information
+  #
+  # Table name: user_seen_at_histories
+  #
+  #  id         :bigint           not null, primary key
+  #  created_at :datetime         not null
+  #  updated_at :datetime         not null
+  #
   # ```
   class SeenAtHistory < ApplicationRecord
     PERIOD_DURATION = 1.hour
-
   end
-
 end

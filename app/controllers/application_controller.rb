@@ -41,5 +41,4 @@ class ApplicationController < ActionController::Base
     flash[:confetti] = true
     flash[:confetti_emojis] = emojis.join(",") if emojis
   end
-
 end

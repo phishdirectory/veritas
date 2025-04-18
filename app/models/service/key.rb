@@ -25,7 +25,7 @@ class Service::Key < ApplicationRecord
   include AASM
 
   belongs_to :service
-  has_many :usages, class_name: 'Service::KeyUsage', foreign_key: 'key_id', dependent: :destroy
+  has_many :usages, class_name: "Service::KeyUsage", foreign_key: "key_id", dependent: :destroy
 
   validates :api_key, presence: true, uniqueness: true
   validates :hash_key, presence: true
@@ -33,7 +33,7 @@ class Service::Key < ApplicationRecord
 
   before_validation :generate_credentials, on: :create
 
-  scope :active, -> { where(status: 'active') }
+  scope :active, -> { where(status: "active") }
 
   # State machine for key status
   aasm column: :status do
@@ -46,7 +46,7 @@ class Service::Key < ApplicationRecord
     end
 
     event :revoke do
-      transitions from: [:active, :deprecated], to: :revoked
+      transitions from: [ :active, :deprecated ], to: :revoked
     end
   end
 

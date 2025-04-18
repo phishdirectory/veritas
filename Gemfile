@@ -5,7 +5,7 @@ gem "rails", "~> 8.0.2"
 # The modern asset pipeline for Rails [https://github.com/rails/propshaft]
 gem "propshaft"
 # Use postgres as the database for Active Record
-gem 'pg', '~> 1.5', '>= 1.5.9'
+gem "pg", "~> 1.5", ">= 1.5.9"
 # Use the Puma web server [https://github.com/puma/puma]
 gem "puma", ">= 5.0"
 # Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
@@ -35,7 +35,7 @@ gem "kamal", require: false
 # Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
 gem "thruster", require: false
 
-gem 'aasm'
+gem "aasm"
 gem "friendly_id", "~> 5.5.1" # slugs
 gem "hashid-rails", "~> 1.0" # obfuscate IDs in URLs
 
@@ -88,14 +88,13 @@ group :development, :test do
   gem "rack-mini-profiler", "~> 3.3", require: false # performance profiling
   gem "stackprof" # used by `rack-mini-profiler` to provide flamegraphs
   gem "query_count"
-
 end
 
 group :development do
   gem "annotaterb"
   gem "actual_db_schema" # rolls back phantom migrations
 
-   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
+  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem "listen", "~> 3.9"
   gem "web-console"
 
@@ -117,7 +116,7 @@ group :test do
   gem "selenium-webdriver"
 end
 
-gem 'paper_trail'
+gem "paper_trail"
 gem "console1984"
 gem "audits1984"
 

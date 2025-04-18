@@ -35,10 +35,10 @@ class User < ApplicationRecord
   scope :verified, -> { where(email_verified: true) }
   scope :unverified, -> { where(email_verified: false) }
 
-  scope :user, -> { where(access_level: [:user, :trusted, :admin, :superadmin, :owner]) }
-  scope :trusted, -> { where(access_level: [:trusted, :admin, :superadmin, :owner]) }
-  scope :admin, -> { where(access_level: [:admin, :superadmin, :owner]) }
-  scope :superadmin, -> { where(access_level: [:superadmin, :owner]) }
+  scope :user, -> { where(access_level: [ :user, :trusted, :admin, :superadmin, :owner ]) }
+  scope :trusted, -> { where(access_level: [ :trusted, :admin, :superadmin, :owner ]) }
+  scope :admin, -> { where(access_level: [ :admin, :superadmin, :owner ]) }
+  scope :superadmin, -> { where(access_level: [ :superadmin, :owner ]) }
   scope :owner, -> { where(access_level: :owner) }
 
   enum :access_level, [
@@ -65,7 +65,7 @@ class User < ApplicationRecord
 
   before_validation :generate_pd_id, on: :create
 
-    # State machine for user status
+  # State machine for user status
   aasm column: :status do
     state :active, initial: true
     state :suspended
@@ -76,11 +76,11 @@ class User < ApplicationRecord
     end
 
     event :reactivate do
-      transitions from: [:suspended, :deactivated], to: :active
+      transitions from: [ :suspended, :deactivated ], to: :active
     end
 
     event :deactivate do
-      transitions from: [:active, :suspended], to: :deactivated
+      transitions from: [ :active, :suspended ], to: :deactivated
     end
   end
 
@@ -111,15 +111,15 @@ class User < ApplicationRecord
 
 
   def trusted?
-    ["trusted", "admin", "superadmin", "owner"].include?(self.access_level)
+    [ "trusted", "admin", "superadmin", "owner" ].include?(self.access_level)
   end
 
   def admin?
-   ["admin", "superadmin", "owner"].include?(self.access_level)
+   [ "admin", "superadmin", "owner" ].include?(self.access_level)
   end
 
   def superadmin?
-    ["superadmin", "owner"].include?(self.access_level)
+    [ "superadmin", "owner" ].include?(self.access_level)
   end
 
   def owner?
@@ -181,7 +181,7 @@ class User < ApplicationRecord
     slug = normalize_friendly_id self.name
     # From https://github.com/norman/friendly_id/issues/480
     sequence = User.where("slug LIKE ?", "#{slug}-%").size + 2
-    [slug, "#{slug} #{sequence}"]
+    [ slug, "#{slug} #{sequence}" ]
   end
 
   private
@@ -197,6 +197,4 @@ class User < ApplicationRecord
 
     self.pd_id ||= "PDU#{numeric_first}#{remaining_chars}"
   end
-
-
 end
