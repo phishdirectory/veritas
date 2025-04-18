@@ -2,16 +2,16 @@
 module AuthPd
   class Users < Grape::API
     resource :users do
-      desc 'Get user information'
+      desc "Get user information"
       params do
-        requires :id, type: String, desc: 'Global PD User ID'
+        requires :id, type: String, desc: "Global PD User ID"
       end
-      get ':id' do
+      get ":id" do
         authenticate_service!
 
         user = User.find_by(pd_id: params[:id], active: true)
 
-        error!('User not found', 404) unless user
+        error!("User not found", 404) unless user
 
         {
           pd_id: user.pd_id,

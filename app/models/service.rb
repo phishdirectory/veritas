@@ -16,7 +16,7 @@
 class Service < ApplicationRecord
   include AASM
 
-  has_many :keys, class_name: 'Service::Key', dependent: :destroy
+  has_many :keys, class_name: "Service::Key", dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
   validates :status, presence: true
@@ -36,7 +36,7 @@ class Service < ApplicationRecord
     end
 
     event :decommission do
-      transitions from: [:active, :suspended], to: :decommissioned
+      transitions from: [ :active, :suspended ], to: :decommissioned
     end
   end
 

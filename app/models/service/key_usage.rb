@@ -23,7 +23,7 @@
 #  fk_rails_...  (key_id => service_keys.id)
 #
 class Service::KeyUsage < ApplicationRecord
-  belongs_to :key, class_name: 'Service::Key'
+  belongs_to :key, class_name: "Service::Key"
 
   validates :request_path, presence: true
   validates :request_method, presence: true
