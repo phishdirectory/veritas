@@ -1,12 +1,27 @@
-# Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-require_relative "../app/api/auth_pd/api.rb"
+require "sidekiq/web"
+require "sidekiq/cron/web"
+require_relative '../app/api/auth_pd/api.rb'
 
 Rails.application.routes.draw do
-  root "home#index"
+  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+  root 'home#index'
 
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
   delete "logout", to: "sessions#destroy"
+
+  # TODO: add admin constraint
+  # constraints AdminConstraint do
+  #   mount Audits1984::Engine => "/console"
+  #   mount Sidekiq::Web => "/sidekiq"
+  #   mount Flipper::UI.app(Flipper), at: "flipper", as: "flipper"
+  #   mount Blazer::Engine, at: "blazer"
+  # end
+  # get "/sidekiq", to: redirect("users/auth") # fallback if adminconstraint fails, meaning user is not signed in
+
+  if Rails.env.development?
+    mount LetterOpenerWeb::Engine, at: "/letter_opener"
+  end
 
   # Admin routes
   namespace :admin do

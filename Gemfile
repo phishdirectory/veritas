@@ -55,13 +55,8 @@ gem "flipper" # feature flags
 gem "flipper-active_record"
 gem "flipper-ui"
 
-# API
-gem "grape"
-gem "grape-entity" # For Grape::Entity ( https://github.com/ruby-grape/grape-entity )
-gem "grape-kaminari"
-gem "grape-route-helpers"
-gem "grape-swagger"
-gem "grape-swagger-entity", "~> 0.5"
+# API pagination for standard Rails controllers
+# We keep api-pagination gem (already included above)
 
 gem "webauthn", "~> 3.2"
 

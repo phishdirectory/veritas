@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
   # end
 
   def find_current_auditor
-    current_user if auditor_signed_in?
+    current_user
   end
 
   def user_not_authorized

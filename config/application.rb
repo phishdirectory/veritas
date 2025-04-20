@@ -27,6 +27,7 @@ module Auth
     # console1984 / audits1984
     config.console1984.ask_for_username_if_empty = true
     config.console1984.incinerate = false
+    config.console1984.protected_environments = %i[ production staging ]
 
     # Configuration for the application, engines, and railties goes here.
     #
