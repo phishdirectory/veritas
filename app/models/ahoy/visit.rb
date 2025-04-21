@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: ahoy_visits
@@ -36,9 +38,12 @@
 #  index_ahoy_visits_on_visitor_token_and_started_at  (visitor_token,started_at)
 #
 
-class Ahoy::Visit < ApplicationRecord
-  self.table_name = "ahoy_visits"
+module Ahoy
+  class Visit < ApplicationRecord
+    self.table_name = "ahoy_visits"
 
-  has_many :events, class_name: "Ahoy::Event"
-  belongs_to :user, optional: true
+    has_many :events, class_name: "Ahoy::Event", dependent: :destroy
+    belongs_to :user, optional: true
+
+  end
 end

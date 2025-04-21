@@ -9,7 +9,7 @@ module PublicIdentifiable
   end
 
   def public_id
-    "#{self.public_id_prefix}_#{hashid}"
+    "#{public_id_prefix}_#{hashid}"
   end
 
   module ClassMethods
@@ -22,7 +22,7 @@ module PublicIdentifiable
 
       prefix = id.split("_").first.to_s.downcase
       hash = id.split("_").last
-      return nil unless prefix == self.get_public_id_prefix
+      return nil unless prefix == get_public_id_prefix
 
       # ex. 'org_h1izp'
       find_by_hashid(hash)
@@ -30,15 +30,16 @@ module PublicIdentifiable
 
     def find_by_public_id!(id)
       obj = find_by_public_id id
-      raise ActiveRecord::RecordNotFound.new(nil, self.name) if obj.nil?
+      raise ActiveRecord::RecordNotFound.new(nil, name) if obj.nil?
 
       obj
     end
 
     def get_public_id_prefix
-      return self.public_id_prefix.to_s.downcase if self.public_id_prefix.present?
+      return public_id_prefix.to_s.downcase if public_id_prefix.present?
 
-      raise NotImplementedError, "The #{self.class.name} model includes PublicIdentifiable module, but set_public_id_prefix hasn't been called."
+      raise NotImplementedError,
+            "The #{self.class.name} model includes PublicIdentifiable module, but set_public_id_prefix hasn't been called."
     end
   end
 end

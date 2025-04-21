@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: users
@@ -32,22 +34,19 @@ class User < ApplicationRecord
   has_paper_trail
   has_secure_password
 
+  # has_encrypted
+
   scope :verified, -> { where(email_verified: true) }
   scope :unverified, -> { where(email_verified: false) }
 
-  scope :user, -> { where(access_level: [ :user, :trusted, :admin, :superadmin, :owner ]) }
-  scope :trusted, -> { where(access_level: [ :trusted, :admin, :superadmin, :owner ]) }
-  scope :admin, -> { where(access_level: [ :admin, :superadmin, :owner ]) }
-  scope :superadmin, -> { where(access_level: [ :superadmin, :owner ]) }
+  scope :user, -> { where(access_level: %i[user trusted admin superadmin owner]) }
+  scope :trusted, -> { where(access_level: %i[trusted admin superadmin owner]) }
+  scope :admin, -> { where(access_level: %i[admin superadmin owner]) }
+  scope :superadmin, -> { where(access_level: %i[superadmin owner]) }
   scope :owner, -> { where(access_level: :owner) }
 
-  enum :access_level, [
-    :user,
-    :trusted,
-    :admin,
-    :superadmin,
-    :owner
-  ], scopes: false, default: :user
+  enum :access_level, { user: 0, trusted: 1, admin: 2, superadmin: 3, owner: 4 },
+       scopes: false, default: :user
 
   # has_many :user_sessions, dependent: :destroy
 
@@ -56,7 +55,9 @@ class User < ApplicationRecord
   validates :email, presence: true, uniqueness: true
   validates_email_format_of :email
   normalizes :email, with: ->(email) { email.strip.downcase }
-  validates :password, presence: true, length: { minimum: 8 }, if: -> { new_record? || password.present? }
+  validates :password, presence: true, length: { minimum: 8 }, if: lambda {
+    new_record? || password.present?
+  }
   validates :pd_id, presence: true, uniqueness: true, length: { is: 11 }, format: {
     # format is PDU{digit}{7 alphanumeric characters}
     with: /\APDU\d[a-zA-Z0-9]{7}\z/,
@@ -76,11 +77,11 @@ class User < ApplicationRecord
     end
 
     event :reactivate do
-      transitions from: [ :suspended, :deactivated ], to: :active
+      transitions from: %i[suspended deactivated], to: :active
     end
 
     event :deactivate do
-      transitions from: [ :active, :suspended ], to: :deactivated
+      transitions from: %i[active suspended], to: :deactivated
     end
   end
 
@@ -109,21 +110,20 @@ class User < ApplicationRecord
     save!
   end
 
-
   def trusted?
-    [ "trusted", "admin", "superadmin", "owner" ].include?(self.access_level)
+    %w[trusted admin superadmin owner].include?(access_level)
   end
 
   def admin?
-   [ "admin", "superadmin", "owner" ].include?(self.access_level)
+    %w[admin superadmin owner].include?(access_level)
   end
 
   def superadmin?
-    [ "superadmin", "owner" ].include?(self.access_level)
+    %w[superadmin owner].include?(access_level)
   end
 
   def owner?
-    self.access_level == "owner"
+    access_level == "owner"
   end
 
   def make_trusted!
@@ -159,7 +159,7 @@ class User < ApplicationRecord
   end
 
   def lock!
-    update!(locked_at: Time.now)
+    update!(locked_at: Time.zone.now)
 
     # Invalidate all sessions
     # user_sessions.destroy_all
@@ -178,10 +178,10 @@ class User < ApplicationRecord
   # end
 
   def slug_candidates
-    slug = normalize_friendly_id self.name
+    slug = normalize_friendly_id name
     # From https://github.com/norman/friendly_id/issues/480
     sequence = User.where("slug LIKE ?", "#{slug}-%").size + 2
-    [ slug, "#{slug} #{sequence}" ]
+    [slug, "#{slug} #{sequence}"]
   end
 
   private
@@ -192,9 +192,10 @@ class User < ApplicationRecord
     # EXAMPLE: PDU5A1B2C3D
 
     random_digits = SecureRandom.hex(4).upcase # Generates a random hex string of 8 characters
-    numeric_first = rand(10).to_s  # Generates a random digit 0-9
-    remaining_chars = random_digits[0...7]  # Take only 7 characters from the hex
+    numeric_first = rand(10).to_s # Generates a random digit 0-9
+    remaining_chars = random_digits[0...7] # Take only 7 characters from the hex
 
     self.pd_id ||= "PDU#{numeric_first}#{remaining_chars}"
   end
+
 end

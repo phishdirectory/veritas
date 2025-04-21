@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require "sidekiq/web"
 require "sidekiq/cron/web"
-require_relative '../app/api/auth_pd/api.rb'
+require_relative "../app/api/auth_pd/api"
 
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
-  root 'home#index'
+  root "home#index"
 
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
@@ -19,9 +21,7 @@ Rails.application.routes.draw do
   # end
   # get "/sidekiq", to: redirect("users/auth") # fallback if adminconstraint fails, meaning user is not signed in
 
-  if Rails.env.development?
-    mount LetterOpenerWeb::Engine, at: "/letter_opener"
-  end
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
   # Admin routes
   namespace :admin do
@@ -32,7 +32,7 @@ Rails.application.routes.draw do
         post "decommission"
       end
 
-      resources :keys, only: [ :show, :create ] do
+      resources :keys, only: %i[show create] do
         member do
           post "deprecate"
           post "revoke"
@@ -47,7 +47,6 @@ Rails.application.routes.draw do
 
   # Mount the Grape API
   mount AuthPd::API => "/"
-
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

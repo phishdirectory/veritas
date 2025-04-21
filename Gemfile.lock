@@ -83,6 +83,11 @@ GEM
       prism
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
+    ahoy_email (2.4.0)
+      actionmailer (>= 7)
+      addressable (>= 2.3.2)
+      nokogiri
+      safely_block (>= 0.4)
     ahoy_matey (5.3.0)
       activesupport (>= 7)
       device_detector (>= 1)
@@ -90,6 +95,8 @@ GEM
     android_key_attestation (0.3.0)
     annotaterb (4.14.0)
     api-pagination (6.0.0)
+    argon2-kdf (0.3.0)
+      fiddle
     ast (2.4.3)
     audits1984 (0.1.7)
       console1984
@@ -111,6 +118,9 @@ GEM
       csv
       railties (>= 7.1)
       safely_block (>= 0.4)
+    blind_index (2.6.2)
+      activesupport (>= 7)
+      argon2-kdf (>= 0.2)
     bootsnap (1.18.4)
       msgpack (~> 1.2)
     brakeman (7.0.2)
@@ -168,6 +178,7 @@ GEM
     ffi (1.17.2-arm64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     ffi (1.17.2-x86_64-linux-musl)
+    fiddle (1.1.6)
     flipper (1.3.4)
       concurrent-ruby (< 2)
     flipper-active_record (1.3.4)
@@ -254,6 +265,7 @@ GEM
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    lockbox (2.0.1)
     logger (1.7.0)
     loofah (2.24.0)
       crass (~> 1.0.2)
@@ -392,6 +404,7 @@ GEM
     redis-client (0.24.0)
       connection_pool
     regexp_parser (2.10.0)
+    relaxed-rubocop (2.5)
     reline (0.6.1)
       io-console (~> 0.5)
     request_store (1.7.0)
@@ -575,6 +588,7 @@ PLATFORMS
 DEPENDENCIES
   aasm
   actual_db_schema
+  ahoy_email
   ahoy_matey
   annotaterb
   api-pagination
@@ -582,6 +596,7 @@ DEPENDENCIES
   awesome_print
   bcrypt (~> 3.1.7)
   blazer
+  blind_index
   bootsnap
   brakeman
   browser (~> 6.2)
@@ -603,6 +618,7 @@ DEPENDENCIES
   kaminari
   letter_opener_web
   listen (~> 3.9)
+  lockbox
   paper_trail
   pg (~> 1.5, >= 1.5.9)
   pg_search
@@ -613,6 +629,7 @@ DEPENDENCIES
   rack-cors
   rack-mini-profiler (~> 3.3)
   rails (~> 8.0.2)
+  relaxed-rubocop
   rqrcode
   rubocop-rails-omakase
   selenium-webdriver

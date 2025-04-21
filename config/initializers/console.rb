@@ -2,15 +2,15 @@
 
 Rails.application.configure do
   console do
-    PaperTrail.request.whodunnit = -> {
+    PaperTrail.request.whodunnit = lambda {
       @paper_trail_whodunnit ||= begin
         user = nil
         until user.present?
-          print "What is your email (used by PaperTrail to record who changed records)? "
+          Rails.logger.debug "What is your email (used by PaperTrail to record who changed records)? "
           email = gets.chomp
           user = User.find_by(email:)
         end
-        puts "Thank you, #{user.name}! Have a wonderful time!"
+        Rails.logger.debug { "Thank you, #{user.name}! Have a wonderful time!" }
         user.id
       end
     }

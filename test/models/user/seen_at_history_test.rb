@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: user_seen_at_histories
@@ -8,8 +10,10 @@
 #
 require "test_helper"
 
-class User::SeenAtHistoryTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+module User
+  class SeenAtHistoryTest < ActiveSupport::TestCase
+    # test "the truth" do
+    #   assert true
+    # end
+  end
 end

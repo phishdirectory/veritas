@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative "boot"
 
 require "rails/all"
@@ -19,15 +21,13 @@ module Auth
 
     config.eager_load_paths += %W[#{config.root}/app/api]
 
-
     # TODO: Pre-load grape API
     # ::API::V3.compile!
-
 
     # console1984 / audits1984
     config.console1984.ask_for_username_if_empty = true
     config.console1984.incinerate = false
-    config.console1984.protected_environments = %i[ production staging ]
+    config.console1984.protected_environments = %i[production staging]
 
     # Configuration for the application, engines, and railties goes here.
     #
@@ -39,8 +39,14 @@ module Auth
 
     # setting up ActiveRecord's encryption: https://guides.rubyonrails.org/active_record_encryption.html#setup
     # set vars from the credentials file
-    config.active_record.encryption.primary_key = Rails.application.credentials.dig(:active_record, :encryption, :primary_key)
-    config.active_record.encryption.deterministic_key = Rails.application.credentials.dig(:active_record, :encryption, :deterministic_key)
-    config.active_record.encryption.key_derivation_salt = Rails.application.credentials.dig(:active_record, :encryption, :key_derivation_salt)
+    config.active_record.encryption.primary_key = Rails.application.credentials.dig(:active_record,
+                                                                                    :encryption, :primary_key)
+    config.active_record.encryption.deterministic_key = Rails.application.credentials.dig(
+      :active_record, :encryption, :deterministic_key
+    )
+    config.active_record.encryption.key_derivation_salt = Rails.application.credentials.dig(
+      :active_record, :encryption, :key_derivation_salt
+    )
+
   end
 end

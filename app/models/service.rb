@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/models/service.rb
 # == Schema Information
 #
@@ -36,7 +38,7 @@ class Service < ApplicationRecord
     end
 
     event :decommission do
-      transitions from: [ :active, :suspended ], to: :decommissioned
+      transitions from: %i[active suspended], to: :decommissioned
     end
   end
 
@@ -54,6 +56,7 @@ class Service < ApplicationRecord
   def self.authenticate(api_key)
     key = Service::Key.find_by(api_key: api_key)
     return nil unless key&.may_use?
+
     key.service if key.service.active?
   end
 
@@ -67,22 +70,27 @@ class Service < ApplicationRecord
         key = service.generate_key(notes || "Initial key created via console")
 
         if key.persisted?
-          puts "Service created successfully:"
-          puts "  Name:      #{service.name}"
-          puts "  Status:    #{service.status}"
-          puts "  API Key:   #{key.api_key}"
-          puts "  Hash Key:  #{key.hash_key}"
-          puts "  Key ID:    #{key.id}"
-          puts "  Notes:     #{key.notes}"
+          Rails.logger.debug "Service created successfully:"
+          Rails.logger.debug { "  Name:      #{service.name}" }
+          Rails.logger.debug { "  Status:    #{service.status}" }
+          Rails.logger.debug { "  API Key:   #{key.api_key}" }
+          Rails.logger.debug { "  Hash Key:  #{key.hash_key}" }
+          Rails.logger.debug { "  Key ID:    #{key.id}" }
+          Rails.logger.debug { "  Notes:     #{key.notes}" }
         else
-          puts "Error creating key: #{key.errors.full_messages.join(', ')}"
+          Rails.logger.debug do
+            "Error creating key: #{key.errors.full_messages.join(', ')}"
+          end
           raise ActiveRecord::Rollback
         end
       else
-        puts "Error creating service: #{service.errors.full_messages.join(', ')}"
+        Rails.logger.debug do
+          "Error creating service: #{service.errors.full_messages.join(', ')}"
+        end
       end
     end
 
     service
   end
+
 end

@@ -1,8 +1,9 @@
+# frozen_string_literal: true
+
 class HomeController < ApplicationController
   before_action :authenticate_user
 
-  def index
-  end
+  def index; end
 
   private
 
@@ -15,4 +16,5 @@ class HomeController < ApplicationController
   end
 
   helper_method :current_user
+
 end

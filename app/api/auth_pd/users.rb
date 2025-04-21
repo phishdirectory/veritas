@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/api/auth_pd/users.rb
 module AuthPd
   class Users < Grape::API
@@ -21,5 +23,6 @@ module AuthPd
         }
       end
     end
+
   end
 end

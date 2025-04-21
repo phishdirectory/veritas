@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: service_key_usages
@@ -23,8 +25,10 @@
 #
 require "test_helper"
 
-class Service::KeyUsageTest < ActiveSupport::TestCase
-  # test "the truth" do
-  #   assert true
-  # end
+module Service
+  class KeyUsageTest < ActiveSupport::TestCase
+    # test "the truth" do
+    #   assert true
+    # end
+  end
 end

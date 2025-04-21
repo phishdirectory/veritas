@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/api/auth_pd/auth.rb
 module AuthPd
   class Auth < Grape::API
@@ -12,12 +14,12 @@ module AuthPd
         credentials = dehash_credentials(params[:credentials])
 
         error!("Invalid credentials format", 400) unless credentials &&
-                                                        credentials[:email] &&
-                                                        credentials[:password]
+                                                         credentials[:email] &&
+                                                         credentials[:password]
 
         user = User.find_by(email: credentials[:email])
 
-        if user&.can_authenticate? && user&.authenticate(credentials[:password])
+        if user&.can_authenticate? && user.authenticate(credentials[:password])
           {
             authenticated: true,
             pd_id: user.pd_id
@@ -28,5 +30,6 @@ module AuthPd
         end
       end
     end
+
   end
 end

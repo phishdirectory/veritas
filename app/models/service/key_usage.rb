@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/models/service/key_usage.rb
 # == Schema Information
 #
@@ -22,20 +24,23 @@
 #
 #  fk_rails_...  (key_id => service_keys.id)
 #
-class Service::KeyUsage < ApplicationRecord
-  belongs_to :key, class_name: "Service::Key"
+module Service
+  class KeyUsage < ApplicationRecord
+    belongs_to :key, class_name: "Service::Key"
 
-  validates :request_path, presence: true
-  validates :request_method, presence: true
-  validates :requested_at, presence: true
+    validates :request_path, presence: true
+    validates :request_method, presence: true
+    validates :requested_at, presence: true
 
-  before_validation :set_requested_at
+    before_validation :set_requested_at
 
-  scope :recent, -> { order(requested_at: :desc) }
+    scope :recent, -> { order(requested_at: :desc) }
 
-  private
+    private
 
-  def set_requested_at
-    self.requested_at ||= Time.current
+    def set_requested_at
+      self.requested_at ||= Time.current
+    end
+
   end
 end

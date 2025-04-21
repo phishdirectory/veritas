@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/api/auth_pd/base.rb
 module AuthPd
   class Base < Grape::API
@@ -9,7 +11,7 @@ module AuthPd
       def authenticate_service!
         api_key = headers["X-Api-Key"]
 
-        error!("API key missing", 401) unless api_key.present?
+        error!("API key missing", 401) if api_key.blank?
 
         # Find the key
         key = Service::Key.find_by(api_key: api_key)
@@ -40,9 +42,7 @@ module AuthPd
         error!("Invalid API key", 401) unless @current_service
       end
 
-      def current_service
-        @current_service
-      end
+      attr_reader :current_service
 
       def current_key
         api_key = headers["X-Api-Key"]
@@ -51,14 +51,14 @@ module AuthPd
 
       def dehash_credentials(hashed_credentials)
         # Get the key that was used for authentication
-        key = current_key
+        current_key
 
         # This is a simple implementation for demonstration purposes
         # In production, use proper encryption/decryption with the hash_key
         begin
           data = Base64.decode64(hashed_credentials)
           JSON.parse(data).symbolize_keys
-        rescue StandardError => e
+        rescue => e
           Rails.logger.error("Failed to dehash credentials: #{e.message}")
           nil
         end
@@ -73,10 +73,9 @@ module AuthPd
           request_method: request.request_method
         ).order(created_at: :desc).first
 
-        if usage
-          usage.update(response_code: status)
-        end
+        usage&.update(response_code: status)
       end
     end
+
   end
 end

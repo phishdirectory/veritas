@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/api/auth_pd/api.rb
 require "grape"
 require_relative "base"
@@ -18,5 +20,6 @@ module AuthPd
     route :any, "*path" do
       error!("Not Found", 404)
     end
+
   end
 end

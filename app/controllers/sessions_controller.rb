@@ -1,6 +1,7 @@
+# frozen_string_literal: true
+
 class SessionsController < ApplicationController
-  def new
-  end
+  def new; end
 
   def create
     user = User.find_by(email: params[:email])
@@ -18,4 +19,5 @@ class SessionsController < ApplicationController
     session[:user_id] = nil
     redirect_to login_path, notice: "Logged out successfully"
   end
+
 end
