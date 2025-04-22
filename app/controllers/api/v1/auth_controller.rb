@@ -3,6 +3,7 @@ module Api
   module V1
     class AuthController < BaseController
       def authenticate
+        # Dehash the credentials from the request
         credentials = dehash_credentials(params[:credentials])
 
         unless credentials && credentials[:email] && credentials[:password]
@@ -13,6 +14,9 @@ module Api
         user = User.find_by(email: credentials[:email])
 
         if user&.can_authenticate? && user.authenticate(credentials[:password])
+          # Log the successful authentication
+          Rails.logger.info("User authenticated by service #{current_service.name}: #{user.pd_id}")
+
           render json: {
             authenticated: true,
             pd_id: user.pd_id

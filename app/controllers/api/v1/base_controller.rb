@@ -1,5 +1,3 @@
-# frozen_string_literal: true
-
 # app/controllers/api/v1/base_controller.rb
 module Api
   module V1
@@ -37,11 +35,11 @@ module Api
 
         @current_service = key&.may_use? ? key.service : nil
         @current_service = nil unless @current_service&.active?
+        @current_key = key if @current_service
 
         return if @current_service
 
         render json: { error: "Invalid API key" }, status: :unauthorized
-
       end
 
       def current_service
@@ -49,17 +47,37 @@ module Api
       end
 
       def current_key
-        api_key = request.headers["X-Api-Key"]
-        Service::Key.find_by(api_key: api_key)
+        @current_key
       end
 
-      def dehash_credentials(hashed_credentials)
-        # Simple implementation for demonstration purposes
+      def dehash_credentials(hashed_data)
+        return nil if hashed_data.blank? || current_key.nil?
+
         begin
-          data = Base64.decode64(hashed_credentials)
-          JSON.parse(data).symbolize_keys
+          # Get the hash key from the current key
+          hash_key = current_key.hash_key
+
+          # First decode the base64
+          decoded = Base64.strict_decode64(hashed_data)
+
+          # Use OpenSSL to decrypt the data with the hash_key
+          cipher = OpenSSL::Cipher.new("aes-256-cbc")
+          cipher.decrypt
+
+          # Create key and iv from the hash_key
+          key = Digest::SHA256.digest(hash_key)[0...32]
+          iv = hash_key[0...16].ljust(16, "0")
+
+          cipher.key = key
+          cipher.iv = iv
+
+          # Decrypt the data
+          decrypted = cipher.update(decoded) + cipher.final
+
+          # Parse the JSON
+          JSON.parse(decrypted).symbolize_keys
         rescue => e
-          Rails.logger.error("Failed to dehash credentials: #{e.message}")
+          Rails.logger.error("Failed to dehash data: #{e.message}")
           nil
         end
       end
