@@ -22,8 +22,16 @@ Rails.application.routes.draw do
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
-  # Mount the Grape API
-  mount Api::V1 => "/"
+  # API routes
+  namespace :api do
+    namespace :v1 do
+      get "health", to: "health#index"
+
+      post "auth/authenticate", to: "auth#authenticate"
+
+      resources :users, only: [:show, :create]
+    end
+  end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.
