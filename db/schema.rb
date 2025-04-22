@@ -242,10 +242,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_233345) do
     t.string "password_digest", null: false
     t.integer "access_level", default: 0, null: false
     t.string "status", default: "active", null: false
+    t.datetime "locked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "locked_at"
-    t.datetime "#<ActiveRecord::ConnectionAdapters::PostgreSQL::TableDefinition"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["pd_id"], name: "index_users_on_pd_id", unique: true
   end

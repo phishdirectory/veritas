@@ -4,32 +4,28 @@
 #
 # Table name: users
 #
-#  id                                                              :bigint           not null, primary key
-#  #<ActiveRecord::ConnectionAdapters::PostgreSQL::TableDefinition :datetime
-#  access_level                                                    :integer          default("user"), not null
-#  email                                                           :string           not null
-#  email_verified                                                  :boolean          default(FALSE)
-#  email_verified_at                                               :datetime
-#  first_name                                                      :string           not null
-#  last_name                                                       :string           not null
-#  locked_at                                                       :datetime
-#  password_digest                                                 :string           not null
-#  status                                                          :string           default("active"), not null
-#  created_at                                                      :datetime         not null
-#  updated_at                                                      :datetime         not null
-#  pd_id                                                           :string           not null
+#  id                :bigint           not null, primary key
+#  access_level      :integer          default("user"), not null
+#  email             :string           not null
+#  email_verified    :boolean          default(FALSE)
+#  email_verified_at :datetime
+#  first_name        :string           not null
+#  last_name         :string           not null
+#  locked_at         :datetime
+#  password_digest   :string           not null
+#  status            :string           default("active"), not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  pd_id             :string           not null
 #
 # Indexes
 #
 #  index_users_on_email  (email) UNIQUE
 #  index_users_on_pd_id  (pd_id) UNIQUE
 #
+# app/models/user.rb
 class User < ApplicationRecord
-  include PublicIdentifiable
-  set_public_id_prefix :usr
-
   include AASM
-  include FriendlyId
 
   has_paper_trail
   has_secure_password
@@ -176,13 +172,6 @@ class User < ApplicationRecord
   # def last_seen_at
   #   user_sessions.maximum(:last_seen_at)
   # end
-
-  def slug_candidates
-    slug = normalize_friendly_id name
-    # From https://github.com/norman/friendly_id/issues/480
-    sequence = User.where("slug LIKE ?", "#{slug}-%").size + 2
-    [slug, "#{slug} #{sequence}"]
-  end
 
   private
 

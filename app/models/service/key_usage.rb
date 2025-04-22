@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# app/models/service/key_usage.rb
 # == Schema Information
 #
 # Table name: service_key_usages
@@ -24,8 +23,12 @@
 #
 #  fk_rails_...  (key_id => service_keys.id)
 #
-module Service
+#
+# # app/models/api_service/key_usage.rb
+class Service
   class KeyUsage < ApplicationRecord
+    self.table_name = "service_key_usages" # Keep the same table name
+
     belongs_to :key, class_name: "Service::Key"
 
     validates :request_path, presence: true
@@ -43,4 +46,5 @@ module Service
     end
 
   end
+
 end

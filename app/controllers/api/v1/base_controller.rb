@@ -17,7 +17,7 @@ module Api
           return
         end
 
-        key = ApiService::Key.find_by(api_key: api_key)
+        key = Service::Key.find_by(api_key: api_key)
 
         # Record the usage attempt
         if key
@@ -50,7 +50,7 @@ module Api
 
       def current_key
         api_key = request.headers["X-Api-Key"]
-        ApiService::Key.find_by(api_key: api_key)
+        Service::Key.find_by(api_key: api_key)
       end
 
       def dehash_credentials(hashed_credentials)

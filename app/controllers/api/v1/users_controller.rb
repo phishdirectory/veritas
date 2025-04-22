@@ -3,7 +3,8 @@ module Api
   module V1
     class UsersController < BaseController
       def show
-        user = User.find_by(pd_id: params[:id], active: true)
+        # todo: check if the user is "active"
+        user = User.find_by(pd_id: params[:id])
 
         unless user
           render json: { error: "User not found" }, status: :not_found
@@ -45,12 +46,7 @@ module Api
       private
 
       def user_params
-        # Accept either nested params or top-level params
-        if params[:user].present?
-          params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation)
-        else
-          params.permit(:first_name, :last_name, :email, :password, :password_confirmation)
-        end
+        params.permit(:first_name, :last_name, :email, :password, :password_confirmation)
       end
 
     end

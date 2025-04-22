@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# app/models/service/key.rb
 # == Schema Information
 #
 # Table name: service_keys
@@ -23,9 +22,14 @@
 #
 #  fk_rails_...  (service_id => services.id)
 #
-module Service
+#
+# app/models/api_service/key.rb
+
+class Service
   class Key < ApplicationRecord
     include AASM
+
+    self.table_name = "service_keys" # Keep the same table name
 
     belongs_to :service
     has_many :usages, class_name: "Service::KeyUsage", dependent: :destroy
@@ -75,4 +79,5 @@ module Service
     end
 
   end
+
 end

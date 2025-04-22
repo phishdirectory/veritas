@@ -129,11 +129,3 @@ gem "ahoy_email"
 gem "blind_index"
 
 gem "redis"
-
-# API
-gem "grape"
-gem "grape-entity" # For Grape::Entity ( https://github.com/ruby-grape/grape-entity )
-gem "grape-kaminari"
-gem "grape-route-helpers"
-gem "grape-swagger"
-gem "grape-swagger-entity", "~> 0.5"
