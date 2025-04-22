@@ -19,6 +19,8 @@ Style/RescueStandardError:
   EnforcedStyle: implicit
 
 Style/FrozenStringLiteralComment:
+  Enabled: true
+  EnforcedStyle: always
   Exclude:
     - "app/views/**/*.jbuilder"
 
