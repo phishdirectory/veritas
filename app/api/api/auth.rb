@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # app/api/auth_pd/auth.rb
-module AuthPd
+module Api
   class Auth < Grape::API
     resource :auth do
       desc "Authenticate a user"

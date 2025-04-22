@@ -6,10 +6,10 @@ require_relative "base"
 require_relative "auth"
 require_relative "users"
 
-module AuthPd
-  class API < Grape::API
-    mount AuthPd::Auth
-    mount AuthPd::Users
+module Api
+  class V1 < Grape::API
+    mount Api::Auth
+    mount Api::Users
 
     # Add a simple health check endpoint
     get :health do

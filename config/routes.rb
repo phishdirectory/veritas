@@ -2,7 +2,6 @@
 
 require "sidekiq/web"
 require "sidekiq/cron/web"
-require_relative "../app/api/auth_pd/api"
 
 Rails.application.routes.draw do
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
@@ -23,30 +22,8 @@ Rails.application.routes.draw do
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
-  # Admin routes
-  namespace :admin do
-    resources :services do
-      member do
-        post "suspend"
-        post "reactivate"
-        post "decommission"
-      end
-
-      resources :keys, only: %i[show create] do
-        member do
-          post "deprecate"
-          post "revoke"
-        end
-
-        collection do
-          post "rotate"
-        end
-      end
-    end
-  end
-
   # Mount the Grape API
-  mount AuthPd::API => "/"
+  mount Api::V1 => "/"
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

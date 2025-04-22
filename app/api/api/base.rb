@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # app/api/auth_pd/base.rb
-module AuthPd
+module Api
   class Base < Grape::API
     version "v1", using: :path
     format :json
