@@ -437,6 +437,9 @@ GEM
     rubocop-ast (1.44.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
+    rubocop-capybara (2.22.1)
+      lint_roller (~> 1.1)
+      rubocop (~> 1.72, >= 1.72.1)
     rubocop-performance (1.25.0)
       lint_roller (~> 1.1)
       rubocop (>= 1.75.0, < 2.0)
@@ -638,6 +641,7 @@ DEPENDENCIES
   redis
   relaxed-rubocop
   rqrcode
+  rubocop-capybara (~> 2.22, >= 2.22.1)
   rubocop-rails-omakase
   selenium-webdriver
   sidekiq (~> 8.0.2)

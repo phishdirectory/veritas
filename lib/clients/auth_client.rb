@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # lib/clients/auth_client.rb
 require "net/http"
 require "openssl"

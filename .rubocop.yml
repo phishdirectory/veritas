@@ -1,4 +1,6 @@
-require: rubocop-rails
+plugins:
+  - rubocop-rails
+  - rubocop-capybara
 
 AllCops:
   Exclude:
