@@ -13,10 +13,12 @@ class CreateUsers < ActiveRecord::Migration[8.0]
 
             t.string :password_digest, null: false
 
-            t.integer :access_level, default: 0, null: false
+            t.integer :access_level, default: 0, null: false, limit: 4
+            t.integer :api_access_level, default: 0, null: false, limit: 4
+
             t.string :status, null: false, default: 'active'
-            t.datetime :locked_at,
-                       t.timestamps
+            t.datetime :locked_at
+            t.timestamps
         end
 
         add_index :users, :email, unique: true

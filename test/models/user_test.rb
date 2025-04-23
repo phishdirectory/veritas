@@ -6,6 +6,7 @@
 #
 #  id                :bigint           not null, primary key
 #  access_level      :integer          default("user"), not null
+#  api_access_level  :integer          default("user"), not null
 #  email             :string           not null
 #  email_verified    :boolean          default(FALSE)
 #  email_verified_at :datetime

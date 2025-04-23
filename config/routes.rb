@@ -29,7 +29,9 @@ Rails.application.routes.draw do
 
       post "auth/authenticate", to: "auth#authenticate"
 
+      # Remove the namespace prefix since we're already in the namespace
       resources :users, only: [:show, :create]
+      get "users/by_email", to: "users#show"
     end
   end
 

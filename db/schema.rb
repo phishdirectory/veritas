@@ -241,6 +241,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_233345) do
     t.datetime "email_verified_at"
     t.string "password_digest", null: false
     t.integer "access_level", default: 0, null: false
+    t.integer "api_access_level", default: 0, null: false
     t.string "status", default: "active", null: false
     t.datetime "locked_at"
     t.datetime "created_at", null: false

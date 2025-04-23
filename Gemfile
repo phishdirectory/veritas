@@ -129,3 +129,4 @@ gem "ahoy_email"
 gem "blind_index"
 
 gem "redis"
+gem "dotenv-rails"

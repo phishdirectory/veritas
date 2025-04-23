@@ -1,63 +1,44 @@
-# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
-# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
+FROM ruby:3.4.2
 
-# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
-ARG RUBY_VERSION=3.4.2
-FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
-# Rails app lives here
-WORKDIR /rails
 
-# Install base packages
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y curl libjemalloc2 libvips postgresql-client && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+RUN apt-get -y update -qq
 
-# Set production environment
-ENV RAILS_ENV="production" \
-    BUNDLE_DEPLOYMENT="1" \
-    BUNDLE_PATH="/usr/local/bundle" \
-    BUNDLE_WITHOUT="development"
+# install postgresql-client for easy importing of production database & vim
+# for easy editing of credentials
+RUN apt-get -y install postgresql-client nano poppler-utils libffi-dev openssl libssl-dev
+ENV EDITOR=nano
 
-# Throw-away build stage to reduce size of final image
-FROM base AS build
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh && \
+  bash nodesource_setup.sh && \
+  apt-get install -y nodejs
 
-# Install packages needed to build gems
-RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential git libyaml-dev pkg-config && \
-    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+RUN corepack enable
 
-# Install application gems
-COPY Gemfile Gemfile.lock ./
-RUN bundle install && \
-    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
-    bundle exec bootsnap precompile --gemfile
+RUN gem install bundler -v 2.5.17
 
-# Copy application code
-COPY . .
+ADD yarn.lock /usr/src/app/yarn.lock
+ADD package.json /usr/src/app/package.json
+ADD .ruby-version /usr/src/app/.ruby-version
+ADD Gemfile /usr/src/app/Gemfile
+ADD Gemfile.lock /usr/src/app/Gemfile.lock
 
-# Precompile bootsnap code for faster boot times
-RUN bundle exec bootsnap precompile app/ lib/
+ENV BUNDLE_GEMFILE=Gemfile \
+  BUNDLE_JOBS=4 \
+  BUNDLE_PATH=/usr/local/bundle
 
-# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN bundle install
+RUN yarn install --check-files
 
-# Final stage for app image
-FROM base
+# Rubocop can't find config when ran with solargraph inside docker
+# https://github.com/castwide/solargraph/issues/309#issuecomment-998137438
+RUN ln -s /usr/src/app/.rubocop.yml ~/.rubocop.yml
+RUN ln -s /usr/src/app/.rubocop_todo.yml ~/.rubocop_todo.yml
 
-# Copy built artifacts: gems, application
-COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
-COPY --from=build /rails /rails
+ADD . /usr/src/app
 
-# Run and own only the runtime files as a non-root user for security
-RUN groupadd --system --gid 1000 rails && \
-    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
-    chown -R rails:rails db log storage tmp
-USER 1000:1000
+EXPOSE 3000
 
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
-
-# Start server via Thruster by default, this can be overwritten at runtime
-EXPOSE 80
-CMD ["./bin/thrust", "./bin/rails", "server"]
+CMD ["rails", "server", "-b", "0.0.0.0"]

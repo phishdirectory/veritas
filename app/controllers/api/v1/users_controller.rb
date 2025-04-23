@@ -5,18 +5,37 @@ module Api
   module V1
     class UsersController < BaseController
       def show
-        user = User.find_by(pd_id: params[:id])
+        # Try to find user by id parameter
+        user = User.find_by(pd_id: params[:id]) if params[:id].present?
+
+        # If no user found by id or no id provided, try email
+        user ||= User.find_by(email: params[:email]) if params[:email].present?
 
         unless user
           render json: { error: "User not found" }, status: :not_found
           return
         end
 
-        render json: {
+        # declare json variable to hold the json response (will be send later)
+        json = {
           pd_id: user.pd_id,
+          first_name: user.first_name,
+          last_name: user.last_name,
           email: user.email,
-          created_at: user.created_at
+          global_access_level: user.access_level,
+          created_at: user.created_at,
+          status: user.status,
+          # display locked_at only if the field is not nil
+          locked_at: user.locked_at.presence,
         }
+
+        # check if the Servide has the ID of 2 (api), and if so add the user's api access level
+        # to the json response
+        if current_service.id == 2
+          json[:api_access_level] = user.api_access_level
+        end
+
+        render json
       end
 
       def create
