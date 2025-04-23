@@ -1,4 +1,5 @@
 # phishdirectory/auth
+
 **Central authentication microservice for all phish.directory services**<br>
 <sub>Maintainer: <a href="mailto:jasper.mayone@phish.directory">@jaspermayone</a></sub>
 
@@ -21,6 +22,8 @@
 ```
 
 ---
+
+![CodeRabbit Pull Request Reviews](https://img.shields.io/coderabbit/prs/github/phishdirectory/auth?utm_source=oss&utm_medium=github&utm_campaign=phishdirectory%2Fauth&labelColor=171717&color=FF570A&link=https%3A%2F%2Fcoderabbit.ai&label=CodeRabbit+Reviews)
 
 ## Overview
 
@@ -75,7 +78,8 @@ rails server
 ```
 
 ## Deployment
-We don't quite have this figured out yet :) 
+
+We don't quite have this figured out yet :)
 
 ## Contributing
 

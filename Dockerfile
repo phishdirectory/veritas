@@ -1,44 +1,87 @@
-FROM ruby:3.4.2
+# This Dockerfile is designed for production, not development. Use with Kamal or build'n'run by hand:
+# For a containerized dev environment, see Dev Containers: https://guides.rubyonrails.org/getting_started_with_devcontainer.html
 
-RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version
+ARG RUBY_VERSION=3.4.2
+FROM docker.io/library/ruby:$RUBY_VERSION-slim AS base
+
+LABEL org.opencontainers.image.source=https://github.com/phishdirectory/auth
+
+# Rails app lives here
+WORKDIR /rails
+
+# Base packages - updated 2025-04-22
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y curl libjemalloc2 libvips libpq-dev && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Set production environment
+ENV RAILS_ENV="production" \
+    BUNDLE_DEPLOYMENT="1" \
+    BUNDLE_PATH="/usr/local/bundle" \
+    BUNDLE_WITHOUT="development"
+
+# Throw-away build stage to reduce size of final image
+FROM base AS build
+
+# Install packages needed to build gems
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y build-essential apt-utils curl git pkg-config libpq-dev nodejs libyaml-dev libffi-dev && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+# Install JavaScript dependencies and Node.js for asset compilation
+#
+# Uncomment the following lines if you are using NodeJS need to compile assets
+#
+ARG NODE_VERSION=23.10.0
+ARG YARN_VERSION=1.22.22
+ENV PATH=/usr/local/node/bin:$PATH
+RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
+    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
+    npm install -g yarn@$YARN_VERSION && \
+    npm install -g mjml && \
+    rm -rf /tmp/node-build-master
 
 
-RUN apt-get -y update -qq
+# Install application gems
+COPY Gemfile Gemfile.lock ./
+RUN bundle install && \
+    rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git && \
+    bundle exec bootsnap precompile --gemfile
 
-# install postgresql-client for easy importing of production database & vim
-# for easy editing of credentials
-RUN apt-get -y install postgresql-client nano poppler-utils libffi-dev openssl libssl-dev
-ENV EDITOR=nano
+# Install node modules
+#
+# Uncomment the following lines if you are using NodeJS need to compile assets
+#
+COPY package.json yarn.lock ./
+RUN --mount=type=cache,id=yarn,target=/rails/.cache/yarn YARN_CACHE_FOLDER=/rails/.cache/yarn \
+    yarn install --frozen-lockfile
 
-RUN curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh && \
-  bash nodesource_setup.sh && \
-  apt-get install -y nodejs
+# Copy application code
+COPY . .
 
-RUN corepack enable
+# Precompile bootsnap code for faster boot times
+RUN bundle exec bootsnap precompile app/ lib/
 
-RUN gem install bundler -v 2.5.17
+# Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-ADD yarn.lock /usr/src/app/yarn.lock
-ADD package.json /usr/src/app/package.json
-ADD .ruby-version /usr/src/app/.ruby-version
-ADD Gemfile /usr/src/app/Gemfile
-ADD Gemfile.lock /usr/src/app/Gemfile.lock
+# Final stage for app image
+FROM base
 
-ENV BUNDLE_GEMFILE=Gemfile \
-  BUNDLE_JOBS=4 \
-  BUNDLE_PATH=/usr/local/bundle
+## Copy built artifacts: gems, application
+COPY --from=build "${BUNDLE_PATH}" "${BUNDLE_PATH}"
+COPY --from=build /rails /rails
 
-RUN bundle install
-RUN yarn install --check-files
+# Run and own only the runtime files as a non-root user for security
+RUN groupadd --system --gid 1000 rails && \
+    useradd rails --uid 1000 --gid 1000 --create-home --shell /bin/bash && \
+    chown -R rails:rails db log storage tmp
+USER 1000:1000
 
-# Rubocop can't find config when ran with solargraph inside docker
-# https://github.com/castwide/solargraph/issues/309#issuecomment-998137438
-RUN ln -s /usr/src/app/.rubocop.yml ~/.rubocop.yml
-RUN ln -s /usr/src/app/.rubocop_todo.yml ~/.rubocop_todo.yml
+# Entrypoint prepares the database.
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 
-ADD . /usr/src/app
-
-EXPOSE 3000
-
-CMD ["rails", "server", "-b", "0.0.0.0"]
+# Start server via Thruster by default, this can be overwritten at runtime
+EXPOSE 80
+CMD ["./bin/thrust", "./bin/rails", "server"]
