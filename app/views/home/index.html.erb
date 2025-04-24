@@ -1,19 +1,118 @@
 <!-- app/views/home/index.html.erb -->
-<div class="dashboard">
-  <h1>Welcome to Auth.P.D</h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veritas Authentication API</title>
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* This prevents scrolling */
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        overflow-x: hidden;
+        position: relative;
+      }
 
-  <div class="card">
-    <div class="card-body">
-      <h2>Authentication Service Dashboard</h2>
-      <p>This is the centralized authentication service for P.D microservices.</p>
+      .bg-image {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('<%= asset_path("bg.jpeg") %>');
+        background-size: cover;
+        background-position: center;
+        z-index: -2;
+      }
 
-      <div class="user-info">
-        <h3>Your Account</h3>
-        <p><strong>Email:</strong> <%= current_user.email %></p>
-        <p><strong>Global ID:</strong> <%= current_user.pd_id %></p>
+      .gradient-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom,
+          rgba(255,255,255,0) 0%,
+          rgba(0,0,0,0.2) 100%);
+        z-index: -1;
+      }
+
+      .card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 800px;
+        padding: 40px;
+        text-align: center;
+      }
+
+        h1 {
+        font-size: 48px;
+        margin: 0 0 5px 0; /* Reduced bottom margin from 20px to 5px */
+        font-weight: 800;
+        color: #111;
+      }
+
+      h2 {
+        margin: 0 0 20px 0; /* Added top margin of 0 to keep it close to h1 */
+        font-weight: 600;
+        color: #333;
+      }
+
+      .description {
+        font-size: 18px;
+        line-height: 1.6;
+        color: #555;
+        max-width: 700px;
+        margin: 0 auto 40px auto;
+      }
+
+      @media (max-width: 600px) {
+        .card {
+          padding: 30px 20px;
+        }
+
+        h1 {
+          font-size: 32px;
+        }
+
+        h2 {
+          font-size: 20px; /* Added responsive styling for h2 */
+        }
+
+        .description {
+          font-size: 16px;
+        }
+
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-image"></div>
+    <div class="gradient-overlay"></div>
+
+    <div class="card-container">
+      <div class="card">
+        <h1>Veritas</h1>
+        <h2>(Authentication API)</h2>
+
+        <p class="description">
+          Veritas is an authentication API service used by the phish.directory microservices. Currently,
+          there is no user interface - just a internal API! If you're a developer who needs help provisioning a service key for use, please reach out to Jasper via slack or email. If you're a user who has ended up here, that's a bit odd! Not to fear, go back to whatever directed you here, and if you keep ending up back here, please email <a href="mailto:support@phish.directory">support@phish.directory</a>
+        </p>
       </div>
-
-      <%= button_to "Log Out", logout_path, method: :delete, class: "btn btn-danger" %>
     </div>
-  </div>
-</div>
+  </body>
+</html>
