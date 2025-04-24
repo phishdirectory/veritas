@@ -4,6 +4,10 @@ require "sidekiq/web"
 require "sidekiq/cron/web"
 
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => "/api-docs"
+  mount Rswag::Api::Engine => "/api-docs"
+
+
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root "home#index"
 
@@ -21,6 +25,17 @@ Rails.application.routes.draw do
   # get "/sidekiq", to: redirect("users/auth") # fallback if adminconstraint fails, meaning user is not signed in
 
   mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
+
+  # API documentation
+  namespace :docs do
+    resources :api, only: [] do
+      collection do
+        # This crazy nesting is to get Rails to generate meaningful route helpers
+        get "v1(/*path)", to: "api#v1"
+        get "/", to: redirect("/docs/api/v1")
+      end
+    end
+  end
 
   # API routes
   namespace :api do

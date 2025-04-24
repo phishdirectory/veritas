@@ -2,133 +2,137 @@
 
 source "https://rubygems.org"
 
-# Bundle edge Rails instead: gem "rails", github: "rails/rails", branch: "main"
+##############################################################################
+# Rails Core and Server
+##############################################################################
 gem "rails", "~> 8.0.2"
-# The modern asset pipeline for Rails [https://github.com/rails/propshaft]
-gem "propshaft"
-# Use postgres as the database for Active Record
-gem "pg", "~> 1.5", ">= 1.5.9"
-# Use the Puma web server [https://github.com/puma/puma]
-gem "puma", ">= 5.0"
-# Use JavaScript with ESM import maps [https://github.com/rails/importmap-rails]
-gem "importmap-rails"
-# Hotwire's SPA-like page accelerator [https://turbo.hotwired.dev]
-gem "turbo-rails"
-# Hotwire's modest JavaScript framework [https://stimulus.hotwired.dev]
-gem "stimulus-rails"
-# Build JSON APIs with ease [https://github.com/rails/jbuilder]
-gem "jbuilder"
-
-# Use Active Model has_secure_password [https://guides.rubyonrails.org/active_model_basics.html#securepassword]
-gem "bcrypt", "~> 3.1.7"
-
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
+gem "pg", "~> 1.5", ">= 1.5.9" # PostgreSQL database
+gem "puma", ">= 5.0"                      # Web server
+gem "bootsnap", require: false            # Reduces boot times through caching
 gem "tzinfo-data", platforms: %i[windows jruby]
 
-# Use the database-backed adapters for Rails.cache, Active Job, and Action Cable
-gem "solid_cable"
-gem "solid_cache"
-gem "solid_queue"
+##############################################################################
+# Frontend and Asset Pipeline
+##############################################################################
+gem "propshaft"                           # Modern asset pipeline
+gem "importmap-rails"                     # JavaScript with ESM import maps
+gem "turbo-rails"                         # Hotwire's page accelerator
+gem "stimulus-rails"                      # Hotwire's JavaScript framework
+gem "jbuilder"                            # JSON API builder
 
-# Reduces boot times through caching; required in config/boot.rb
-gem "bootsnap", require: false
-# Deploy this application anywhere as a Docker container [https://kamal-deploy.org]
-gem "kamal", require: false
-# Add HTTP asset caching/compression and X-Sendfile acceleration to Puma [https://github.com/basecamp/thruster/]
-gem "thruster", require: false
+##############################################################################
+# Authentication and Security
+##############################################################################
+gem "bcrypt", "~> 3.1.7"                  # Secure password hashing
+gem "webauthn", "~> 3.2"                  # WebAuthn support
+gem "rack-attack"                         # Rate limiting
+gem "rack-cors"                           # CORS management
+gem "validates_email_format_of"           # Email validation
 
-gem "aasm"
-gem "friendly_id", "~> 5.5.1" # slugs
-gem "hashid-rails", "~> 1.0" # obfuscate IDs in URLs
+##############################################################################
+# Database and Data Management
+##############################################################################
+gem "aasm"                                # State machines
+gem "friendly_id", "~> 5.5.1"             # URL slugs
+gem "hashid-rails", "~> 1.0"              # Obfuscate IDs in URLs
+gem "pg_search"                           # Full-text search
+gem "paper_trail"                         # Record changes to models
+gem "lockbox"                             # Encryption
+gem "blind_index"                         # Encrypted search
 
-gem "pg_search" # full-text search
-gem "sidekiq", "~> 8.0.2" # background jobs
-gem "sidekiq-cron", "~> 2.1" # run Sidekiq jobs at scheduled intervals
+##############################################################################
+# Background Processing and Scheduled Jobs
+##############################################################################
+gem "sidekiq", "~> 8.0.2"                 # Background jobs
+gem "sidekiq-cron", "~> 2.1"              # Scheduled jobs
+gem "solid_queue"                         # Database-backed Active Job adapter
 
-gem "browser", "~> 6.2" # browser detection
-gem "rack-attack" # rate limiting
-gem "rack-cors" # manage CORS
+##############################################################################
+# Caching and Performance
+##############################################################################
+gem "redis"                               # Redis client
+gem "solid_cache"                         # Database-backed Rails.cache
+gem "solid_cable"                         # Database-backed Action Cable
+gem "thruster", require: false            # HTTP asset caching/compression
 
-# Pagination
-gem "api-pagination"
-gem "kaminari"
+##############################################################################
+# Monitoring, Analytics and Insights
+##############################################################################
+gem "ahoy_matey"                          # Analytics
+gem "ahoy_email"                          # Email analytics
+gem "blazer"                              # BI dashboard
+gem "statsd-instrument", "~> 3.9"         # StatsD metrics
+gem "audits1984"                          # Audit logging
+gem "console1984"                         # Console access auditing
+gem "irb", "~> 1.15.2"                    # IRB pinned for Console1984 compatibility
 
-gem "flipper" # feature flags
-gem "flipper-active_record"
-gem "flipper-ui"
+##############################################################################
+# Feature Management
+##############################################################################
+gem "flipper"                             # Feature flags
+gem "flipper-active_record"               # ActiveRecord adapter for Flipper
+gem "flipper-ui"                          # UI for Flipper
 
-# API pagination for standard Rails controllers
-# We keep api-pagination gem (already included above)
+##############################################################################
+# Utilities
+##############################################################################
+gem "browser", "~> 6.2"                   # Browser detection
+gem "rqrcode"                             # QR code generation
+gem "awesome_print"                       # Pretty print objects
+gem "kamal", require: false               # Docker deployment
+gem "dotenv-rails"                        # Environment variables
 
-gem "webauthn", "~> 3.2"
+##############################################################################
+# API Documentation
+##############################################################################
+gem "rswag"
 
-gem "ahoy_matey" # analytics
-gem "blazer" # business intelligence tool/dashboard
-
-gem "rqrcode" # QR code generation
-
-# TODO: print pretty things in console
-gem "awesome_print" # pretty print objects in console
-
-gem "statsd-instrument", "~> 3.9"
-
+##############################################################################
+# Development and Test Dependencies
+##############################################################################
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  # Debugging
   gem "debug", platforms: %i[mri windows], require: "debug/prelude"
 
-  # Static analysis for security vulnerabilities [https://brakemanscanner.org/]
-  gem "brakeman", require: false
+  # Code Quality and Security
+  gem "brakeman", require: false # Security analysis
+  gem "rubocop-rails-omakase", require: false # Ruby styling
+  gem "rubocop-capybara", "~> 2.22", ">= 2.22.1"
+  gem "rubocop-rspec", "~> 3.6"
+  gem "rubocop-rspec_rails", "~> 2.31"
+  gem "relaxed-rubocop"
+  gem "overcommit", require: false # Git hooks
 
-  # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
-  gem "rubocop-rails-omakase", require: false
+  # Performance
+  gem "query_count"                       # SQL query counter
+  gem "rack-mini-profiler", "~> 3.3", require: false
+  gem "stackprof"                         # Used by rack-mini-profiler
 
-  gem "query_count"
-  gem "rack-mini-profiler", "~> 3.3", require: false # performance profiling
-  gem "stackprof" # used by `rack-mini-profiler` to provide flamegraphs
+  # Code Quality
+  gem "bullet" # N+1 query detection
+
+  # Testing
+  gem "rspec-rails"
+  gem "rswag-specs"
 end
 
 group :development do
-  gem "actual_db_schema" # rolls back phantom migrations
-  gem "annotaterb"
+  # Development Tools
+  gem "actual_db_schema"                  # Rolls back phantom migrations
+  gem "annotaterb"                        # Annotate models
+  gem "web-console"                       # Interactive console
+  gem "listen", "~> 3.9"                  # File watcher
+  gem "letter_opener_web"                 # Preview emails
+  gem "foreman"                           # Process manager
 
-  # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
-  gem "listen", "~> 3.9"
-  gem "web-console"
-
-  gem "letter_opener_web" # preview emails
-
-  gem "solargraph", require: false
+  # IDE Support
+  gem "solargraph", require: false        # Ruby language server
   gem "solargraph-rails", "~> 1.1.0", require: false
-
-  gem "htmlbeautifier", require: false # for https://marketplace.visualstudio.com/items?itemName=tomclose.format-erb
-
-  gem "foreman"
-
-  gem "bullet"
+  gem "htmlbeautifier", require: false    # ERB formatting
 end
 
 group :test do
-  # Use system testing [https://guides.rubyonrails.org/testing.html#system-testing]
+  # System Testing
   gem "capybara"
   gem "selenium-webdriver"
 end
-
-gem "audits1984"
-gem "console1984"
-gem "paper_trail"
-
-# IRB is pinned to 1.14.3 because Console1984 is incompatible with >=1.15.0.
-# https://github.com/basecamp/console1984/issues/127
-gem "irb", "~> 1.15.2"
-
-gem "validates_email_format_of" # email address validations
-
-gem "relaxed-rubocop"
-gem "lockbox"
-gem "ahoy_email"
-gem "blind_index"
-
-gem "redis"
-gem "dotenv-rails"
-gem "rubocop-capybara", "~> 2.22", ">= 2.22.1"
-gem "overcommit", require: false
