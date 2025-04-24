@@ -9,6 +9,9 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+#
+
+puts "Seeding data..."
 
 # create internal service
 internal_service = Service.new(name: "Internal")
@@ -51,3 +54,5 @@ User.find_or_create_by!(email: "jasper.mayone@phish.directory") do |user|
   user.email_verified = true
   user.email_verified_at = Time.current
 end
+
+puts "Seed data successfully created!"

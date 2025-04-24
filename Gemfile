@@ -43,9 +43,8 @@ gem "blind_index"                         # Encrypted search
 ##############################################################################
 # Background Processing and Scheduled Jobs
 ##############################################################################
-gem "sidekiq", "~> 8.0.2"                 # Background jobs
-gem "sidekiq-cron", "~> 2.1"              # Scheduled jobs
-gem "solid_queue"                         # Database-backed Active Job adapter
+gem "solid_queue" # Database-backed Active Job adapter
+gem "mission_control-jobs" # Job monitoring
 
 ##############################################################################
 # Caching and Performance
@@ -85,7 +84,6 @@ gem "dotenv-rails"                        # Environment variables
 ##############################################################################
 # API Documentation
 ##############################################################################
-gem "rswag"
 
 ##############################################################################
 # Development and Test Dependencies

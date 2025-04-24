@@ -5,15 +5,30 @@ default: &default
   url: <%= ENV['DATABASE_URL'] %>
 
 development:
-  <<: *default
-  database: pd_auth_development
+  primary: &primary_development
+    <<: *default
+    database: veritas_development
+  queue:
+    <<: *primary_development
+    database: veritas_development_queue
+    migrations_paths: db/queue_migrate
 
 test:
-  <<: *default
-  database: pd_auth_test
+  primary: &primary_test
+    <<: *default
+    database: veritas_test
+  queue:
+    <<: *primary_test
+    database: veritas_test_queue
+    migrations_paths: db/queue_migrate
 
 production:
-  <<: *default
-  database: pd_auth_production
-  username: <%= ENV['POSTGRES_USER'] %>
-  password: <%= ENV['POSTGRES_PASSWORD'] %>
+  primary: &primary_production
+    <<: *default
+    database: veritas_production
+    username: <%= ENV['POSTGRES_USER'] %>
+    password: <%= ENV['POSTGRES_PASSWORD'] %>
+  queue:
+    <<: *primary_production
+    database: veritas_production_queue
+    migrations_paths: db/queue_migrate

@@ -1,14 +1,39 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Auth" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#2F2F2F" />
+    <meta name="msapplication-TileColor" content="#2F2F2F" />
+    <meta name="apple-mobile-web-app-title" content="Veritas" />
+    <meta name="application-name" content="Veritas" />
+    <meta name="description" content="Central authentication microservice for all phish.directory services." />
+    <meta name="keywords" content="Veritas, phish.directory, phishing, phishing detection, phishing prevention" />
+    <meta name="author" content="phish.directory Team" />
+    <meta name="copyright" content="phish.directory Team" />
+    <%# <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="194x194" href="/favicon-194x194.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" /> %>
+    <%# <meta name="msapplication-TileImage" content="/mstile-144x144.png" /> %>
+    <meta name="theme-color" content="#2F2F2F" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+
+    <title><%= content_for(:title) || "Veritas" %></title>
+    <title>
+      <%= yield(:title).concat(" ~") if content_for?(:title) %> Veritas
+    </title>
+
+    <link rel="canonical" href="https://veritas.phish.directory/" />
 
     <%= yield :head %>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
 
     <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
     <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
@@ -24,5 +49,66 @@
 
   <body>
     <%= yield %>
+
+    <!-- Display flash messages -->
+    <% flash.each do |type, message| %>
+      <div class="notification is-<%= type %>">
+        <button class="delete" onclick="(this.parentNode.remove())"></button>
+        <%= message %>
+      </div>
+    <% end %>
+
   </body>
+
+  <script>
+    console.log(`%c
+
+    |\   \\\\__     o
+    | \_/    o \    o
+    > _   (( <_  oo
+    | / \__+___/
+    |/     |/
+
+    Welcome to Veritas — the auth backbone of phish.directory
+
+    🔐 Centralized authentication for all phish.directory services
+
+    🤝 Built for devs, by devs!
+
+    🌱 Want to contribute? Start here:
+
+     → GitHub: https://github.com/phishdotdirectory/veritas
+
+     → Phish Directory Issue Board (all repos): https://issue-board.phish.directory
+    `, 'color: #2F2F2F; font-weight: bold;');
+  </script>
+
+  <style>
+    .notification {
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+    }
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+        const $notification = $delete.parentNode;
+
+        $delete.addEventListener('click', () => {
+          $notification.parentNode.removeChild($notification);
+        });
+      });
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const flash = document.getElementById('flash');
+      if (flash) {
+        setTimeout(() => {
+          flash.remove();
+        }, 5000);
+      }
+    });
+  </script>
 </html>

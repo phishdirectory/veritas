@@ -23,15 +23,16 @@ class ApplicationController < ActionController::Base
   # end
   #
 
+  helper_method :current_user
+
   def current_user
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
   end
 
-  helper_method :current_user
-
   def find_current_auditor
-    current_user
+    current_user if current_user&.superadmin?
   end
+
 
   def user_not_authorized
     flash[:error] = "You are not authorized to perform this action."

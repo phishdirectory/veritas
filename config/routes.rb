@@ -1,41 +1,39 @@
 # frozen_string_literal: true
 
-require "sidekiq/web"
-require "sidekiq/cron/web"
-
 Rails.application.routes.draw do
-  mount Rswag::Ui::Engine => "/api-docs"
-  mount Rswag::Api::Engine => "/api-docs"
-
-
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
   root "home#index"
 
   get "login", to: "sessions#new"
   post "login", to: "sessions#create"
-  delete "logout", to: "sessions#destroy"
+  get "logoff", to: "sessions#destroy"
 
-  # TODO: add admin constraint
-  # constraints AdminConstraint do
-  #   mount Audits1984::Engine => "/console"
-  #   mount Sidekiq::Web => "/sidekiq"
-  #   mount Flipper::UI.app(Flipper), at: "flipper", as: "flipper"
-  #   mount Blazer::Engine, at: "blazer"
-  # end
-  # get "/sidekiq", to: redirect("users/auth") # fallback if adminconstraint fails, meaning user is not signed in
+  # Admin namespace with constraint
+  constraints AdminConstraint.new do
+    namespace :admin do
+      # Admin dashboard is the root of the admin namespace
+      root to: "dashboard#index"
 
-  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
-
-  # API documentation
-  namespace :docs do
-    resources :api, only: [] do
-      collection do
-        # This crazy nesting is to get Rails to generate meaningful route helpers
-        get "v1(/*path)", to: "api#v1"
-        get "/", to: redirect("/docs/api/v1")
+      # Resources and sub-resources
+      resources :users
+      resources :services do
+        resources :keys, controller: "service_keys"
       end
+
+      # Mount engines under /admin path
+      mount MissionControl::Jobs::Engine, at: "/jobs"
+      mount Audits1984::Engine => "/console"
+      mount Flipper::UI.app(Flipper), at: "/flipper"
+      mount Blazer::Engine, at: "/blazer"
     end
   end
+
+  # # Fallback redirect if adminconstraint fails
+  get "admin/*path", to: redirect("/login")
+
+
+
+  mount LetterOpenerWeb::Engine, at: "/letter_opener" if Rails.env.development?
 
   # API routes
   namespace :api do

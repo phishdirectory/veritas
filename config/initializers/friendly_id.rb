@@ -29,7 +29,6 @@ FriendlyId.defaults do |config|
     images
     admin
     flipper
-    sidekiq
     blazer
     stats
     stats_custom_duration

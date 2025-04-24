@@ -154,9 +154,6 @@ GEM
       cbor (~> 0.5.9)
       openssl-signature_algorithm (~> 1.0)
     crass (1.0.6)
-    cronex (0.15.0)
-      tzinfo
-      unicode (>= 0.4.4.5)
     csv (3.3.4)
     date (3.4.1)
     debug (1.10.0)
@@ -273,6 +270,16 @@ GEM
     matrix (0.4.2)
     mini_mime (1.1.5)
     minitest (5.25.5)
+    mission_control-jobs (1.0.2)
+      actioncable (>= 7.1)
+      actionpack (>= 7.1)
+      activejob (>= 7.1)
+      activerecord (>= 7.1)
+      importmap-rails (>= 1.2.1)
+      irb (~> 1.13)
+      railties (>= 7.1)
+      stimulus-rails
+      turbo-rails
     msgpack (1.8.0)
     net-imap (0.5.7)
       date
@@ -435,21 +442,11 @@ GEM
       rspec-mocks (~> 3.13)
       rspec-support (~> 3.13)
     rspec-support (3.13.2)
-    rswag (2.16.0)
-      rswag-api (= 2.16.0)
-      rswag-specs (= 2.16.0)
-      rswag-ui (= 2.16.0)
-    rswag-api (2.16.0)
-      activesupport (>= 5.2, < 8.1)
-      railties (>= 5.2, < 8.1)
     rswag-specs (2.16.0)
       activesupport (>= 5.2, < 8.1)
       json-schema (>= 2.2, < 6.0)
       railties (>= 5.2, < 8.1)
       rspec-core (>= 2.14)
-    rswag-ui (2.16.0)
-      actionpack (>= 5.2, < 8.1)
-      railties (>= 5.2, < 8.1)
     rubocop (1.75.3)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
@@ -503,17 +500,6 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
-    sidekiq (8.0.2)
-      connection_pool (>= 2.5.0)
-      json (>= 2.9.0)
-      logger (>= 1.6.2)
-      rack (>= 3.1.0)
-      redis-client (>= 0.23.2)
-    sidekiq-cron (2.2.0)
-      cronex (>= 0.13.0)
-      fugit (~> 1.8, >= 1.11.1)
-      globalid (>= 1.0.1)
-      sidekiq (>= 6.5.0)
     simpleidn (0.2.3)
     solargraph (0.54.0)
       backport (~> 1.2)
@@ -581,7 +567,6 @@ GEM
       railties (>= 7.1.0)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
-    unicode (0.4.4.5)
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
     unicode-emoji (4.0.4)
@@ -660,6 +645,7 @@ DEPENDENCIES
   letter_opener_web
   listen (~> 3.9)
   lockbox
+  mission_control-jobs
   overcommit
   paper_trail
   pg (~> 1.5, >= 1.5.9)
@@ -675,15 +661,12 @@ DEPENDENCIES
   relaxed-rubocop
   rqrcode
   rspec-rails
-  rswag
   rswag-specs
   rubocop-capybara (~> 2.22, >= 2.22.1)
   rubocop-rails-omakase
   rubocop-rspec (~> 3.6)
   rubocop-rspec_rails (~> 2.31)
   selenium-webdriver
-  sidekiq (~> 8.0.2)
-  sidekiq-cron (~> 2.1)
   solargraph
   solargraph-rails (~> 1.1.0)
   solid_cable
