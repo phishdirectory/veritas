@@ -1,4 +1,4 @@
-# phishdirectory/auth
+# veritas (phishdirectory/auth)
 
 **Central authentication microservice for all phish.directory services**<br>
 <sub>Maintainer: <a href="mailto:jasper.mayone@phish.directory">@jaspermayone</a></sub>
