@@ -22,7 +22,12 @@ module Api
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,
-          global_access_level: user.access_level,
+          permissions: {
+            global_access_level: {
+              name: user.access_level,
+              value: User.access_levels[user.access_level] # This gets the integer value
+            },
+          },
           created_at: user.created_at,
           status: user.status,
           # display locked_at only if the field is not nil
@@ -32,10 +37,13 @@ module Api
         # check if the Servide has the ID of 2 (api), and if so add the user's api access level
         # to the json response
         if current_service.id == 2
-          json[:api_access_level] = user.api_access_level
+          json[:permissions][:SERVICE_ACCESS_LEVEL] = {
+            name: user.api_access_level,
+            value: User.api_access_levels[user.api_access_level] # This gets the integer value
+          }
         end
 
-        render json
+        render json: json
       end
 
       def create
