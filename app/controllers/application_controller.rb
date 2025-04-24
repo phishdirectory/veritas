@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   # allow_browser versions: :modern
 
   # Track papertrail edits to specific users
-  before_action :set_paper_trail_whodunnit
+  # before_action :set_paper_trail_whodunnit
 
   # update the current session's last_seen_at
   # before_action { current_session&.touch_last_seen_at }
@@ -21,6 +21,13 @@ class ApplicationController < ActionController::Base
   #     Rack::MiniProfiler.authorize_request
   #   end
   # end
+  #
+
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
+  end
+
+  helper_method :current_user
 
   def find_current_auditor
     current_user
@@ -42,6 +49,10 @@ class ApplicationController < ActionController::Base
   def confetti!(emojis: nil)
     flash[:confetti] = true
     flash[:confetti_emojis] = emojis.join(",") if emojis
+  end
+
+  def authenticate_user
+    redirect_to login_path unless current_user
   end
 
 end
