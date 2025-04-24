@@ -131,3 +131,4 @@ gem "blind_index"
 gem "redis"
 gem "dotenv-rails"
 gem "rubocop-capybara", "~> 2.22", ">= 2.22.1"
+gem "overcommit", require: false
