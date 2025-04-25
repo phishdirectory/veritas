@@ -46,6 +46,9 @@ Rails.application.routes.draw do
       resources :users, only: [:show, :create]
       get "users/by_email", to: "users#show"
     end
+
+    mount Rswag::Ui::Engine => "/docs"
+    mount Rswag::Api::Engine => "/docs"
   end
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

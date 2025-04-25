@@ -77,6 +77,9 @@ rails db:setup
 rails server
 ```
 
+> [!IMPORTANT]
+> Currently swagger api docs are manually maintained! Please make sure to update them if you make api changes!
+
 ## Deployment
 
 We don't quite have this figured out yet :)

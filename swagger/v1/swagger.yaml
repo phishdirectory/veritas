@@ -3,9 +3,232 @@ openapi: 3.0.1
 info:
   title: API V1
   version: v1
-paths: {}
+  description: Veritas API documentation
+paths:
+  /api/v1/health:
+    get:
+      summary: Health check
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: "ok"
+  
+  /api/v1/auth/authenticate:
+    post:
+      summary: Authenticate user
+      tags:
+        - Authentication
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                credentials:
+                  type: string
+                  description: Encrypted credentials containing email and password
+              required:
+                - credentials
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated:
+                    type: boolean
+                    example: true
+                  pd_id:
+                    type: string
+                    example: "pd_123456789"
+        '400':
+          description: Invalid credentials format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid credentials format"
+        '401':
+          description: Authentication failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  authenticated:
+                    type: boolean
+                    example: false
+  
+  /api/v1/users/{id}:
+    get:
+      summary: Get user by ID
+      tags:
+        - Users
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: User's PD ID
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pd_id:
+                    type: string
+                  email:
+                    type: string
+                  permissions:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+  
+  /api/v1/users/by_email:
+    get:
+      summary: Get user by email
+      tags:
+        - Users
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: email
+          in: query
+          required: true
+          schema:
+            type: string
+          description: User's email
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pd_id:
+                    type: string
+                  email:
+                    type: string
+                  permissions:
+                    type: array
+                    items:
+                      type: string
+        '404':
+          description: User not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "User not found"
+  
+  /api/v1/users:
+    post:
+      summary: Create new user
+      tags:
+        - Users
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                hashed_data:
+                  type: string
+                  description: Encrypted user data containing first_name, last_name, email, password, password_confirmation
+              required:
+                - hashed_data
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  pd_id:
+                    type: string
+                  email:
+                    type: string
+                  created_at:
+                    type: string
+                    format: date-time
+        '400':
+          description: Invalid data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid or missing hashed data"
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  errors:
+                    type: array
+                    items:
+                      type: string
+
 servers:
 - url: https://{defaultHost}
   variables:
     defaultHost:
       default: www.example.com
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-Api-Key
