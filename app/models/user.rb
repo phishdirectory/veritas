@@ -1,42 +1,15 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: users
-#
-#  id                :bigint           not null, primary key
-#  access_level      :integer          default("user"), not null
-#  api_access_level  :integer          default("user"), not null
-#  email             :string           not null
-#  email_verified    :boolean          default(FALSE)
-#  email_verified_at :datetime
-#  first_name        :string           not null
-#  last_name         :string           not null
-#  locked_at         :datetime
-#  password_digest   :string           not null
-#  status            :string           default("active"), not null
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  pd_id             :string           not null
-#
-# Indexes
-#
-#  index_users_on_email  (email) UNIQUE
-#  index_users_on_pd_id  (pd_id) UNIQUE
-#
-# app/models/user.rb
 class User < ApplicationRecord
   include AASM
 
-  # has_paper_trail
+  has_paper_trail
   has_secure_password
 
   # Define access level values centrally
   ACCESS_LEVELS = { user: 0, trusted: 1, admin: 2, superadmin: 3, owner: 4 }.freeze
   ACCESS_LEVEL_FIELDS = [:access_level, :api_access_level].freeze
   PRIMARY_ACCESS_LEVEL = :access_level # Define which field is the primary one
-
-  # has_encrypted
 
   # Define enums for all access level fields
   enum :access_level, ACCESS_LEVELS, scopes: false, default: :user # global access level
@@ -49,17 +22,18 @@ class User < ApplicationRecord
   before_create :set_default_access_levels
   before_save :sync_access_levels
 
-
   scope :verified, -> { where(email_verified: true) }
   scope :unverified, -> { where(email_verified: false) }
+  scope :last_seen_within, ->(ago) { joins(:user_sessions).where(user_sessions: { last_seen_at: ago.. }).distinct }
+  scope :currently_online, -> { last_seen_within(15.minutes.ago) }
+  scope :active, -> { last_seen_within(30.days.ago) }
+  def active? = last_seen_at && (last_seen_at >= 30.days.ago)
 
   scope :user, -> { where(access_level: %i[user trusted admin superadmin owner]) }
   scope :trusted, -> { where(access_level: %i[trusted admin superadmin owner]) }
   scope :admin, -> { where(access_level: %i[admin superadmin owner]) }
   scope :superadmin, -> { where(access_level: %i[superadmin owner]) }
   scope :owner, -> { where(access_level: :owner) }
-
-  # has_many :user_sessions, dependent: :destroy
 
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -95,7 +69,6 @@ class User < ApplicationRecord
       transitions from: %i[active suspended], to: :deactivated
     end
   end
-
 
   ACCESS_LEVEL_FIELDS.each do |field|
     prefix = field == :access_level ? "" : "#{field.to_s.sub('_access_level', '')}_"
@@ -141,11 +114,6 @@ class User < ApplicationRecord
     end
   end
 
-  # scope :last_seen_within, ->(ago) { joins(:user_sessions).where(user_sessions: { last_seen_at: ago.. }).distinct }
-  # scope :currently_online, -> { last_seen_within(15.minutes.ago) }
-  # scope :active, -> { last_seen_within(30.days.ago) }
-  # def active? = last_seen_at && (last_seen_at >= 30.days.ago)
-
   def can_authenticate?
     active?
   end
@@ -166,20 +134,32 @@ class User < ApplicationRecord
     save!
   end
 
+  def full_name
+    "#{first_name} #{last_name}"
+  end
+
+  def initals
+    "#{first_name[0]}#{last_name[0]}"
+  end
+
   def trusted?
-    %w[trusted admin superadmin owner].include?(access_level)
+    ["trusted", "admin", "superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
   end
 
   def admin?
-    %w[admin superadmin owner].include?(access_level)
+    ["admin", "superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
   end
 
   def superadmin?
-    %w[superadmin owner].include?(access_level)
+    ["superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
   end
 
   def owner?
-    access_level == "owner"
+    access_level == "owner" && !self.pretend_is_not_admin
+  end
+
+  def admin_override_pretend?
+    ["admin"].include?(self.access_level)
   end
 
   def make_trusted!
@@ -202,13 +182,14 @@ class User < ApplicationRecord
     user!
   end
 
-  def full_name
-    "#{first_name} #{last_name}"
+  def last_seen_at
+    user_sessions.maximum(:last_seen_at)
   end
 
-  def initals
-    "#{first_name[0]}#{last_name[0]}"
+  def last_login_at
+    user_sessions.maximum(:created_at)
   end
+
 
   def locked?
     locked_at.present?
@@ -224,14 +205,6 @@ class User < ApplicationRecord
   def unlock!
     update!(locked_at: nil)
   end
-
-  # def last_login_at
-  #   user_sessions.maximum(:created_at)
-  # end
-
-  # def last_seen_at
-  #   user_sessions.maximum(:last_seen_at)
-  # end
 
   private
 

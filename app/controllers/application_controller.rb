@@ -1,27 +1,28 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
+  include SessionsHelper
+
+  before_action :session_timeout, if: -> { current_user }
+
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   # allow_browser versions: :modern
 
   # Track papertrail edits to specific users
-  # before_action :set_paper_trail_whodunnit
+  before_action :set_paper_trail_whodunnit
 
-  # update the current session's last_seen_at
-  # before_action { current_session&.touch_last_seen_at }
-
-  before_action do
-    # Disallow indexing
-    response.set_header("X-Robots-Tag", "noindex")
-  end
+  # before_action do
+  #   # Disallow indexing
+  # response.set_header("X-Robots-Tag", "noindex")
+  # end
 
   # # Enable Rack::MiniProfiler for admins
-  # before_action do
-  #   if current_user&.admin?
-  #     Rack::MiniProfiler.authorize_request
-  #   end
-  # end
-  #
+  before_action do
+    if current_user&.admin?
+      Rack::MiniProfiler.authorize_request
+    end
+  end
+
 
   helper_method :current_user
 

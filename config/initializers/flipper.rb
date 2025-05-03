@@ -15,7 +15,9 @@ Rails.application.configure do
 
   ## Warn or raise an error if an unknown feature is checked
   ## Can be set to `:warn`, `:raise`, or `false`
-  # config.flipper.strict = Rails.env.development? && :warn
+  config.flipper.strict = Rails.env.development? && :warn
+  config.flipper.strict = Rails.env.test? && :raise
+  config.flipper.strict = Rails.env.production? && :raise
 
   ## Show Flipper checks in logs
   # config.flipper.log = true

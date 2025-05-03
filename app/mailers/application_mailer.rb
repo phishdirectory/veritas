@@ -2,7 +2,8 @@
 
 class ApplicationMailer < ActionMailer::Base
   has_history
-  default from: "noreply@phish.directory"
+  utm_params
+  default from: "from@example.com"
   layout "mailer"
 
 end

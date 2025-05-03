@@ -46,6 +46,12 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
+    active_storage_validations (2.0.3)
+      activejob (>= 6.1.4)
+      activemodel (>= 6.1.4)
+      activestorage (>= 6.1.4)
+      activesupport (>= 6.1.4)
+      marcel (>= 1.0.3)
     activejob (8.0.2)
       activesupport (= 8.0.2)
       globalid (>= 0.3.6)
@@ -74,6 +80,9 @@ GEM
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
       uri (>= 0.13.1)
+    acts_as_paranoid (0.10.3)
+      activerecord (>= 6.1, < 8.1)
+      activesupport (>= 6.1, < 8.1)
     actual_db_schema (0.8.5)
       activerecord
       activesupport
@@ -154,6 +163,8 @@ GEM
       cbor (~> 0.5.9)
       openssl-signature_algorithm (~> 1.0)
     crass (1.0.6)
+    css_parser (1.21.1)
+      addressable
     csv (3.3.4)
     date (3.4.1)
     debug (1.10.0)
@@ -167,9 +178,16 @@ GEM
       railties (>= 6.1)
     drb (2.2.1)
     ed25519 (1.3.0)
+    email_reply_parser (0.5.11)
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
+    faraday (2.13.1)
+      faraday-net_http (>= 2.0, < 3.5)
+      json
+      logger
+    faraday-net_http (3.4.0)
+      net-http (>= 0.5.0)
     ffi (1.17.2-aarch64-linux-gnu)
     ffi (1.17.2-aarch64-linux-musl)
     ffi (1.17.2-arm-linux-gnu)
@@ -177,7 +195,7 @@ GEM
     ffi (1.17.2-arm64-darwin)
     ffi (1.17.2-x86_64-linux-gnu)
     ffi (1.17.2-x86_64-linux-musl)
-    fiddle (1.1.6)
+    fiddle (1.1.8)
     flipper (1.3.4)
       concurrent-ruby (< 2)
     flipper-active_record (1.3.4)
@@ -196,6 +214,9 @@ GEM
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
+    geocoder (1.8.5)
+      base64 (>= 0.1.0)
+      csv (>= 3.0.0)
     globalid (1.2.1)
       activesupport (>= 6.1)
     hashid-rails (1.4.1)
@@ -203,13 +224,19 @@ GEM
       hashids (~> 1.0)
     hashids (1.0.6)
     htmlbeautifier (1.4.3)
+    htmlentities (4.3.4)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
+    image_processing (1.14.0)
+      mini_magick (>= 4.9.5, < 6)
+      ruby-vips (>= 2.0.17, < 3)
     importmap-rails (2.1.0)
       actionpack (>= 6.0.0)
       activesupport (>= 6.0.0)
       railties (>= 6.0.0)
     iniparse (1.5.0)
+    invisible_captcha (2.3.0)
+      rails (>= 5.2)
     io-console (0.8.0)
     irb (1.15.2)
       pp (>= 0.6.0)
@@ -268,6 +295,9 @@ GEM
       net-smtp
     marcel (1.0.4)
     matrix (0.4.2)
+    mini_magick (5.2.0)
+      benchmark
+      logger
     mini_mime (1.1.5)
     minitest (5.25.5)
     mission_control-jobs (1.0.2)
@@ -281,7 +311,9 @@ GEM
       stimulus-rails
       turbo-rails
     msgpack (1.8.0)
-    net-imap (0.5.7)
+    net-http (0.6.0)
+      uri
+    net-imap (0.5.8)
       date
       net-protocol
     net-pop (0.1.2)
@@ -311,6 +343,7 @@ GEM
     nokogiri (1.18.8-x86_64-linux-musl)
       racc (~> 1.4)
     observer (0.1.2)
+    okcomputer (1.19.0)
     openssl (3.3.0)
     openssl-signature_algorithm (1.3.0)
       openssl (> 2.0)
@@ -332,6 +365,14 @@ GEM
       activesupport (>= 6.1)
     pp (0.6.2)
       prettyprint
+    premailer (1.27.0)
+      addressable
+      css_parser (>= 1.19.0)
+      htmlentities (>= 4.0.0)
+    premailer-rails (1.12.0)
+      actionmailer (>= 3)
+      net-smtp
+      premailer (~> 1.7, >= 1.7.9)
     prettyprint (0.2.0)
     prism (1.4.0)
     propshaft (1.1.0)
@@ -339,10 +380,10 @@ GEM
       activesupport (>= 7.0.0)
       rack
       railties (>= 7.0.0)
-    psych (5.2.3)
+    psych (5.2.4)
       date
       stringio
-    public_suffix (6.0.1)
+    public_suffix (6.0.2)
     puma (6.6.0)
       nio4r (~> 2.0)
     query_count (1.1.1)
@@ -406,10 +447,6 @@ GEM
       logger
     rdoc (6.13.1)
       psych (>= 4.0.0)
-    redis (5.4.0)
-      redis-client (>= 0.22.0)
-    redis-client (0.24.0)
-      connection_pool
     regexp_parser (2.10.0)
     relaxed-rubocop (2.5)
     reline (0.6.1)
@@ -420,27 +457,13 @@ GEM
       nokogiri
     rexml (3.4.1)
     rinku (2.0.6)
-    rouge (4.5.1)
+    rouge (4.5.2)
     rqrcode (3.1.0)
       chunky_png (~> 1.0)
       rqrcode_core (~> 2.0)
     rqrcode_core (2.0.0)
     rspec-core (3.13.3)
       rspec-support (~> 3.13.0)
-    rspec-expectations (3.13.4)
-      diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.13.0)
-    rspec-mocks (3.13.3)
-      diff-lcs (>= 1.2.0, < 2.0)
-      rspec-support (~> 3.13.0)
-    rspec-rails (8.0.0)
-      actionpack (>= 7.2)
-      activesupport (>= 7.2)
-      railties (>= 7.2)
-      rspec-core (~> 3.13)
-      rspec-expectations (~> 3.13)
-      rspec-mocks (~> 3.13)
-      rspec-support (~> 3.13)
     rspec-support (3.13.3)
     rswag (2.16.0)
       rswag-api (= 2.16.0)
@@ -457,7 +480,7 @@ GEM
     rswag-ui (2.16.0)
       actionpack (>= 5.2, < 8.1)
       railties (>= 5.2, < 8.1)
-    rubocop (1.75.3)
+    rubocop (1.75.4)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -496,6 +519,9 @@ GEM
       rubocop (~> 1.72, >= 1.72.1)
       rubocop-rspec (~> 3.5)
     ruby-progressbar (1.13.0)
+    ruby-vips (2.2.3)
+      ffi (~> 1.12)
+      logger
     rubyzip (2.4.1)
     safely_block (0.4.1)
     safety_net_attestation (0.4.0)
@@ -504,7 +530,7 @@ GEM
       crass (~> 1.0.2)
       nokogiri (>= 1.16.8)
     securerandom (0.4.1)
-    selenium-webdriver (4.31.0)
+    selenium-webdriver (4.32.0)
       base64 (~> 0.2)
       logger (~> 1.4)
       rexml (~> 3.2, >= 3.2.5)
@@ -561,6 +587,17 @@ GEM
     stimulus-rails (1.3.4)
       railties (>= 6.0.0)
     stringio (3.1.7)
+    strong_migrations (2.3.0)
+      activerecord (>= 7)
+    tailwindcss-rails (4.2.3)
+      railties (>= 7.0.0)
+      tailwindcss-ruby (~> 4.0)
+    tailwindcss-ruby (4.1.5)
+    tailwindcss-ruby (4.1.5-aarch64-linux-gnu)
+    tailwindcss-ruby (4.1.5-aarch64-linux-musl)
+    tailwindcss-ruby (4.1.5-arm64-darwin)
+    tailwindcss-ruby (4.1.5-x86_64-linux-gnu)
+    tailwindcss-ruby (4.1.5-x86_64-linux-musl)
     thor (1.3.2)
     thruster (0.1.13)
     thruster (0.1.13-aarch64-linux)
@@ -624,6 +661,8 @@ PLATFORMS
 
 DEPENDENCIES
   aasm
+  active_storage_validations (= 2.0.3)
+  acts_as_paranoid (~> 0.10.3)
   actual_db_schema
   ahoy_email
   ahoy_matey
@@ -641,14 +680,19 @@ DEPENDENCIES
   console1984
   debug
   dotenv-rails
+  email_reply_parser
+  faraday
   flipper
   flipper-active_record
   flipper-ui
   foreman
   friendly_id (~> 5.5.1)
+  geocoder
   hashid-rails (~> 1.0)
   htmlbeautifier
+  image_processing (~> 1.2)
   importmap-rails
+  invisible_captcha
   irb (~> 1.15.2)
   jbuilder
   kamal
@@ -656,10 +700,12 @@ DEPENDENCIES
   listen (~> 3.9)
   lockbox
   mission_control-jobs
+  okcomputer
   overcommit
-  paper_trail
+  paper_trail (~> 16.0.0)
   pg (~> 1.5, >= 1.5.9)
   pg_search
+  premailer-rails
   propshaft
   puma (>= 5.0)
   query_count
@@ -667,16 +713,14 @@ DEPENDENCIES
   rack-cors
   rack-mini-profiler (~> 3.3)
   rails (~> 8.0.2)
-  redis
   relaxed-rubocop
   rqrcode
-  rspec-rails
   rswag
-  rswag-specs
   rubocop-capybara (~> 2.22, >= 2.22.1)
   rubocop-rails-omakase
   rubocop-rspec (~> 3.6)
   rubocop-rspec_rails (~> 2.31)
+  safely_block
   selenium-webdriver
   solargraph
   solargraph-rails (~> 1.1.0)
@@ -686,12 +730,17 @@ DEPENDENCIES
   stackprof
   statsd-instrument (~> 3.9)
   stimulus-rails
+  strong_migrations (~> 2.3)
+  tailwindcss-rails (~> 4.2)
   thruster
   turbo-rails
   tzinfo-data
   validates_email_format_of
   web-console
   webauthn (~> 3.2)
+
+RUBY VERSION
+   ruby 3.4.2p28
 
 BUNDLED WITH
    2.6.2

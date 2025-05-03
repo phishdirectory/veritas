@@ -1,15 +1,6 @@
 {
   "recommendations": [
-    "aaron-bond.better-comments",
-    "johnpapa.vscode-cloak",
-    "mikestead.dotenv",
-    "ms-azuretools.vscode-docker",
-    "tomclose.format-erb",
-    "kisstkondoros.vscode-gutter-preview",
-    "aki77.rails-db-schema",
-    "shopify.ruby-extensions-pack",
-    "shopify.ruby-lsp",
     "castwide.solargraph",
-    "wayou.vscode-todo-highlight"
+    "editorconfig.editorconfig"
   ]
 }

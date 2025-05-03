@@ -13,26 +13,6 @@
 
 puts "Seeding data..."
 
-# create internal service
-internal_service = Service.new(name: "Internal")
-if internal_service.save
-  internal_service.generate_key("Internal service key") do |key|
-    key.notes = "key created via seeder"
-  end
-else
-  Rails.logger.error "Failed to create Internal service: #{internal_service.errors.full_messages.join(', ')}"
-end
-
-api_service = Service.new(name: "API")
-if api_service.save
-  api_service
-    .generate_key("API service key") do |key|
-      key.notes = "key created via seeder"
-    end
-else
-  Rails.logger.error "Failed to create API service: #{api_service.errors.full_messages.join(', ')}"
-end
-
 User.find_or_create_by!(email: "internal-service+auth@phish.directory") do |user|
   user.first_name = "Internal"
   user.last_name = "Service"

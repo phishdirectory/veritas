@@ -10,9 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_04_21_233345) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_03_190227) do
   # These are extensions that must be enabled in order to support this database
+  enable_extension "fuzzystrmatch"
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "active_storage_attachments", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "record_type", null: false
+    t.bigint "record_id", null: false
+    t.bigint "blob_id", null: false
+    t.datetime "created_at", null: false
+    t.index ["blob_id"], name: "index_active_storage_attachments_on_blob_id"
+    t.index ["record_type", "record_id", "name", "blob_id"], name: "index_active_storage_attachments_uniqueness", unique: true
+  end
+
+  create_table "active_storage_blobs", force: :cascade do |t|
+    t.string "key", null: false
+    t.string "filename", null: false
+    t.string "content_type"
+    t.text "metadata"
+    t.string "service_name", null: false
+    t.bigint "byte_size", null: false
+    t.string "checksum"
+    t.datetime "created_at", null: false
+    t.index ["key"], name: "index_active_storage_blobs_on_key", unique: true
+  end
+
+  create_table "active_storage_variant_records", force: :cascade do |t|
+    t.bigint "blob_id", null: false
+    t.string "variation_digest", null: false
+    t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
 
   create_table "ahoy_clicks", force: :cascade do |t|
     t.string "campaign"
@@ -144,6 +173,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_233345) do
     t.index ["creator_id"], name: "index_blazer_queries_on_creator_id"
   end
 
+  create_table "blazer_uploads", force: :cascade do |t|
+    t.bigint "creator_id"
+    t.string "table"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["creator_id"], name: "index_blazer_uploads_on_creator_id"
+  end
+
   create_table "console1984_commands", force: :cascade do |t|
     t.text "statements"
     t.bigint "sensitive_access_id"
@@ -194,6 +232,39 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_233345) do
     t.index ["feature_key", "key", "value"], name: "index_flipper_gates_on_feature_key_and_key_and_value", unique: true
   end
 
+  create_table "friendly_id_slugs", force: :cascade do |t|
+    t.string "slug", null: false
+    t.integer "sluggable_id", null: false
+    t.string "sluggable_type", limit: 50
+    t.string "scope"
+    t.datetime "created_at"
+    t.index ["slug", "sluggable_type", "scope"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type_and_scope", unique: true
+    t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
+    t.index ["sluggable_type", "sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_type_and_sluggable_id"
+  end
+
+  create_table "lockbox_audits", force: :cascade do |t|
+    t.string "subject_type"
+    t.bigint "subject_id"
+    t.string "viewer_type"
+    t.bigint "viewer_id"
+    t.jsonb "data"
+    t.string "context"
+    t.string "ip"
+    t.datetime "created_at"
+    t.index ["subject_type", "subject_id"], name: "index_lockbox_audits_on_subject"
+    t.index ["viewer_type", "viewer_id"], name: "index_lockbox_audits_on_viewer"
+  end
+
+  create_table "pg_search_documents", force: :cascade do |t|
+    t.text "content"
+    t.string "searchable_type"
+    t.bigint "searchable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable"
+  end
+
   create_table "service_key_usages", force: :cascade do |t|
     t.bigint "key_id", null: false
     t.string "request_path"
@@ -232,6 +303,28 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_233345) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "user_sessions", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "impersonated_by_id"
+    t.string "session_token_ciphertext"
+    t.string "session_token_bidx"
+    t.string "fingerprint"
+    t.string "device_info"
+    t.string "string"
+    t.string "os_info"
+    t.string "timezone"
+    t.string "ip"
+    t.datetime "expiration_at", null: false
+    t.datetime "last_seen_at"
+    t.datetime "signed_out_at"
+    t.float "latitude"
+    t.float "longitude"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["impersonated_by_id"], name: "index_user_sessions_on_impersonated_by_id"
+    t.index ["user_id"], name: "index_user_sessions_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name", null: false
     t.string "last_name", null: false
@@ -242,6 +335,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_233345) do
     t.string "password_digest", null: false
     t.integer "access_level", default: 0, null: false
     t.integer "api_access_level", default: 0, null: false
+    t.boolean "pretend_is_not_admin", default: false, null: false
+    t.integer "session_duration_seconds", default: 2592000, null: false
     t.string "status", default: "active", null: false
     t.datetime "locked_at"
     t.datetime "created_at", null: false
@@ -260,6 +355,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_04_21_233345) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "service_key_usages", "service_keys", column: "key_id"
   add_foreign_key "service_keys", "services"
+  add_foreign_key "user_sessions", "users"
+  add_foreign_key "user_sessions", "users", column: "impersonated_by_id"
 end

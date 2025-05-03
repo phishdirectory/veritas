@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+
   include ActionView::Helpers
 
   def current_page?(path)
@@ -63,8 +64,8 @@ module ApplicationHelper
 
   module_function :commit_hash, :commit_time
 
-  def veritas_version
-    @veritas_version ||= begin
+  def app_version
+    @app_version ||= begin
       if Rails.env.development?
         "DEVELOPMENT"
       else
@@ -82,5 +83,4 @@ module ApplicationHelper
   def ruby_version
     RUBY_VERSION
   end
-
 end

@@ -8,10 +8,11 @@ We take the security of phish.directory seriously. If you believe you've found a
 
 Please report security vulnerabilities through one of these methods:
 
-1. Submit through our security page: https://phish.directory/security
-2. Email us directly at: security@phish.directory
+1. Submit through our security page: <https://phish.directory/security>
+2. Email us directly at: <security@phish.directory>
 
 Please include:
+
 - Type of issue (e.g., buffer overflow, SQL injection, cross-site scripting, etc.)
 - Full paths of source file(s) related to the manifestation of the issue
 - The location of the affected source code (tag/branch/commit or direct URL)

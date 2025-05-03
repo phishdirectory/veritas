@@ -1,17 +1,23 @@
 {
-  "name": "@phishdirectory/auth",
+  "name": "@phishdirectory/veritas",
   "private": true,
   "version": "1.0.0",
-  "description": "Authentication service for phish.directory",
+  "description": "Central authentication microservice for all phish.directory services.",
   "maintainers": [
     {
       "name": "Jasper Mayone",
-      "email": "jasper.mayone@phish.directory"
+      "email": "me@jaspermayone.com"
     }
   ],
+  "scripts": {
+    "build": "bun run build",
+    "start": "bun run start"
+  },
   "keywords": [],
-  "author": "Jasper Mayone <jasper.mayone@phish.directory>",
+  "author": "Jasper Mayone <me@jaspermayone.com>",
   "dependencies": {
-    "@fingerprintjs/fingerprintjs": "^4.6.2"
+    "@fingerprintjs/fingerprintjs": "^4.6.2",
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.13"
   }
 }
