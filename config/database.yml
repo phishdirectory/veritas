@@ -25,9 +25,10 @@ test:
 production:
   primary: &primary_production
     <<: *default
+    host: db
     database: veritas_production
-    username: <%= ENV['POSTGRES_USER'] %>
-    password: <%= ENV['POSTGRES_PASSWORD'] %>
+    username: <%= ENV['DATABASE_USER'] %>
+    password: <%= ENV['DATABASE_PASSWORD'] %>
   queue:
     <<: *primary_production
     database: veritas_production_queue

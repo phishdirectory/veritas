@@ -447,6 +447,10 @@ GEM
       logger
     rdoc (6.13.1)
       psych (>= 4.0.0)
+    redis (5.4.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.24.0)
+      connection_pool
     regexp_parser (2.10.0)
     relaxed-rubocop (2.5)
     reline (0.6.1)
@@ -561,10 +565,6 @@ GEM
       solargraph
     solid_cable (3.0.7)
       actioncable (>= 7.2)
-      activejob (>= 7.2)
-      activerecord (>= 7.2)
-      railties (>= 7.2)
-    solid_cache (1.0.7)
       activejob (>= 7.2)
       activerecord (>= 7.2)
       railties (>= 7.2)
@@ -713,6 +713,7 @@ DEPENDENCIES
   rack-cors
   rack-mini-profiler (~> 3.3)
   rails (~> 8.0.2)
+  redis
   relaxed-rubocop
   rqrcode
   rswag
@@ -725,7 +726,6 @@ DEPENDENCIES
   solargraph
   solargraph-rails (~> 1.1.0)
   solid_cable
-  solid_cache
   solid_queue
   stackprof
   statsd-instrument (~> 3.9)
