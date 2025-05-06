@@ -92,8 +92,8 @@ GEM
       prism
     addressable (2.8.7)
       public_suffix (>= 2.0.2, < 7.0)
-    ahoy_email (2.4.0)
-      actionmailer (>= 7)
+    ahoy_email (2.5.0)
+      actionmailer (>= 7.1)
       addressable (>= 2.3.2)
       nokogiri
       safely_block (>= 0.4)
