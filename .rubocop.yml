@@ -166,9 +166,7 @@ Style/FormatStringToken:
   EnforcedStyle: template
 
 Style/ClassAndModuleChildren:
-  Exclude:
-    - "config/**/*.rb"
-    - "app/models/ahoy/{event,visit}.rb"
+  Enabled: false
 
 Rails/UnknownEnv:
   Environments:
