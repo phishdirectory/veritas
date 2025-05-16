@@ -12,7 +12,7 @@ hash_key = ENV["HASH_KEY"]
 user_data = {
   "first_name"            => "Test",
   "last_name"             => "User",
-  "email"                 => "test.user@example.co",
+  "email"                 => "test.user@example.com",
   "password"              => "Password123!",
   "password_confirmation" => "Password123!"
 }
