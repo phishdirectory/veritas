@@ -37,6 +37,7 @@ RUN ln -s /usr/src/app/.rubocop_todo.yml ~/.rubocop_todo.yml
 
 ADD . /rails
 
+RUN chmod +x bin/rails bin/*
 
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/

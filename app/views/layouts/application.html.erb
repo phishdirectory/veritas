@@ -48,6 +48,15 @@
   </head>
 
   <body>
+
+    <%= if Rails.env.staging? %>
+    <%# add big warning to top of page %>
+    <div class="notification is-warning">
+      <button class="delete" onclick="(this.parentNode.remove())"></button>
+      This is a staging environment. Please do not use for production.
+    </div>
+    <% end %>
+
     <%= yield %>
 
     <!-- Display flash messages -->

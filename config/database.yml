@@ -33,3 +33,16 @@ production:
     <<: *primary_production
     database: veritas_production_queue
     migrations_paths: db/queue_migrate
+
+
+staging:
+  primary: &primary_staging
+    <<: *default
+    host: db
+    database: veritas_staging
+    username: <%= ENV['DATABASE_USER'] %>
+    password: <%= ENV['DATABASE_PASSWORD'] %>
+  queue:
+    <<: *primary_staging
+    database: veritas_staging_queue
+    migrations_paths: db/queue_migrate
