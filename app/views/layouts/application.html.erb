@@ -49,11 +49,13 @@
 
   <body>
 
-    <%= if Rails.env.staging? %>
+    <% if Rails.env.staging? %>
     <%# add big warning to top of page %>
-    <div class="notification is-warning">
-      <button class="delete" onclick="(this.parentNode.remove())"></button>
-      This is a staging environment. Please do not use for production.
+    <div class="min-w-screen flex items-center justify-center">
+      <div id="staging-warning">
+        <button class="delete" onclick="(this.parentNode.remove())"></button>
+        This is the <b>STAGING</b> environment. Please <b>DO NOT USE for production</b>.
+      </div>
     </div>
     <% end %>
 
@@ -97,6 +99,18 @@
       position: absolute;
       top: .5rem;
       right: .5rem;
+    }
+
+    #staging-warning {
+      text-align: center;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1rem;
+      background-color: #cf3a36;
+      color: white;
+      z-index: 1000;
     }
   </style>
 

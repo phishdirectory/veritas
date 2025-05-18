@@ -16,14 +16,6 @@ class ApplicationController < ActionController::Base
   # response.set_header("X-Robots-Tag", "noindex")
   # end
 
-  # # Enable Rack::MiniProfiler for admins
-  before_action do
-    if current_user&.admin?
-      Rack::MiniProfiler.authorize_request
-    end
-  end
-
-
   helper_method :current_user
 
   def current_user
