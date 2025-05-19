@@ -1,53 +1,88 @@
-FROM ruby:3.4.3
+FROM ruby:3.4.3-slim AS builder
 
-RUN mkdir -p /rails
 WORKDIR /rails
 
-RUN apt-get -y update -qq
+# Install essential build dependencies only
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    curl \
+    pkg-config \
+    libpq-dev && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
-# install postgresql-client for easy importing of production database & vim
-# for easy editing of credentials
-RUN apt-get -y install postgresql-client nano poppler-utils
-ENV EDITOR=nano
-
-# install bun for node packages
+# Install bun for node packages
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/root/.bun/bin:${PATH}"
 
+# Install specific bundler version
 RUN gem install bundler -v 2.5.17
 
-ADD bun.lock /rails/bun.lock
-ADD package.json /rails/package.json
-ADD .ruby-version /rails/.ruby-version
-ADD Gemfile /rails/Gemfile
-ADD Gemfile.lock /rails/Gemfile.lock
+# Copy dependency definitions first for better caching
+COPY Gemfile Gemfile.lock .ruby-version ./
+COPY package.json bun.lock ./
 
+# Set bundle config
 ENV BUNDLE_GEMFILE=Gemfile \
-  BUNDLE_JOBS=4 \
-  BUNDLE_PATH=/usr/local/bundle
+    BUNDLE_JOBS=4 \
+    BUNDLE_PATH=/usr/local/bundle
 
-RUN bundle install
-RUN bun install
+# Install Ruby and JS dependencies
+RUN bundle install && \
+    bun install
 
-# Rubocop can't find config when ran with solargraph inside docker
-# https://github.com/castwide/solargraph/issues/309#issuecomment-998137438
-RUN ln -s /usr/src/app/.rubocop.yml ~/.rubocop.yml
-RUN ln -s /usr/src/app/.rubocop_todo.yml ~/.rubocop_todo.yml
-
-
-ADD . /rails
-
-RUN chmod +x bin/rails bin/*
+# Add source code
+COPY . .
 
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
-# # Precompiling assets for production without requiring secret RAILS_MASTER_KEY
+# Precompile assets without requiring RAILS_MASTER_KEY
 RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
 
-# Entrypoint prepares the database.
-ENTRYPOINT ["/rails/bin/docker-entrypoint"]
+# Set permissions on executables
+RUN chmod +x bin/rails bin/* 
 
-# Start server via Thruster by default, this can be overwritten at runtime
+# Create a clean runtime image
+FROM ruby:3.4.3-slim
+
+# Install runtime dependencies only
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends \
+    postgresql-client \
+    nano \
+    poppler-utils \
+    libpq5 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set editor for credentials
+ENV EDITOR=nano
+
+WORKDIR /rails
+
+# Copy gems from builder stage
+COPY --from=builder /usr/local/bundle /usr/local/bundle
+
+# Copy bun from builder
+COPY --from=builder /root/.bun /root/.bun
+ENV PATH="/root/.bun/bin:${PATH}"
+
+# Copy application from builder
+COPY --from=builder /rails /rails
+
+# Handle Rubocop config symlinks
+RUN ln -sf /rails/.rubocop.yml ~/.rubocop.yml && \
+    ln -sf /rails/.rubocop_todo.yml ~/.rubocop_todo.yml
+
+# Set application environment
+ENV BUNDLE_GEMFILE=Gemfile \
+    RAILS_ENV=production \
+    RAILS_SERVE_STATIC_FILES=true \
+    RAILS_LOG_TO_STDOUT=true
+
+# Set entry point and default command
+ENTRYPOINT ["/rails/bin/docker-entrypoint"]
 EXPOSE 80
 CMD ["./bin/thrust", "./bin/rails", "server"]
