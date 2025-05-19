@@ -39,11 +39,6 @@ ADD . /rails
 
 RUN chmod +x bin/rails bin/*
 
-# Generate Swagger docs for the test environment
-RUN RAILS_ENV=test bundle exec rails db:create db:migrate
-RUN RAILS_ENV=test bundle exec rails rswag:specs:swaggerize
-RUN RAILS_ENV=test bundle exec rails db:drop
-
 # Precompile bootsnap code for faster boot times
 RUN bundle exec bootsnap precompile app/ lib/
 
