@@ -4,8 +4,6 @@
 #
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
 #                                                 /assets                                                                                           Propshaft::Server
-#                                 rswag_ui        /api-docs                                                                                         Rswag::Ui::Engine
-#                                rswag_api        /api-docs                                                                                         Rswag::Api::Engine
 #                                     root GET    /                                                                                                 home#index
 #                                    login GET    /login(.:format)                                                                                  sessions#new
 #                                          POST   /login(.:format)                                                                                  sessions#create
@@ -46,6 +44,8 @@
 #                             admin_blazer        /admin/blazer                                                                                     Blazer::Engine
 #                                          GET    /admin/*path(.:format)                                                                            redirect(301, /login)
 #                        letter_opener_web        /letter_opener                                                                                    LetterOpenerWeb::Engine
+#                             api_rswag_ui        /api/docs                                                                                         Rswag::Ui::Engine
+#                            api_rswag_api        /api/docs                                                                                         Rswag::Api::Engine
 #                            api_v1_health GET    /api/v1/health(.:format)                                                                          api/v1/health#index
 #                 api_v1_auth_authenticate POST   /api/v1/auth/authenticate(.:format)                                                               api/v1/auth#authenticate
 #                             api_v1_users POST   /api/v1/users(.:format)                                                                           api/v1/users#create
@@ -78,12 +78,6 @@
 #                update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                               active_storage/disk#update
 #                     rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                                    active_storage/direct_uploads#create
 #                         actual_db_schema        /rails                                                                                            ActualDbSchema::Engine
-#
-# Routes for Rswag::Ui::Engine:
-#
-#
-# Routes for Rswag::Api::Engine:
-#
 #
 # Routes for OkComputer::Engine:
 #              root GET|OPTIONS /                 ok_computer/ok_computer#show {check: "default"}
@@ -163,6 +157,12 @@
 #        letter GET  /:id(/:style)(.:format)          letter_opener_web/letters#show
 # delete_letter POST /:id/delete(.:format)            letter_opener_web/letters#destroy
 #               GET  /:id/attachments/:file(.:format) letter_opener_web/letters#attachment {file: /[^\/]+/}
+#
+# Routes for Rswag::Ui::Engine:
+#
+#
+# Routes for Rswag::Api::Engine:
+#
 #
 # Routes for ActualDbSchema::Engine:
 #              rollback_migration POST /migrations/:id/rollback(.:format)         actual_db_schema/migrations#rollback
