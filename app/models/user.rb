@@ -225,7 +225,7 @@ class User < ApplicationRecord
     update!(locked_at: Time.zone.now)
 
     # Invalidate all sessions
-    # user_sessions.destroy_all
+    user_sessions.destroy_all
   end
 
   def unlock!
