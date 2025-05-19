@@ -2,8 +2,10 @@
 
 # == Route Map
 #
-# [dotenv] Loaded [33m.env[0m
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
+#                                                 /assets                                                                                           Propshaft::Server
+#                                 rswag_ui        /api-docs                                                                                         Rswag::Ui::Engine
+#                                rswag_api        /api-docs                                                                                         Rswag::Api::Engine
 #                                     root GET    /                                                                                                 home#index
 #                                    login GET    /login(.:format)                                                                                  sessions#new
 #                                          POST   /login(.:format)                                                                                  sessions#create
@@ -43,13 +45,12 @@
 #                                                 /admin/flipper                                                                                    Flipper::UI
 #                             admin_blazer        /admin/blazer                                                                                     Blazer::Engine
 #                                          GET    /admin/*path(.:format)                                                                            redirect(301, /login)
+#                        letter_opener_web        /letter_opener                                                                                    LetterOpenerWeb::Engine
 #                            api_v1_health GET    /api/v1/health(.:format)                                                                          api/v1/health#index
 #                 api_v1_auth_authenticate POST   /api/v1/auth/authenticate(.:format)                                                               api/v1/auth#authenticate
 #                             api_v1_users POST   /api/v1/users(.:format)                                                                           api/v1/users#create
 #                              api_v1_user GET    /api/v1/users/:id(.:format)                                                                       api/v1/users#show
 #                    api_v1_users_by_email GET    /api/v1/users/by_email(.:format)                                                                  api/v1/users#show
-#                             api_rswag_ui        /api/docs                                                                                         Rswag::Ui::Engine
-#                            api_rswag_api        /api/docs                                                                                         Rswag::Api::Engine
 #         turbo_recede_historical_location GET    /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
 #         turbo_resume_historical_location GET    /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
 #        turbo_refresh_historical_location GET    /refresh_historical_location(.:format)                                                            turbo/native/navigation#refresh
@@ -76,6 +77,13 @@
 #                       rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                                       active_storage/disk#show
 #                update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                               active_storage/disk#update
 #                     rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                                    active_storage/direct_uploads#create
+#                         actual_db_schema        /rails                                                                                            ActualDbSchema::Engine
+#
+# Routes for Rswag::Ui::Engine:
+#
+#
+# Routes for Rswag::Api::Engine:
+#
 #
 # Routes for OkComputer::Engine:
 #              root GET|OPTIONS /                 ok_computer/ok_computer#show {check: "default"}
@@ -149,14 +157,28 @@
 #                   DELETE /dashboards/:id(.:format)         blazer/dashboards#destroy
 #              root GET    /                                 blazer/queries#home
 #
-# Routes for Rswag::Ui::Engine:
+# Routes for LetterOpenerWeb::Engine:
+#       letters GET  /                                letter_opener_web/letters#index
+# clear_letters POST /clear(.:format)                 letter_opener_web/letters#clear
+#        letter GET  /:id(/:style)(.:format)          letter_opener_web/letters#show
+# delete_letter POST /:id/delete(.:format)            letter_opener_web/letters#destroy
+#               GET  /:id/attachments/:file(.:format) letter_opener_web/letters#attachment {file: /[^\/]+/}
 #
-#
-# Routes for Rswag::Api::Engine:
+# Routes for ActualDbSchema::Engine:
+#              rollback_migration POST /migrations/:id/rollback(.:format)         actual_db_schema/migrations#rollback
+#               migrate_migration POST /migrations/:id/migrate(.:format)          actual_db_schema/migrations#migrate
+#                      migrations GET  /migrations(.:format)                      actual_db_schema/migrations#index
+#                       migration GET  /migrations/:id(.:format)                  actual_db_schema/migrations#show
+#      rollback_phantom_migration POST /phantom_migrations/:id/rollback(.:format) actual_db_schema/phantom_migrations#rollback
+# rollback_all_phantom_migrations POST /phantom_migrations/rollback_all(.:format) actual_db_schema/phantom_migrations#rollback_all
+#              phantom_migrations GET  /phantom_migrations(.:format)              actual_db_schema/phantom_migrations#index
+#               phantom_migration GET  /phantom_migrations/:id(.:format)          actual_db_schema/phantom_migrations#show
+#           delete_broken_version POST /broken_versions/:id/delete(.:format)      actual_db_schema/broken_versions#delete
+#      delete_all_broken_versions POST /broken_versions/delete_all(.:format)      actual_db_schema/broken_versions#delete_all
+#                 broken_versions GET  /broken_versions(.:format)                 actual_db_schema/broken_versions#index
+#                          schema GET  /schema(.:format)                          actual_db_schema/schema#index
 
 Rails.application.routes.draw do
-  mount Rswag::Ui::Engine => '/api-docs'
-  mount Rswag::Api::Engine => '/api-docs'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
@@ -211,6 +233,9 @@ Rails.application.routes.draw do
 
   # API routes
   namespace :api do
+    mount Rswag::Ui::Engine => "/docs"
+    mount Rswag::Api::Engine => "/docs"
+
     namespace :v1 do
       get "health", to: "health#index"
 
