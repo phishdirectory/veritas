@@ -18,18 +18,22 @@ RSpec.configure do |config|
     "v1/swagger.yaml" => {
       openapi: "3.0.1",
       info: {
-        title: "API V1",
+        title: "Veritas API",
         version: "v1"
       },
       paths: {},
       servers: [
         {
-          url: "https://{defaultHost}",
-          variables: {
-            defaultHost: {
-              default: "www.example.com"
-            }
-          }
+          description: "Production",
+          url: "https://veritas.phish.directory/api/v1",
+        },
+        {
+          description: "Staging",
+          url: "https://staging.veritas.phish.directory/api/v1",
+        },
+        {
+          description: "Development",
+          url: "http://localhost:3000/api/v1",
         }
       ]
     }

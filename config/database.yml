@@ -16,9 +16,11 @@ development:
 test:
   primary: &primary_test
     <<: *default
+    host: localhost
     database: veritas_test
   queue:
     <<: *primary_test
+    host: localhost
     database: veritas_test_queue
     migrations_paths: db/queue_migrate
 

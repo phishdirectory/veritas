@@ -113,6 +113,7 @@ gem "tzinfo-data", platforms: %i[windows jruby]
 # API Documentation
 ##############################################################################
 gem "rswag"
+gem "rspec-rails"
 
 ###############################################################################
 # DEVELOPMENT & TEST DEPENDENCIES
@@ -125,8 +126,6 @@ group :development, :test do
   gem "brakeman", require: false # Security analysis
   gem "rubocop-rails-omakase", require: false # Ruby styling
   gem "rubocop-capybara", "~> 2.22", ">= 2.22.1"
-  gem "rubocop-rspec", "~> 3.6"
-  gem "rubocop-rspec_rails", "~> 2.31"
   gem "relaxed-rubocop"
   gem "overcommit", require: false # Git hooks
 

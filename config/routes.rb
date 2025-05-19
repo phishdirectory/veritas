@@ -155,6 +155,8 @@
 # Routes for Rswag::Api::Engine:
 
 Rails.application.routes.draw do
+  mount Rswag::Ui::Engine => '/api-docs'
+  mount Rswag::Api::Engine => '/api-docs'
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
@@ -218,9 +220,6 @@ Rails.application.routes.draw do
       resources :users, only: [:show, :create]
       get "users/by_email", to: "users#show"
     end
-
-    mount Rswag::Ui::Engine => "/docs"
-    mount Rswag::Api::Engine => "/docs"
   end
 
   # Render dynamic PWA files from app/views/pwa/* (remember to link manifest in application.html.erb)
