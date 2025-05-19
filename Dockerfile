@@ -2,16 +2,22 @@ FROM ruby:3.4.3-slim AS builder
 
 WORKDIR /rails
 
-# Install essential build dependencies only
+# Install essential build dependencies including unzip for bun
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     pkg-config \
-    libpq-dev && \
+    libpq-dev \
+    unzip \
+    libffi-dev \
+    libyaml-dev \
+    git \
+    libvips-dev \
+    libmagickwand-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-
+    
 # Install bun for node packages
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/root/.bun/bin:${PATH}"
@@ -53,7 +59,10 @@ RUN apt-get update -qq && \
     postgresql-client \
     nano \
     poppler-utils \
-    libpq5 && \
+    libpq5 \
+    libvips42 \
+    libffi8 \
+    libyaml-0-2 && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
