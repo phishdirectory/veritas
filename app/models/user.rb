@@ -141,7 +141,7 @@ class User < ApplicationRecord
   end
 
   def can_authenticate?
-    active?
+    active? && !locked?
   end
 
   def email_verified?

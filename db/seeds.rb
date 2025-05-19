@@ -35,4 +35,19 @@ User.find_or_create_by!(email: "jasper.mayone@phish.directory") do |user|
   user.email_verified_at = Time.current
 end
 
+services = [
+  {name: "Internal", id: 1},
+  {name: "API", id: 2},
+  {name: "Momento", id: 3}
+]
+
+services.each do |service|
+  # Create the service first
+  service = Service.find_or_create_by!(id: service[:id]) do |s|
+    s.name = service[:name]
+  end
+
+  service.generate_key("Initial ~ Created via seeder")
+end
+
 puts "Seed data successfully created!"

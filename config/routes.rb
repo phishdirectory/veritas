@@ -2,6 +2,7 @@
 
 # == Route Map
 #
+# [dotenv] Loaded [33m.env[0m
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
 #                                     root GET    /                                                                                                 home#index
 #                                    login GET    /login(.:format)                                                                                  sessions#new

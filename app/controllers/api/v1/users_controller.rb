@@ -16,32 +16,42 @@ module Api
           return
         end
 
+        # switch on the service name to determine which permissions to return
+        case current_service.id
+        when ServiceMappings.service_name_to_id("Internal")
+          # web service
+          permissions = {
+            global_access_level: {
+              name: user.access_level,
+              value: User.access_levels[user.access_level] # This gets the integer value
+            }
+          }
+        when ServiceMappings.service_name_to_id("API")
+          # api service
+          permissions = {
+            global_access_level: {
+              name: user.access_level,
+              value: User.access_levels[user.access_level] # This gets the integer value
+            },
+            api_access_level: {
+              name: user.api_access_level,
+              value: User.api_access_levels[user.api_access_level] # This gets the integer value
+            }
+          }
+        end
+
         # declare json variable to hold the json response (will be send later)
         json = {
           pd_id: user.pd_id,
           first_name: user.first_name,
           last_name: user.last_name,
           email: user.email,
-          permissions: {
-            global_access_level: {
-              name: user.access_level,
-              value: User.access_levels[user.access_level] # This gets the integer value
-            },
-          },
+          permissions: permissions,
           created_at: user.created_at,
           status: user.status,
           # display locked_at only if the field is not nil
           locked_at: user.locked_at.presence,
         }
-
-        # check if the Servide has the ID of 2 (api), and if so add the user's api access level
-        # to the json response
-        if current_service.id == 2
-          json[:permissions][:SERVICE_ACCESS_LEVEL] = {
-            name: user.api_access_level,
-            value: User.api_access_levels[user.api_access_level] # This gets the integer value
-          }
-        end
 
         render json: json
       end
