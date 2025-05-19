@@ -2,6 +2,9 @@ FROM ruby:3.4.3-slim AS builder
 
 WORKDIR /rails
 
+LABEL org.opencontainers.image.description Authentication Package for phish.directory
+LABEL org.opencontainers.image.source https://github.com/phishdirectory/veritas
+
 # Install essential build dependencies including unzip for bun
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
@@ -17,7 +20,7 @@ RUN apt-get update -qq && \
     libmagickwand-dev && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
-    
+
 # Install bun for node packages
 RUN curl -fsSL https://bun.sh/install | bash
 ENV PATH="/root/.bun/bin:${PATH}"
