@@ -16,7 +16,7 @@ services:
       - redis-data:/data
 
   web:
-    build: .
+    image: ghcr.io/phishdirectory/veritas:latest
     environment:
       RAILS_ENV: ${RAILS_ENV}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
@@ -29,8 +29,6 @@ services:
       - redis
     ports:
       - "80:3000"
-      # volumes:
-      # - .:/rails # Optional: remove for pure production, keep for local code changes
 
 volumes:
   db_data:
