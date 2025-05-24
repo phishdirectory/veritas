@@ -146,7 +146,6 @@ group :development do
   gem "foreman"                          # Process manager
   gem "awesome_print"                    # Pretty print objects
   gem "rack-mini-profiler", "~> 3.3", require: false # Performance profiling
-  gem "stackprof" # Used by rack-mini-profiler for flamegraphs
 
   # IDE Support
   gem "solargraph", require: false       # Ruby language server
@@ -159,3 +158,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+gem "sentry-ruby"
+gem "sentry-rails"
+gem "stackprof"

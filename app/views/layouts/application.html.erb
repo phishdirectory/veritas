@@ -45,6 +45,11 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <%= Sentry.get_trace_propagation_meta.html_safe %>
+    <script
+      src="https://js.sentry-cdn.com/f3324a4e0fd0f2d0802ab95547336c18.min.js"
+      crossorigin="anonymous"
+    ></script>
   </head>
 
   <body>
