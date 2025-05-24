@@ -2,10 +2,10 @@ FROM ruby:3.4.3-slim AS builder
 
 WORKDIR /rails
 
-LABEL org.opencontainers.image.description Authentication Package for phish.directory
-LABEL org.opencontainers.image.source https://github.com/phishdirectory/veritas
+LABEL org.opencontainers.image.description="Authentication Package for phish.directory"
+LABEL org.opencontainers.image.source="https://github.com/phishdirectory/veritas"
 
-# Install essential build dependencies including unzip for bun
+# Install essential build dependencies
 RUN apt-get update -qq && \
     apt-get install -y --no-install-recommends \
     build-essential \
@@ -32,13 +32,15 @@ RUN gem install bundler -v 2.5.17
 COPY Gemfile Gemfile.lock .ruby-version ./
 COPY package.json bun.lock ./
 
-# Set bundle config
+# Set bundle config - IMPORTANT: Removed BUNDLE_PATH to use system location
 ENV BUNDLE_GEMFILE=Gemfile \
     BUNDLE_JOBS=4 \
-    BUNDLE_PATH=/usr/local/bundle
+    BUNDLE_WITHOUT="development:test"
 
 # Install Ruby and JS dependencies
-RUN bundle install && \
+# Added --no-cache to ensure gems are properly installed
+RUN bundle config set --local without 'development test' && \
+    bundle install --no-cache && \
     bun install
 
 # Add source code
@@ -48,10 +50,10 @@ COPY . .
 RUN bundle exec bootsnap precompile app/ lib/
 
 # Precompile assets without requiring RAILS_MASTER_KEY
-RUN SECRET_KEY_BASE_DUMMY=1 ./bin/rails assets:precompile
+RUN SECRET_KEY_BASE_DUMMY=1 RAILS_ENV=production ./bin/rails assets:precompile
 
 # Set permissions on executables
-RUN chmod +x bin/rails bin/* 
+RUN chmod +x bin/rails bin/*
 
 # Create a clean runtime image
 FROM ruby:3.4.3-slim
@@ -74,8 +76,9 @@ ENV EDITOR=nano
 
 WORKDIR /rails
 
-# Copy gems from builder stage
-COPY --from=builder /usr/local/bundle /usr/local/bundle
+# Copy gems from builder stage - IMPORTANT: Copy the entire gem installation
+COPY --from=builder /usr/local/lib/ruby/gems/ /usr/local/lib/ruby/gems/
+COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
 
 # Copy bun from builder
 COPY --from=builder /root/.bun /root/.bun
@@ -94,7 +97,11 @@ ENV BUNDLE_GEMFILE=Gemfile \
     RAILS_SERVE_STATIC_FILES=true \
     RAILS_LOG_TO_STDOUT=true
 
+# Create an entrypoint script to verify gem installation
+RUN echo '#!/bin/bash\necho "Verifying gem installation..."\nbundle check || bundle install\nexec "$@"' > /rails/bin/docker-entrypoint && \
+    chmod +x /rails/bin/docker-entrypoint
+
 # Set entry point and default command
 ENTRYPOINT ["/rails/bin/docker-entrypoint"]
-EXPOSE 80
-CMD ["./bin/thrust", "./bin/rails", "server"]
+EXPOSE 3000
+CMD ["./bin/thrust", "./bin/rails", "server", "-b", "0.0.0.0", "-p", "3000"]

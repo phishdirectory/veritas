@@ -120,7 +120,7 @@ gem "rspec-rails"
 ###############################################################################
 group :development, :test do
   # Debugging
-  gem "debug", platforms: %i[mri windows], require: "debug/prelude"
+  gem "debug"
 
   # Security & Code Quality
   gem "brakeman", require: false # Security analysis

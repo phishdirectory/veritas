@@ -16,7 +16,8 @@ services:
       - redis-data:/data
 
   web:
-    image: ghcr.io/phishdirectory/veritas:latest
+    image: veritas:local
+    # image: ghcr.io/phishdirectory/veritas:latest
     environment:
       RAILS_ENV: ${RAILS_ENV}
       RAILS_MASTER_KEY: ${RAILS_MASTER_KEY}
