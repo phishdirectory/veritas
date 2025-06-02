@@ -127,7 +127,7 @@ module SessionsHelper
     return nil if session_token.nil?
 
     # Find a valid session (not expired) using the session token
-    @current_session = UserSession.not_expired.find_by(session_token:) # rubocop:disable Rails/HelperInstanceVariable
+    @current_session = User::Session.not_expired.find_by(session_token:) # rubocop:disable Rails/HelperInstanceVariable
   end
 
   def signed_in_user

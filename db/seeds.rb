@@ -81,10 +81,10 @@ User.find_or_create_by!(email: "internal+user@phish.directory") do |user|
   user.email_verified_at = Time.current
 end
 
-
 services = [
   {id: 1, name: "Core API", webhook_url: "https://api.phish.directory/veritas"},
-  {id:  2, name: "Momento", webhook_url: "https://momento.phish.directory/veritas"}
+  {id:  2, name: "Momento", webhook_url: "https://momento.phish.directory/veritas"},
+  {id:  3, name: "Atrium", webhook_url: "https://atrium.phish.directory/veritas"}
 ]
 
 services.each do |service|

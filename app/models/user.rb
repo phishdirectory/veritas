@@ -165,7 +165,7 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
-  def initals
+  def initials
     "#{first_name[0]}#{last_name[0]}"
   end
 

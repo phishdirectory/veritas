@@ -162,3 +162,4 @@ end
 gem "sentry-ruby"
 gem "sentry-rails"
 gem "stackprof"
+gem "httparty" # For making HTTP requests

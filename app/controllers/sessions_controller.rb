@@ -41,9 +41,13 @@ class SessionsController < ApplicationController
       sign_out
       redirect_to root_path, notice: "You have been successfully signed out."
     else
-      session = current_user.user_sessions.find(session_id)
-      session.update(signed_out_at: Time.current, expiration_at: Time.current)
-      redirect_to profile_path, notice: "Session has been revoked."
+      begin
+        session = current_user.user_sessions.find(session_id)
+        session.update(signed_out_at: Time.current, expiration_at: Time.current)
+        redirect_to profile_path, notice: "Session has been revoked."
+      rescue ActiveRecord::RecordNotFound
+        redirect_to profile_path, alert: "Session not found or access denied."
+      end
     end
   end
 
