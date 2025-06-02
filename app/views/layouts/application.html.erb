@@ -60,11 +60,6 @@
       background-attachment: fixed;
     }
 
-    .notification {
-      position: absolute;
-      top: .5rem;
-      right: .5rem;
-    }
 
     #staging-warning {
   text-align: center;
@@ -109,12 +104,7 @@
     <%= yield %>
 
     <!-- Display flash messages -->
-    <% flash.each do |type, message| %>
-      <div class="notification is-<%= type %>">
-        <button class="delete" onclick="(this.parentNode.remove())"></button>
-        <%= message %>
-      </div>
-    <% end %>
+    <%= render 'shared/flash' %>
 
   </body>
 
@@ -141,24 +131,4 @@
     `, 'color: #2F2F2F; font-weight: bold;');
   </script>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
-        const $notification = $delete.parentNode;
-
-        $delete.addEventListener('click', () => {
-          $notification.parentNode.removeChild($notification);
-        });
-      });
-    });
-
-    document.addEventListener('DOMContentLoaded', () => {
-      const flash = document.getElementById('flash');
-      if (flash) {
-        setTimeout(() => {
-          flash.remove();
-        }, 5000);
-      }
-    });
-  </script>
 </html>

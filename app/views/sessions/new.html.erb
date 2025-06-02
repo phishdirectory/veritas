@@ -1,16 +1,24 @@
 <!-- app/views/sessions/new.html.erb -->
-<div class="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+<div class="flex min-h-screen flex-col justify-center px-6 py-12 lg:px-8">
+  <!-- Flash messages positioned absolutely at top -->
+  <% if flash[:alert] %>
+    <div class="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 max-w-md w-full mx-4">
+      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative shadow-lg" role="alert">
+        <span class="block sm:inline"><%= flash[:alert] %></span>
+        <button type="button" class="absolute top-0 right-0 px-4 py-3" onclick="this.parentElement.parentElement.remove()">
+          <span class="sr-only">Close</span>
+          ×
+        </button>
+      </div>
+    </div>
+  <% end %>
+
   <div class="sm:mx-auto sm:w-full sm:max-w-sm">
     <h2 class="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">Sign in to your account</h2>
   </div>
 
   <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
     <%= form_with url: login_path, method: :post, class: "space-y-6" do |form| %>
-      <% if flash[:alert] %>
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-          <span class="block sm:inline"><%= flash[:alert] %></span>
-        </div>
-      <% end %>
 
       <div>
         <%= form.label :email, class: "block text-sm font-medium leading-6 text-gray-900" %>
