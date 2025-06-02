@@ -218,6 +218,7 @@ Rails.application.routes.draw do
 
     resources :services do
       resources :keys, controller: "service_keys"
+      resources :webhooks, controller: "service_webhooks"
     end
 
     # Mount engines under /admin path

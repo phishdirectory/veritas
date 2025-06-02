@@ -81,10 +81,10 @@
       }
 
       .admin-nav {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.4);
         backdrop-filter: blur(5px);
         -webkit-backdrop-filter: blur(5px);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        border-bottom: 2px solid rgba(0, 0, 0, 0.15);
         padding: 0;
       }
 
@@ -98,6 +98,11 @@
 
       .admin-nav-item {
         margin: 0;
+        border-right: 2px solid rgba(0, 0, 0, 0.1);
+      }
+
+      .admin-nav-item:last-child {
+        border-right: none;
       }
 
       .admin-nav-link {
@@ -109,16 +114,40 @@
         transition: all 0.3s ease;
         font-weight: 500;
         text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+        position: relative;
+      }
+
+      .admin-nav-link::after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 10%;
+        height: 80%;
+        width: 1px;
+        background: rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+      }
+
+      .admin-nav-item:last-child .admin-nav-link::after {
+        display: none;
       }
 
       .admin-nav-link:hover,
       .admin-nav-link.active {
         color: #1f2937;
-        background: rgba(255, 255, 255, 0.2);
-        backdrop-filter: blur(5px);
-        -webkit-backdrop-filter: blur(5px);
+        background: rgba(255, 255, 255, 0.6);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
         border-bottom-color: #4f46e5;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        box-shadow:
+          0 2px 8px rgba(0, 0, 0, 0.15),
+          inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      }
+
+      .admin-nav-link:hover::after,
+      .admin-nav-link.active::after {
+        background: rgba(0, 0, 0, 0.25);
+        box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
       }
 
       .admin-content {
@@ -334,6 +363,19 @@
                 Services
               <% end %>
             </li>
+            <li class="admin-nav-item">
+              <%= link_to admin_services_path,
+                  class: "admin-nav-link #{controller_name == 'service_webhooks' ? 'active' : ''}" do %>
+                Webhooks
+              <% end %>
+            </li>
+            <li class="admin-nav-item">
+              <%= link_to admin_services_path,
+                  class: "admin-nav-link #{controller_name == 'service_keys' ? 'active' : ''}" do %>
+                Keys
+              <% end %>
+            </li>
+
           </ul>
         </nav>
 
