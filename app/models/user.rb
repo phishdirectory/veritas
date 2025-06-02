@@ -14,8 +14,10 @@
 #  last_name                :string           not null
 #  locked_at                :datetime
 #  password_digest          :string           not null
+#  pd_dev                   :boolean          default(FALSE), not null
 #  pretend_is_not_admin     :boolean          default(FALSE), not null
 #  session_duration_seconds :integer          default(2592000), not null
+#  staff                    :boolean          default(FALSE), not null
 #  status                   :string           default("active"), not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null

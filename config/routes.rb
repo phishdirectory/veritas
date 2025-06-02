@@ -5,12 +5,10 @@
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
 #                                                 /assets                                                                                           Propshaft::Server
 #                                     root GET    /                                                                                                 home#index
-#                                    login GET    /login(.:format)                                                                                  sessions#new
-#                                          POST   /login(.:format)                                                                                  sessions#create
-#                                   logout GET    /logout(.:format)                                                                                 sessions#destroy
-#                                          DELETE /logout(.:format)                                                                                 sessions#destroy
-#                                  session DELETE /sessions/:id(.:format)                                                                           sessions#destroy
-#                    sign_out_all_sessions DELETE /sessions(.:format)                                                                               sessions#destroy_all
+#                                    login GET    /login(.:format)                                                                                  auth#new_session
+#                                          POST   /login(.:format)                                                                                  auth#login
+#                                   logout DELETE /logout(.:format)                                                                                 auth#logout
+#                                       me GET    /auth/me(.:format)                                                                                auth#me
 #                       rails_health_check GET    /up(.:format)                                                                                     rails/health#show
 #                              ok_computer        /ok                                                                                               OkComputer::Engine
 #                               admin_root GET    /admin(.:format)                                                                                  admin/dashboard#index
