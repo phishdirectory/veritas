@@ -188,15 +188,15 @@ class User < ApplicationRecord
     "#{first_name[0].downcase}#{last_name.downcase}"
   end
 
-  def trusted?
+  def trusted_or_higher?
     ["trusted", "admin", "superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
   end
 
-  def admin?
+  def admin_or_higher?
     ["admin", "superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
   end
 
-  def superadmin?
+  def superadmin_or_owner?
     ["superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
   end
 
@@ -213,7 +213,7 @@ class User < ApplicationRecord
     # Only active, non-pretending admins and above can impersonate
     return false unless can_authenticate? && !pretend_is_not_admin
 
-    admin? || superadmin? || owner?
+    admin_or_higher?
   end
 
   def is_impersonatable?(impersonator)
@@ -229,7 +229,7 @@ class User < ApplicationRecord
     when :superadmin
       !owner? # Superadmin can impersonate anyone except owner
     when :admin
-      !admin? && !superadmin? && !owner? # Admin can only impersonate trusted and regular users
+      !admin_or_higher? # Admin can only impersonate trusted and regular users
     else
       false # trusted and user levels cannot impersonate
     end
@@ -238,7 +238,7 @@ class User < ApplicationRecord
   def impersonatable?
     # This is a convenience method for views - checks if user is impersonatable by the current admin
     # This should be overridden by passing current_user context, but provides basic check
-    !admin? && !superadmin? && !owner?
+    !admin_or_higher?
   end
 
 

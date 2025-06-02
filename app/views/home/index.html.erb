@@ -122,6 +122,11 @@
         </tr>
       </table>
 
+       <% if current_user&.admin? %>
+         <%= link_to "Admin Panel", admin_root_path,
+                     class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-blue-600 text-sm transition-colors mr-2 inline-block" %>
+       <% end %>
+
        <% if impersonating? %>
          <%= button_to "Stop Impersonating", stop_impersonating_admin_users_path,
                         method: :delete,
@@ -150,6 +155,11 @@
         <%# display signed in user id %>
         <% if current_user %>
           <p>Logged in as <%= current_user.flipper_id %></p>
+
+          <% if current_user.admin_or_higher? %>
+            <%= button_to "Admin Panel", admin_root_path,
+                        class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+          <% end %>
 
           <% if impersonating? %>
             <%= button_to "Stop Impersonating", stop_impersonating_admin_users_path,
