@@ -1,13 +1,15 @@
 <%= form_with(model: user, url: "/login", data: { turbo: true }) do |f| %>
-  <div class="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl border border-white/20">
+  <div class="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl border border-white/20 m-10">
     <!-- Card Header -->
-    <div class="p-8 pb-6">
-      <h2 class="text-3xl font-bold text-gray-900 text-center">Welcome back</h2>
-      <p class="text-gray-600 text-center mt-2">Sign in to your account</p>
+    <div class="p-10 pb-6">
+      <h2 class="text-3xl font-bold text-gray-900 text-center">Veritas Dashboard</h2>
+      <p class="text-gray-600 text-center mt-2">Please sign in to your account.</p>
+      <%# <p>Looking to use o-auth to sign in to an external service? Go back to the service and follow their flow. </p> %>
+      <%# <p class="text-gray-600 text-center mt-2">If you don't have an account, Sign up here.</p> %>
     </div>
 
     <!-- Card Content -->
-    <div class="px-8 pb-8 space-y-6">
+    <div class="px-10 pb-8 space-y-6">
       <div class="space-y-2">
         <%= f.label :email, "Email address", class: "block text-sm font-medium text-gray-700" %>
         <%= f.email_field :email,
