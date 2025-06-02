@@ -13,4 +13,5 @@ class Admin::BaseController < ApplicationController
 
     redirect_to login_path, alert: "You are not authorized to access this page"
   end
+
 end

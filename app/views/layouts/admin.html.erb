@@ -29,91 +29,216 @@
 
     <style>
       body {
-        background-color: #f7fafc;
+        background-image: url('<%= asset_path('admin-frame.png') %>');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        min-height: 100vh;
       }
 
-      .admin-sidebar {
-        background-color: #2d3748;
+      .gradient-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      .admin-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        min-height: 80vh;
+        padding: 10px;
+        position: relative;
+      }
+
+      .admin-card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 1200px;
+        margin-top: 20px;
+        overflow: hidden;
+      }
+
+      .admin-header {
+        background: linear-gradient(135deg, #678da3 0%, #a2bdcd 100%);
         color: white;
+        padding: 20px 30px;
+        border-bottom: 1px solid #9bbed0;
+      }
+
+      .admin-nav {
+        background: #f8fafc;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 0;
+      }
+
+      .admin-nav-list {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .admin-nav-item {
+        margin: 0;
       }
 
       .admin-nav-link {
-        color: #cbd5e0;
+        display: block;
+        padding: 12px 24px;
+        color: #4b5563;
+        text-decoration: none;
+        border-bottom: 3px solid transparent;
         transition: all 0.2s;
+        font-weight: 500;
       }
 
       .admin-nav-link:hover,
       .admin-nav-link.active {
-        color: white;
-        background-color: #4a5568;
+        color: #1f2937;
+        background-color: #f3f4f6;
+        border-bottom-color: #667eea;
+      }
+
+      .admin-content {
+        padding: 30px;
+      }
+
+      .admin-user-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+
+      .admin-user-details {
+        flex: 1;
+      }
+
+      .admin-user-name {
+        font-size: 18px;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .admin-user-role {
+        font-size: 14px;
+        opacity: 0.9;
+        margin: 0;
+      }
+
+      @media (max-width: 768px) {
+        .admin-container {
+          padding: 10px;
+        }
+
+        .admin-card {
+          margin-top: 10px;
+        }
+
+        .admin-header {
+          padding: 15px 20px;
+        }
+
+        .admin-content {
+          padding: 20px;
+        }
+
+        .admin-nav-list {
+          flex-direction: column;
+        }
+
+        .admin-nav-link {
+          padding: 10px 20px;
+        }
       }
     </style>
   </head>
 
-  <body class="bg-gray-50">
+  <body>
+    <div class="gradient-overlay"></div>
+
     <% if Rails.env.staging? %>
-      <div class="bg-red-600 text-white text-center py-2">
+      <div class="bg-red-600 text-white text-center py-2 fixed top-0 left-0 w-full z-50">
         <strong>STAGING ENVIRONMENT</strong> - Do not use for production
       </div>
     <% end %>
 
-    <div class="min-h-screen flex">
-      <!-- Sidebar -->
-      <div class="admin-sidebar w-64 flex-shrink-0">
-        <div class="flex flex-col h-full">
-          <!-- Logo/Header -->
-          <div class="flex items-center justify-center h-16 px-4 border-b border-gray-700">
-            <h1 class="text-xl font-bold">Veritas Admin</h1>
-          </div>
+    <% if impersonating? %>
+      <div class="bg-orange-500 text-white text-center py-2 px-4 flex items-center justify-between fixed top-0 left-0 w-full z-40" style="<%= Rails.env.staging? ? 'top: 48px;' : '' %>">
+        <div class="flex-1 text-center">
+          <strong>⚠️ IMPERSONATING:</strong> You are impersonating <%= current_user.full_name %>
+          (logged in as <%= admin_user.full_name %>)
+        </div>
+        <%= button_to "Stop Impersonating", stop_impersonating_admin_users_path,
+            method: :delete,
+            class: "bg-orange-600 hover:bg-orange-700 text-white px-4 py-1 rounded text-sm",
+            form: { class: "inline" } %>
+      </div>
+    <% end %>
 
-          <!-- Navigation -->
-          <nav class="flex-1 px-4 py-6 space-y-2">
-            <%= link_to admin_root_path,
-                class: "admin-nav-link flex items-center px-4 py-2 text-sm rounded-lg #{controller_name == 'dashboard' ? 'active' : ''}" do %>
-              <span>Dashboard</span>
-            <% end %>
-
-            <%= link_to admin_users_path,
-                class: "admin-nav-link flex items-center px-4 py-2 text-sm rounded-lg #{controller_name == 'users' ? 'active' : ''}" do %>
-              <span>Users</span>
-            <% end %>
-
-            <%= link_to admin_services_path,
-                class: "admin-nav-link flex items-center px-4 py-2 text-sm rounded-lg #{controller_name == 'services' ? 'active' : ''}" do %>
-              <span>Services</span>
-            <% end %>
-          </nav>
-
-          <!-- User Info -->
-          <div class="border-t border-gray-700 p-4">
-            <div class="flex items-center">
-              <div class="ml-3">
-                <p class="text-sm font-medium text-white"><%= current_user.full_name %></p>
-                <p class="text-xs text-gray-400"><%= current_user.access_level.titleize %></p>
-              </div>
+    <div class="admin-container" style="<%= (Rails.env.staging? || impersonating?) ? 'padding-top: 60px;' : '' %>">
+      <div class="admin-card">
+        <!-- Header -->
+        <div class="admin-header">
+          <div class="admin-user-info">
+            <div class="admin-user-details">
+              <h1 class="admin-user-name">Veritas Admin</h1>
+              <p class="admin-user-role">Logged in as <%= current_user.full_name %> (<%= current_user.access_level.titleize %>)</p>
             </div>
-            <div class="mt-3">
+            <div>
               <% if impersonating? %>
                 <%= button_to "Stop Impersonating", stop_impersonating_admin_users_path,
                     method: :delete,
-                    class: "admin-nav-link flex items-center px-4 py-2 text-sm rounded-lg w-full text-left",
-                    form: { class: "w-full" } %>
+                    class: "bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-4 py-2 rounded text-sm transition-colors border-0 cursor-pointer" %>
               <% else %>
                 <%= button_to "Sign Out", logout_path,
-                        method: :delete,
-                        form_class: "inline-block",
-                        class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+                    method: :delete,
+                    form_class: "inline-block",
+                    class: "bg-white bg-opacity-20 hover:bg-opacity-30 text-gray-800 px-4 py-2 rounded text-sm transition-colors border-0 cursor-pointer" %>
               <% end %>
             </div>
           </div>
         </div>
-      </div>
 
-      <!-- Main Content -->
-      <div class="flex-1 overflow-auto">
-        <%= render 'shared/flash' if respond_to?(:render) && lookup_context.exists?('shared/flash') %>
+        <!-- Navigation -->
+        <nav class="admin-nav">
+          <ul class="admin-nav-list">
+            <li class="admin-nav-item">
+              <%= link_to admin_root_path,
+                  class: "admin-nav-link #{controller_name == 'dashboard' ? 'active' : ''}" do %>
+                Dashboard
+              <% end %>
+            </li>
+            <li class="admin-nav-item">
+              <%= link_to admin_users_path,
+                  class: "admin-nav-link #{controller_name == 'users' ? 'active' : ''}" do %>
+                Users
+              <% end %>
+            </li>
+            <li class="admin-nav-item">
+              <%= link_to admin_services_path,
+                  class: "admin-nav-link #{controller_name == 'services' ? 'active' : ''}" do %>
+                Services
+              <% end %>
+            </li>
+          </ul>
+        </nav>
 
-        <%= yield %>
+        <!-- Main Content -->
+        <div class="admin-content">
+          <%= yield %>
+        </div>
       </div>
     </div>
 
