@@ -30,6 +30,14 @@ class ApplicationController < ActionController::Base
     @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
   end
 
+  def impersonating?
+    session[:admin_id].present?
+  end
+
+  def admin_user
+    @admin_user ||= User.find_by(id: session[:admin_id]) if session[:admin_id]
+  end
+
   def authenticate_user!
     return if current_user
 
@@ -49,7 +57,7 @@ class ApplicationController < ActionController::Base
 
   end
 
-  helper_method :current_user
+  helper_method :current_user, :impersonating?, :admin_user
 
   # Track papertrail edits to specific users
   before_action :set_paper_trail_whodunnit

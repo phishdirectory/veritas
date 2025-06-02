@@ -1,0 +1,52 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold text-gray-900">Users</h1>
+  </div>
+
+  <div class="bg-white shadow overflow-hidden rounded-lg">
+    <table class="min-w-full divide-y divide-gray-200">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+          <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-gray-200">
+        <% @users.each do |user| %>
+          <tr>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+              <%= user.full_name %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <%= user.email %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <%= user.username %>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+              <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= user.admin? ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800' %>">
+                <%= user.access_level.titleize %>
+              </span>
+            </td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium space-x-2 flex items-center">
+              <% if user.is_impersonatable?(current_user) && !impersonating? %>
+                <%= button_to 'Impersonate', impersonate_admin_user_path(user), method: :post,
+                    class: 'text-orange-600 hover:text-orange-900',
+                    form: { class: 'inline-block' },
+                    data: { turbo_confirm: "Are you sure you want to impersonate #{user.full_name}?" } %>
+              <% end %>
+              <% if user != current_user && !impersonating? %>
+                <%= button_to 'Delete', admin_user_path(user), method: :delete,
+                    class: 'text-red-600 hover:text-red-900',
+                    form: { class: 'inline-block', data: { turbo_confirm: 'Are you sure?' } } %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

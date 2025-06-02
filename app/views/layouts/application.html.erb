@@ -93,6 +93,19 @@
     </div>
     <% end %>
 
+    <% if impersonating? %>
+      <div class="bg-orange-500 text-white text-center py-2 px-4 flex items-center justify-between">
+        <div class="flex-1 text-center">
+          <strong>⚠️ IMPERSONATING:</strong> You are impersonating <%= current_user.full_name %> 
+          (logged in as <%= admin_user.full_name %>)
+        </div>
+        <%= button_to "Stop Impersonating", stop_impersonating_admin_users_path, 
+            method: :delete,
+            class: "bg-orange-600 hover:bg-orange-700 text-white px-4 py-1 rounded text-sm",
+            form: { class: "inline" } %>
+      </div>
+    <% end %>
+
     <%= yield %>
 
     <!-- Display flash messages -->

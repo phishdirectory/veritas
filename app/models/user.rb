@@ -216,13 +216,16 @@ class User < ApplicationRecord
     admin? || superadmin? || owner?
   end
 
-  def impersonatable?(impersonator)
+  def is_impersonatable?(impersonator)
+    # Cannot impersonate yourself
+    return false if self == impersonator
+
     impersonator_level = ACCESS_LEVELS[impersonator.access_level.to_sym]
     target_level = ACCESS_LEVELS[access_level.to_sym]
 
     case impersonator.access_level.to_sym
     when :owner
-      true # Owner can impersonate anyone
+      true # Owner can impersonate anyone (except themselves)
     when :superadmin
       !owner? # Superadmin can impersonate anyone except owner
     when :admin
@@ -230,7 +233,12 @@ class User < ApplicationRecord
     else
       false # trusted and user levels cannot impersonate
     end
+  end
 
+  def impersonatable?
+    # This is a convenience method for views - checks if user is impersonatable by the current admin
+    # This should be overridden by passing current_user context, but provides basic check
+    !admin? && !superadmin? && !owner?
   end
 
 

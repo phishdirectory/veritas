@@ -205,7 +205,15 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
 
     # Resources and sub-resources
-    resources :users
+    resources :users do
+      collection do
+        delete :stop_impersonating
+      end
+      member do
+        post :impersonate
+      end
+    end
+
     resources :services do
       resources :keys, controller: "service_keys"
     end

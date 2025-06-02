@@ -122,10 +122,17 @@
         </tr>
       </table>
 
-       <%= button_to "Sign Out", logout_path,
+       <% if impersonating? %>
+         <%= button_to "Stop Impersonating", stop_impersonating_admin_users_path,
+                        method: :delete,
+                        form_class: "inline-block",
+                        class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-orange-600 text-sm transition-colors border-0 cursor-pointer" %>
+       <% else %>
+         <%= button_to "Sign Out", logout_path,
                         method: :delete,
                         form_class: "inline-block",
                         class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+       <% end %>
 
       </div>
     </div>
@@ -144,10 +151,17 @@
         <% if current_user %>
           <p>Logged in as <%= current_user.flipper_id %></p>
 
-          <%= button_to "Sign Out", logout_path,
-                        method: :delete,
-                        form_class: "inline-block",
-                        class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+          <% if impersonating? %>
+            <%= button_to "Stop Impersonating", stop_impersonating_admin_users_path,
+                          method: :delete,
+                          form_class: "inline-block",
+                          class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-orange-600 text-sm transition-colors border-0 cursor-pointer" %>
+          <% else %>
+            <%= button_to "Sign Out", logout_path,
+                          method: :delete,
+                          form_class: "inline-block",
+                          class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+          <% end %>
         <% else %>
           <%= button_to "Login", login_path,
                         form_class: "inline-block",
