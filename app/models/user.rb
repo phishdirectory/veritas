@@ -47,6 +47,7 @@ class User < ApplicationRecord
   # Callbacks to handle syncing
   before_create :set_default_access_levels
   before_save :sync_access_levels
+  after_update :notify_role_changes, if: :saved_change_to_roles?
 
   scope :verified, -> { where(email_verified: true) }
   scope :unverified, -> { where(email_verified: false) }
@@ -233,6 +234,13 @@ class User < ApplicationRecord
   end
 
   private
+
+  def notify_role_changes
+    old_roles = saved_change_to_roles[0] || []
+    new_roles = saved_change_to_roles[1] || []
+
+    WebhookService.notify_user_role_changed(pd_id, new_roles, old_roles)
+  end
 
   def set_default_access_levels
     # Initialize tracking attributes

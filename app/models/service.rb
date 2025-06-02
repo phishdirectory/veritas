@@ -19,6 +19,7 @@ class Service < ApplicationRecord
   include AASM
 
   has_many :keys, class_name: "Service::Key", dependent: :destroy
+  has_one :webhook, class_name: "Service::Webhook", dependent: :destroy
 
   validates :name, presence: true, uniqueness: true
   validates :status, presence: true
@@ -48,8 +49,12 @@ class Service < ApplicationRecord
   end
 
   # Generate a new key for this service
-  def generate_key(notes = nil)
+  def generate_key(notes)
     keys.create(notes: notes)
+  end
+
+  def generate_webhook(url)
+    create_webhook(url: url, secret: SecureRandom.hex(32))
   end
 
   # Authenticate using an API key
@@ -60,23 +65,39 @@ class Service < ApplicationRecord
     key.service if key.service.active?
   end
 
-  def self.create_with_key(name, notes = nil)
+  def self.create_with_attributes(name, webhook_url)
     service = nil
 
     transaction do
       service = create(name: name)
 
       if service.persisted?
-        key = service.generate_key(notes || "Initial key created via console")
+        key = service.generate_key("Initial key")
+        webhook = service.generate_webhook(webhook_url)
 
-        if key.persisted?
-          Rails.logger.debug "Service created successfully:"
-          Rails.logger.debug { "  Name:      #{service.name}" }
-          Rails.logger.debug { "  Status:    #{service.status}" }
-          Rails.logger.debug { "  API Key:   #{key.api_key}" }
-          Rails.logger.debug { "  Hash Key:  #{key.hash_key}" }
-          Rails.logger.debug { "  Key ID:    #{key.id}" }
-          Rails.logger.debug { "  Notes:     #{key.notes}" }
+        if key.persisted? && webhook.persisted?
+          unless Rails.env.production?
+            Rails.logger.debug do
+              <<~LOG
+                Service #{service.name} created successfully:
+
+                ╔═══════════════════════════════════════════════════════════════╗
+                ║                            Key Details                        ║
+                ╠═══════════════════════════════════════════════════════════════╣
+                ║ API Key:   #{key.api_key.ljust(45)} ║
+                ║ Hash Key:  #{key.hash_key.ljust(45)} ║
+                ║ Key ID:    #{key.id.to_s.ljust(45)} ║
+                ║ Notes:     #{key.notes.to_s.ljust(45)} ║
+                ╠═══════════════════════════════════════════════════════════════╣
+                ║                         Webhook Details                       ║
+                ╠═══════════════════════════════════════════════════════════════╣
+                ║ Webhook URL:    #{webhook.url.ljust(38)} ║
+                ║ Webhook ID:     #{webhook.id.to_s.ljust(38)} ║
+                ║ Webhook Secret: #{webhook.secret.ljust(38)} ║
+                ╚═══════════════════════════════════════════════════════════════╝
+              LOG
+            end
+          end
         else
           Rails.logger.debug do
             "Error creating key: #{key.errors.full_messages.join(', ')}"

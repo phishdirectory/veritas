@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_03_190227) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_01_225658) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_catalog.plpgsql"
@@ -290,6 +290,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_190227) do
     t.index ["service_id"], name: "index_service_keys_on_service_id"
   end
 
+  create_table "service_webhooks", force: :cascade do |t|
+    t.bigint "service_id", null: false
+    t.string "url", null: false
+    t.string "secret", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["service_id"], name: "index_service_webhooks_on_service_id"
+    t.index ["url"], name: "index_service_webhooks_on_url", unique: true
+  end
+
   create_table "services", force: :cascade do |t|
     t.string "name", null: false
     t.string "status", default: "active", null: false
@@ -355,10 +365,23 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_190227) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  create_table "webhook_deliveries", force: :cascade do |t|
+    t.string "url"
+    t.string "event"
+    t.text "payload"
+    t.string "status"
+    t.integer "attempts"
+    t.datetime "last_attempt_at"
+    t.jsonb "response"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "service_key_usages", "service_keys", column: "key_id"
   add_foreign_key "service_keys", "services"
+  add_foreign_key "service_webhooks", "services"
   add_foreign_key "user_sessions", "users"
   add_foreign_key "user_sessions", "users", column: "impersonated_by_id"
 end

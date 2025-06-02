@@ -148,9 +148,9 @@ group :development do
   gem "rack-mini-profiler", "~> 3.3", require: false # Performance profiling
 
   # IDE Support
-  gem "solargraph", require: false       # Ruby language server
+  gem "solargraph" # Ruby language server
   gem "solargraph-rails", "~> 1.1.0", require: false
-  gem "htmlbeautifier", require: false   # ERB formatting
+  gem "htmlbeautifier", require: false # ERB formatting
 end
 
 group :test do

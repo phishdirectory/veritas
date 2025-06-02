@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DdlMappings">
+    <mapping uuid="cc909b77-03d7-4b39-be86-35c323813c6f" name="veritas_development@localhost Mapping">
+      <data-sources db="efee1463-be0d-48ff-b4b8-20211cdffca7" />
+      <scope>
+        <node kind="database">
+          <name qname="veritas_development" />
+          <name qname="veritas_development_queue" />
+        </node>
+      </scope>
+    </mapping>
+  </component>
+</project>
