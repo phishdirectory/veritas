@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Schema Information
 #
 # Table name: ahoy_messages
@@ -18,7 +20,7 @@
 #  index_ahoy_messages_on_to_bidx   (to_bidx)
 #  index_ahoy_messages_on_user      (user_type,user_id)
 #
-class Ahoy::Message < ActiveRecord::Base
+class Ahoy::Message < ApplicationRecord
   self.table_name = "ahoy_messages"
 
   belongs_to :user, polymorphic: true, optional: true

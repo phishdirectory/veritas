@@ -152,7 +152,7 @@ module SessionsHelper
     current_user
       &.user_sessions
       &.find_by(session_token: cookies.encrypted[:session_token])
-      &.update(signed_out_at: Time.now, expiration_at: Time.now)
+      &.update(signed_out_at: Time.zone.now, expiration_at: Time.zone.now)
 
     cookies.delete(:session_token)
     self.current_user = nil
@@ -163,6 +163,6 @@ module SessionsHelper
     user
       &.user_sessions
       &.where&.not(id: current_session.id)
-      &.update_all(signed_out_at: Time.now, expiration_at: Time.now)
+      &.find_each { |session| session.update(signed_out_at: Time.zone.now, expiration_at: Time.zone.now) }
   end
 end
