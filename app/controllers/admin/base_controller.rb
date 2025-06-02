@@ -1,8 +1,12 @@
 # frozen_string_literal: true
 
 class Admin::BaseController < ApplicationController
+  include EnsureEnabled
+
   before_action :authenticate_user!
   before_action :require_admin
+  before_action -> { ensure_enabled!(:ui, actor: current_user) }
+
 
   layout "admin"
 
