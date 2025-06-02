@@ -2,7 +2,7 @@
 
 class AuthController < ApplicationController
   skip_before_action :authenticate_user!, only: [:login, :new_session]
-  
+
   layout "sessions", only: [:new_session]
 
   def new_session
