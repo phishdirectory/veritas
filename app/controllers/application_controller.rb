@@ -1,39 +1,18 @@
 # frozen_string_literal: true
 
 class ApplicationController < ActionController::Base
-  include SessionsHelper
-
-  before_action :session_timeout, if: -> { current_user }
+  before_action :authenticate_user!
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   # allow_browser versions: :modern
-
-  # Track papertrail edits to specific users
-  before_action :set_paper_trail_whodunnit
 
   # before_action do
   #   # Disallow indexing
   # response.set_header("X-Robots-Tag", "noindex")
   # end
 
-  helper_method :current_user
-
-  def current_user
-    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
-  end
-
   def find_current_auditor
     current_user if current_user&.superadmin?
-  end
-
-
-  def user_not_authorized
-    flash[:error] = "You are not authorized to perform this action."
-    if current_user || !request.get?
-      redirect_to root_path
-    else
-      redirect_to auth_users_path(return_to: request.url)
-    end
   end
 
   def not_found
@@ -45,8 +24,35 @@ class ApplicationController < ActionController::Base
     flash[:confetti_emojis] = emojis.join(",") if emojis
   end
 
-  def authenticate_user
-    redirect_to login_path unless current_user
+  private
+
+  def current_user
+    @current_user ||= User.find_by(id: session[:user_id]) if session[:user_id]
   end
+
+  def authenticate_user!
+    return if current_user
+
+    respond_to do |format|
+      format.html do
+        flash[:alert] = "You need to sign in before continuing"
+        redirect_to "/login"
+      end
+      format.json { render json: { error: "You need to sign in before continuing" }, status: :unauthorized }
+    end
+  end
+
+  def require_admin
+    return if current_user&.admin?
+
+    render json: { error: "You are not authorized to perform this action" }, status: :forbidden
+
+  end
+
+  helper_method :current_user
+
+  # Track papertrail edits to specific users
+  before_action :set_paper_trail_whodunnit
+
 
 end

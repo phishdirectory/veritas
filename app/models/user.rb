@@ -29,6 +29,11 @@
 class User < ApplicationRecord
   include AASM
 
+  # set flipper id to pd_id
+  def flipper_id
+    pd_id
+  end
+
   has_paper_trail
   has_secure_password
 
@@ -141,6 +146,14 @@ class User < ApplicationRecord
     end
   end
 
+  def is_staff?
+    staff
+  end
+
+  def is_pd_dev?
+    pd_dev
+  end
+
   def can_authenticate?
     active? && !locked?
   end
@@ -169,6 +182,10 @@ class User < ApplicationRecord
     "#{first_name[0]}#{last_name[0]}"
   end
 
+  def username
+    "#{first_name[0].downcase}#{last_name.downcase}"
+  end
+
   def trusted?
     ["trusted", "admin", "superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
   end
@@ -188,6 +205,32 @@ class User < ApplicationRecord
   def admin_override_pretend?
     ["admin"].include?(self.access_level)
   end
+
+  def can_impersonate?
+    # Determines if THIS user can impersonate others
+    # Only active, non-pretending admins and above can impersonate
+    return false unless can_authenticate? && !pretend_is_not_admin
+
+    admin? || superadmin? || owner?
+  end
+
+  def impersonatable?(impersonator)
+    impersonator_level = ACCESS_LEVELS[impersonator.access_level.to_sym]
+    target_level = ACCESS_LEVELS[access_level.to_sym]
+
+    case impersonator.access_level.to_sym
+    when :owner
+      true # Owner can impersonate anyone
+    when :superadmin
+      !owner? # Superadmin can impersonate anyone except owner
+    when :admin
+      !admin? && !superadmin? && !owner? # Admin can only impersonate trusted and regular users
+    else
+      false # trusted and user levels cannot impersonate
+    end
+
+  end
+
 
   def make_trusted!
     trusted!

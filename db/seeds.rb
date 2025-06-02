@@ -22,6 +22,8 @@ User.find_or_create_by!(email: "internal+owner@phish.directory") do |user|
   user.status = "active"
   user.email_verified = true
   user.email_verified_at = Time.current
+  user.staff = true
+  user.pd_dev = true
 end
 
 User.find_or_create_by!(email: "jasper.mayone@phish.directory") do |user|
@@ -33,6 +35,8 @@ User.find_or_create_by!(email: "jasper.mayone@phish.directory") do |user|
   user.status = "active"
   user.email_verified = true
   user.email_verified_at = Time.current
+  user.staff = true
+  user.pd_dev = true
 end
 
 
@@ -45,6 +49,8 @@ User.find_or_create_by!(email: "internal+superadmin@phish.directory") do |user|
   user.status = "active"
   user.email_verified = true
   user.email_verified_at = Time.current
+  user.staff = true
+  user.pd_dev = true
 end
 
 User.find_or_create_by!(email: "internal+admin@phish.directory") do |user|
@@ -56,6 +62,8 @@ User.find_or_create_by!(email: "internal+admin@phish.directory") do |user|
   user.status = "active"
   user.email_verified = true
   user.email_verified_at = Time.current
+  user.staff = true
+  user.pd_dev = true
 end
 
 
@@ -68,6 +76,8 @@ User.find_or_create_by!(email: "internal+trusted@phish.directory") do |user|
   user.status = "active"
   user.email_verified = true
   user.email_verified_at = Time.current
+  user.staff = false
+  user.pd_dev = false
 end
 
 User.find_or_create_by!(email: "internal+user@phish.directory") do |user|
@@ -79,6 +89,8 @@ User.find_or_create_by!(email: "internal+user@phish.directory") do |user|
   user.status = "active"
   user.email_verified = true
   user.email_verified_at = Time.current
+  user.staff = false
+  user.pd_dev = false
 end
 
 services = [

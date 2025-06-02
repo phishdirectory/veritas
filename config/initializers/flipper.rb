@@ -38,6 +38,31 @@ Flipper.configure do |config|
   # config.use Flipper::Adapters::ActiveSupportCacheStore, Rails.cache, expires_in: 5.minutes
 end
 
+
+Flipper.register(:owners) do |actor|
+  actor.owner?
+end
+
+Flipper.register(:superadmins) do |actor|
+  actor.superadmin?
+end
+
+Flipper.register(:admins) do |actor|
+  actor.admin?
+end
+
+Flipper.register(:trusted) do |actor|
+  actor.trusted?
+end
+
+Flipper.register(:staff) do |actor|
+  actor.is_staff?
+end
+
+Flipper.register(:pd_dev) do |actor|
+  actor.is_pd_dev?
+end
+
 ## Register a group that can be used for enabling features.
 ##
 ##   Flipper.enable_group :my_feature, :admins

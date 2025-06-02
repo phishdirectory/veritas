@@ -1,9 +1,6 @@
 <!-- app/views/home/index.html.erb -->
-<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Veritas Authentication API</title>
     <style>
       body, html {
@@ -13,18 +10,6 @@
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         overflow-x: hidden;
         position: relative;
-      }
-
-      .bg-image {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-image: url('<%= asset_path("bg.jpeg") %>');
-        background-size: cover;
-        background-position: center;
-        z-index: -2;
       }
 
       .gradient-overlay {
@@ -97,13 +82,56 @@
         }
 
       }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
     </style>
   </head>
   <body>
-    <div class="bg-image"></div>
-    <div class="gradient-overlay"></div>
+      <% if Flipper.enabled?(:ui, current_user) %>
 
-    <div class="card-container">
+        <div class="card-container">
+      <div class="card">
+        <p>Hi, and welcome to Veritas! Veritas is the central authentication service for phish.directory.</p>
+
+        <%# display roles %>
+      <table>
+        <thead>
+        <th>Flipper ID</th>
+        <th>Access Level</th>
+        <th>Is Staff</th>
+        <th>Is PD Dev</th>
+        </thead>
+        <tr>
+          <td><%= current_user.flipper_id %></td>
+          <td><%= current_user.access_level %></td>
+          <td><%= current_user.is_staff? ? "✅" : "❌" %></td>
+          <td><%= current_user.is_pd_dev? ? "✅" : "❌" %></td>
+        </tr>
+      </table>
+
+       <%= button_to "Sign Out", logout_path,
+                        method: :delete,
+                        form_class: "inline-block",
+                        class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+
+      </div>
+    </div>
+
+      <% else %>
+         <div class="card-container">
       <div class="card">
         <h1>Veritas</h1>
         <h2>(Authentication API)</h2>
@@ -112,7 +140,21 @@
           Veritas is an authentication API service used by the phish.directory microservices. Currently,
           there is no user interface - just a internal API! If you're a developer who needs help provisioning a service key for use, please reach out to Jasper via slack or email. If you're a user who has ended up here, that's a bit odd! Not to fear, go back to whatever directed you here, and if you keep ending up back here, please email <a href="mailto:support@phish.directory">support@phish.directory</a>
         </p>
+        <%# display signed in user id %>
+        <% if current_user %>
+          <p>Logged in as <%= current_user.flipper_id %></p>
+
+          <%= button_to "Sign Out", logout_path,
+                        method: :delete,
+                        form_class: "inline-block",
+                        class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+        <% else %>
+          <%= button_to "Login", login_path,
+                        form_class: "inline-block",
+                        class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+        <% end %>
       </div>
     </div>
+      <% end %>
   </body>
 </html>

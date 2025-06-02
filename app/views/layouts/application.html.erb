@@ -43,6 +43,7 @@
     <link rel="apple-touch-icon" href="/icon.png">
 
     <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
     <%= Sentry.get_trace_propagation_meta.html_safe %>
@@ -50,6 +51,34 @@
       src="https://js.sentry-cdn.com/f3324a4e0fd0f2d0802ab95547336c18.min.js"
       crossorigin="anonymous"
     ></script>
+
+    <style>
+    body {
+      background-image: url('<%= asset_path("frame.png") %>');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+    }
+
+    .notification {
+      position: absolute;
+      top: .5rem;
+      right: .5rem;
+    }
+
+    #staging-warning {
+  text-align: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem;
+  background-color: #cf3a36;
+  color: white;
+  z-index: 1000;
+}
+
+  </style>
   </head>
 
   <body>
@@ -98,26 +127,6 @@
      → Phish Directory Issue Board (all repos): https://issue-board.phish.directory
     `, 'color: #2F2F2F; font-weight: bold;');
   </script>
-
-  <style>
-    .notification {
-      position: absolute;
-      top: .5rem;
-      right: .5rem;
-    }
-
-    #staging-warning {
-      text-align: center;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      padding: 1rem;
-      background-color: #cf3a36;
-      color: white;
-      z-index: 1000;
-    }
-  </style>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {

@@ -1,3 +1,2 @@
 web: bin/rails server
 css: bin/rails tailwindcss:watch
-js: bun run build --watch

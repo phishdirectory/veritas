@@ -4,6 +4,8 @@
 module Api
   module V1
     class AuthController < BaseController
+      skip_before_action :authenticate_user!
+
       def authenticate
         # Dehash the credentials from the request
         credentials = dehash_credentials(params[:credentials])
