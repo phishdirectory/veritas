@@ -27,6 +27,11 @@
   </head>
 
   <body class="h-full">
+    <!-- Flash messages positioned absolutely at top -->
+    <div id="flash">
+      <%= render 'shared/flash' %>
+    </div>
+    
     <main class="h-full flex items-center justify-center p-4">
       <%= yield %>
     </main>
