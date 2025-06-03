@@ -1,0 +1,125 @@
+<% content_for :title, "Webhook Delivery ##{@webhook_delivery.id}" %>
+
+<div class="mb-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Webhook Delivery #<%= @webhook_delivery.id %></h2>
+    <div class="space-x-2">
+      <%= link_to "Back to Webhooks", admin_webhooks_path, class: "glass-button px-4 py-2 rounded" %>
+    </div>
+  </div>
+</div>
+
+<!-- Delivery Details -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <div class="bg-white bg-opacity-40 backdrop-blur-md rounded-lg p-6 border border-white border-opacity-40">
+    <h3 class="text-lg font-semibold mb-4">Delivery Information</h3>
+    <dl class="space-y-3">
+      <div>
+        <dt class="text-sm font-medium text-gray-500">ID</dt>
+        <dd class="text-sm text-gray-900 font-mono"><%= @webhook_delivery.id %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Event</dt>
+        <dd class="text-sm text-gray-900"><%= @webhook_delivery.event || "Unknown" %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">URL</dt>
+        <dd class="text-sm text-gray-900 font-mono break-all"><%= @webhook_delivery.url %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Status</dt>
+        <dd class="text-sm">
+          <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+            <%= case @webhook_delivery.status
+                when 'success' then 'bg-green-100 text-green-800'
+                when 'failed' then 'bg-red-100 text-red-800'
+                when 'pending' then 'bg-yellow-100 text-yellow-800'
+                else 'bg-gray-100 text-gray-800'
+                end %>">
+            <%= @webhook_delivery.status&.titleize || "Unknown" %>
+          </span>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Attempts</dt>
+        <dd class="text-sm text-gray-900"><%= @webhook_delivery.attempts || 0 %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Created</dt>
+        <dd class="text-sm text-gray-900"><%= @webhook_delivery.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Last Attempt</dt>
+        <dd class="text-sm text-gray-900">
+          <% if @webhook_delivery.last_attempt_at %>
+            <%= @webhook_delivery.last_attempt_at.strftime("%B %d, %Y at %I:%M %p") %>
+          <% else %>
+            Never
+          <% end %>
+        </dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- Response Details -->
+  <div class="bg-white bg-opacity-40 backdrop-blur-md rounded-lg p-6 border border-white border-opacity-40">
+    <h3 class="text-lg font-semibold mb-4">Response Details</h3>
+    <% if @webhook_delivery.response.present? %>
+      <dl class="space-y-3">
+        <% if @webhook_delivery.response['status_code'] %>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Status Code</dt>
+            <dd class="text-sm text-gray-900 font-mono">
+              <span class="<%= @webhook_delivery.response['status_code'].to_i >= 200 && @webhook_delivery.response['status_code'].to_i < 300 ? 'text-green-600' : 'text-red-600' %>">
+                <%= @webhook_delivery.response['status_code'] %>
+              </span>
+            </dd>
+          </div>
+        <% end %>
+        
+        <% if @webhook_delivery.response['headers'] %>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Response Headers</dt>
+            <dd class="text-sm text-gray-900">
+              <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto"><%= JSON.pretty_generate(@webhook_delivery.response['headers']) %></pre>
+            </dd>
+          </div>
+        <% end %>
+        
+        <% if @webhook_delivery.response['body'] %>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Response Body</dt>
+            <dd class="text-sm text-gray-900">
+              <pre class="bg-gray-100 p-2 rounded text-xs overflow-x-auto max-h-32"><%= @webhook_delivery.response['body'] %></pre>
+            </dd>
+          </div>
+        <% end %>
+        
+        <% if @webhook_delivery.response['error'] %>
+          <div>
+            <dt class="text-sm font-medium text-gray-500">Error</dt>
+            <dd class="text-sm text-red-600">
+              <pre class="bg-red-50 p-2 rounded text-xs overflow-x-auto"><%= @webhook_delivery.response['error'] %></pre>
+            </dd>
+          </div>
+        <% end %>
+      </dl>
+    <% else %>
+      <p class="text-gray-500">No response data available</p>
+    <% end %>
+  </div>
+</div>
+
+<!-- Payload -->
+<div class="mb-8">
+  <div class="bg-white bg-opacity-40 backdrop-blur-md rounded-lg p-6 border border-white border-opacity-40">
+    <h3 class="text-lg font-semibold mb-4">Webhook Payload</h3>
+    <% if @webhook_delivery.payload.present? %>
+      <div class="bg-gray-100 p-4 rounded">
+        <pre class="text-xs overflow-x-auto"><%= JSON.pretty_generate(JSON.parse(@webhook_delivery.payload)) rescue @webhook_delivery.payload %></pre>
+      </div>
+    <% else %>
+      <p class="text-gray-500">No payload data available</p>
+    <% end %>
+  </div>
+</div>

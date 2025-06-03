@@ -1,0 +1,73 @@
+<% content_for :title, "Webhook Deliveries" %>
+
+<div class="mb-6">
+  <h2 class="text-2xl font-bold mb-4">Webhook Deliveries</h2>
+  
+  <div class="flex justify-between items-center mb-4">
+    <p class="text-gray-600">Monitor webhook delivery attempts and responses</p>
+  </div>
+</div>
+
+<div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+  <table class="min-w-full divide-y divide-gray-300">
+    <thead>
+      <tr>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">URL</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attempts</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Last Attempt</th>
+        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      <% @webhook_deliveries.each do |delivery| %>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">
+            <%= link_to delivery.id, admin_webhook_path(delivery), class: "hover:text-blue-600" %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <span class="font-medium"><%= delivery.event || "Unknown" %></span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-mono">
+            <div class="truncate max-w-xs" title="<%= delivery.url %>">
+              <%= delivery.url %>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+              <%= case delivery.status
+                  when 'success' then 'bg-green-100 text-green-800'
+                  when 'failed' then 'bg-red-100 text-red-800'
+                  when 'pending' then 'bg-yellow-100 text-yellow-800'
+                  else 'bg-gray-100 text-gray-800'
+                  end %>">
+              <%= delivery.status&.titleize || "Unknown" %>
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <%= delivery.attempts || 0 %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <% if delivery.last_attempt_at %>
+              <%= time_ago_in_words(delivery.last_attempt_at) %> ago
+            <% else %>
+              Never
+            <% end %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <%= link_to "View", admin_webhook_path(delivery), class: "text-indigo-600 hover:text-indigo-900" %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+  
+  <% if @webhook_deliveries.empty? %>
+    <div class="text-center py-12">
+      <p class="text-gray-500 text-lg mb-4">No webhook deliveries found</p>
+      <p class="text-gray-400 text-sm">Webhook deliveries will appear here when services send events</p>
+    </div>
+  <% end %>
+</div>

@@ -101,7 +101,7 @@
         border-right: 2px solid rgba(177, 216, 218, 0.1);
       }
 
-      .admin-nav-item:nth-child(5) {
+      .admin-nav-item:nth-child(3) {
         border-right: 2px solid transparent;
         border-color: rgba(82, 122, 154, 0.8);
       }
@@ -354,18 +354,6 @@
               <%= link_to admin_services_path,
                   class: "admin-nav-link #{controller_name == 'services' ? 'active' : ''}" do %>
                 Services
-              <% end %>
-            </li>
-            <li class="admin-nav-item">
-              <%= link_to admin_services_path,
-                  class: "admin-nav-link #{controller_name == 'service_webhooks' ? 'active' : ''}" do %>
-                Webhooks
-              <% end %>
-            </li>
-            <li class="admin-nav-item">
-              <%= link_to admin_services_path,
-                  class: "admin-nav-link #{controller_name == 'service_keys' ? 'active' : ''}" do %>
-                Keys
               <% end %>
             </li>
             <li class="admin-nav-item">

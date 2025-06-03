@@ -1,78 +1,156 @@
-<!-- app/views/admin/services/show.html.erb -->
-<div class="container">
-  <h1>Service: <%= @service.name %></h1>
+<% content_for :title, "Service: #{@service.name}" %>
 
-  <div class="card mb-4">
-    <div class="card-header">
-      <h2>Service Details</h2>
-    </div>
-    <div class="card-body">
-      <p><strong>Name:</strong> <%= @service.name %></p>
-      <p><strong>Status:</strong> <span class="badge bg-<%= @service.active? ? 'success' : (@service.suspended? ? 'warning' : 'danger') %>"><%= @service.status %></span></p>
-      <p><strong>Created:</strong> <%= @service.created_at %></p>
-
-      <div class="btn-group">
-        <%= link_to 'Edit', edit_admin_service_path(@service), class: 'btn btn-primary' %>
-
-        <% if @service.active? %>
-          <%= button_to 'Suspend', suspend_admin_service_path(@service), class: 'btn btn-warning', data: { confirm: 'Are you sure?' } %>
-        <% end %>
-
-        <% if @service.suspended? %>
-          <%= button_to 'Reactivate', reactivate_admin_service_path(@service), class: 'btn btn-success' %>
-        <% end %>
-
-        <% unless @service.decommissioned? %>
-          <%= button_to 'Decommission', decommission_admin_service_path(@service), class: 'btn btn-danger', data: { confirm: 'Are you sure? This cannot be undone!' } %>
-        <% end %>
-      </div>
+<div class="mb-6">
+  <div class="flex justify-between items-center mb-4">
+    <h2 class="text-2xl font-bold">Service: <%= @service.name %></h2>
+    <div class="space-x-2">
+      <%= link_to "Edit", edit_admin_service_path(@service), class: "glass-button px-4 py-2 rounded" %>
+      <%= link_to "Back to Services", admin_services_path, class: "glass-button px-4 py-2 rounded" %>
     </div>
   </div>
+</div>
 
-  <div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <h2>API Keys</h2>
-
-      <div class="btn-group">
-        <%= button_to 'Generate New Key', admin_service_service_keys_path(@service), class: 'btn btn-success' %>
-        <%= button_to 'Rotate Current Key', rotate_admin_service_service_keys_path(@service), class: 'btn btn-primary' %>
+<!-- Service Details -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+  <div class="bg-white bg-opacity-40 backdrop-blur-md rounded-lg p-6 border border-white border-opacity-40">
+    <h3 class="text-lg font-semibold mb-4">Service Information</h3>
+    <dl class="space-y-3">
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Name</dt>
+        <dd class="text-sm text-gray-900"><%= @service.name %></dd>
       </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Status</dt>
+        <dd class="text-sm">
+          <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+            <%= case @service.status
+                when 'active' then 'bg-green-100 text-green-800'
+                when 'suspended' then 'bg-yellow-100 text-yellow-800'
+                when 'decommissioned' then 'bg-red-100 text-red-800'
+                else 'bg-gray-100 text-gray-800'
+                end %>">
+            <%= @service.status.titleize %>
+          </span>
+        </dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Created</dt>
+        <dd class="text-sm text-gray-900"><%= @service.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+      </div>
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Last Updated</dt>
+        <dd class="text-sm text-gray-900"><%= @service.updated_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- Current Key -->
+  <div class="bg-white bg-opacity-40 backdrop-blur-md rounded-lg p-6 border border-white border-opacity-40">
+    <h3 class="text-lg font-semibold mb-4">Current API Key</h3>
+    <% if @service.current_key %>
+      <dl class="space-y-3">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Key ID</dt>
+          <dd class="text-sm text-gray-900 font-mono"><%= @service.current_key.id %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">API Key</dt>
+          <dd class="text-sm text-gray-900 font-mono break-all"><%= @service.current_key.api_key %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Hash Key</dt>
+          <dd class="text-sm text-gray-900 font-mono break-all"><%= @service.current_key.hash_key %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Notes</dt>
+          <dd class="text-sm text-gray-900"><%= @service.current_key.notes || "No notes" %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Created</dt>
+          <dd class="text-sm text-gray-900"><%= @service.current_key.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+        </div>
+      </dl>
+    <% else %>
+      <p class="text-gray-500">No active API key found</p>
+      <%= link_to "Generate Key", "#", class: "glass-button px-4 py-2 rounded mt-2" %>
+    <% end %>
+  </div>
+</div>
+
+<!-- Webhook Configuration -->
+<div class="mb-8">
+  <div class="bg-white bg-opacity-40 backdrop-blur-md rounded-lg p-6 border border-white border-opacity-40">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold">Webhook Configuration</h3>
+      <% unless @service.webhook %>
+        <%= link_to "Configure Webhook", "#", class: "glass-button px-4 py-2 rounded" %>
+      <% end %>
     </div>
-    <div class="card-body">
-      <% if @keys.any? %>
-        <table class="table table-striped">
+
+    <% if @service.webhook %>
+      <dl class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Webhook URL</dt>
+          <dd class="text-sm text-gray-900 font-mono break-all"><%= @service.webhook.url %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Secret</dt>
+          <dd class="text-sm text-gray-900 font-mono break-all"><%= @service.webhook.secret %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Created</dt>
+          <dd class="text-sm text-gray-900"><%= @service.webhook.created_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Last Updated</dt>
+          <dd class="text-sm text-gray-900"><%= @service.webhook.updated_at.strftime("%B %d, %Y at %I:%M %p") %></dd>
+        </div>
+      </dl>
+    <% else %>
+      <p class="text-gray-500">No webhook configured</p>
+    <% end %>
+  </div>
+</div>
+
+<!-- All Keys -->
+<div class="mb-8">
+  <div class="bg-white bg-opacity-40 backdrop-blur-md rounded-lg p-6 border border-white border-opacity-40">
+    <h3 class="text-lg font-semibold mb-4">All API Keys (<%= @service.keys.count %>)</h3>
+
+    <% if @service.keys.any? %>
+      <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-300">
           <thead>
             <tr>
-              <th>ID</th>
-              <th>Status</th>
-              <th>Created</th>
-              <th>Actions</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Notes</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usage Count</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
             </tr>
           </thead>
-          <tbody>
-            <% @keys.each do |key| %>
+          <tbody class="divide-y divide-gray-200">
+            <% @service.keys.order(created_at: :desc).each do |key| %>
               <tr>
-                <td><%= key.id %></td>
-                <td><span class="badge bg-<%= key.active? ? 'success' : (key.deprecated? ? 'warning' : 'danger') %>"><%= key.status %></span></td>
-                <td><%= key.created_at %></td>
-                <td>
-                  <%= link_to 'View', admin_service_service_key_path(@service, key), class: 'btn btn-sm btn-primary' %>
-
-                  <% if key.active? %>
-                    <%= button_to 'Deprecate', deprecate_admin_service_service_key_path(@service, key), class: 'btn btn-sm btn-warning' %>
-                  <% end %>
-
-                  <% unless key.revoked? %>
-                    <%= button_to 'Revoke', revoke_admin_service_service_key_path(@service, key), class: 'btn btn-sm btn-danger', data: { confirm: 'Are you sure? This cannot be undone!' } %>
-                  <% end %>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900"><%= key.id %></td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                    <%= key.status == 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' %>">
+                    <%= key.status.titleize %>
+                  </span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= key.notes || "No notes" %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900"><%= key.usages.count %></td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <%= time_ago_in_words(key.created_at) %> ago
                 </td>
               </tr>
             <% end %>
           </tbody>
         </table>
-      <% else %>
-        <p>No keys found for this service.</p>
-      <% end %>
-    </div>
+      </div>
+    <% else %>
+      <p class="text-gray-500">No API keys found</p>
+    <% end %>
   </div>
 </div>
