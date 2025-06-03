@@ -57,6 +57,9 @@ class User < ApplicationRecord
   before_create :set_default_access_levels
   before_save :sync_access_levels
   after_update :notify_role_changes, if: :saved_change_to_roles?
+  after_create :invite_to_slack # todo: add condition that we should verify their email first
+  after_create :send_welcome_email
+  after_create :ops_new_user
 
   scope :verified, -> { where(email_verified: true) }
   scope :unverified, -> { where(email_verified: false) }
@@ -182,6 +185,10 @@ class User < ApplicationRecord
     "#{first_name} #{last_name}"
   end
 
+  def name
+    full_name
+  end
+
   def initials
     "#{first_name[0]}#{last_name[0]}"
   end
@@ -289,6 +296,18 @@ class User < ApplicationRecord
   end
 
   private
+
+  def invite_to_slack
+    InviteToSlackJob.perform_later(self.email)
+  end
+
+  def send_welcome_email
+    WelcomeEmailJob.perform_later(self)
+  end
+
+  def ops_new_user
+    NotifyOpsOnNewUserJob.perform_later(self)
+  end
 
   def notify_role_changes
     old_roles = saved_change_to_roles[0] || []

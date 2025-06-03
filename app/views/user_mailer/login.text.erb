@@ -1,0 +1,34 @@
+NEW SIGN-IN DETECTED
+
+Hi <%= @user.first_name || @user.name %>,
+
+We detected a NEW SIGN-IN to your phish.directory account. If this was you, no action is needed.
+
+SIGN-IN DETAILS:
+Date & Time: <%= @timestamp %>
+IP Address: <%= @ip_address %>
+Device/Browser: <%= @user_agent %>
+Access Method: <%= @access_method %>
+
+IMPORTANT SECURITY NOTICE
+If this wasn't you, please contact security@phish.directory immediately AND change your password.
+
+REPORT UNAUTHORIZED ACCESS
+If this login wasn't you, email us at:
+security@phish.directory
+
+Subject: Unauthorized Account Access
+Message: I received a login notification that wasn't me. Please help secure my account.
+
+Timestamp: <%= @timestamp %>
+IP Address: <%= @ip_address %>
+Device: <%= @user_agent %>
+
+Thank you for helping keep your account secure,
+The phish.directory Security Team
+
+---
+
+This is an automated security notification. If you need assistance, please contact security@phish.directory.
+
+© <%= Date.current.year %> phish.directory. All rights reserved.

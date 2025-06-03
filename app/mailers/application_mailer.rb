@@ -3,7 +3,12 @@
 class ApplicationMailer < ActionMailer::Base
   has_history
   utm_params
-  default from: "from@example.com"
+  default from: "no-reply@transactional.phish.directory"
   layout "mailer"
+
+  def env_subject(base_subject)
+    Rails.env.production? ? base_subject : "[#{Rails.env.upcase}] #{base_subject}"
+  end
+
 
 end

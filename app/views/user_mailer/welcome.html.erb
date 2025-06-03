@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Phish Directory!</title>
+  <meta name="description" content="Welcome to Phish Directory, the community-driven database of phishing URLs.">
+  <meta name="author" content="Phish Directory">
+  <style>
+    body {
+      background-color: #f5f5f5;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      margin: 40px auto;
+      max-width: 600px;
+      border-radius: 8px;
+      background-color: white;
+      padding: 20px;
+    }
+    .header {
+      margin-top: 32px;
+      text-align: center;
+    }
+    .logo {
+      width: 120px;
+      height: auto;
+      object-fit: cover;
+      margin: 0 auto 24px;
+      display: block;
+    }
+    .main-heading {
+      font-size: 24px;
+      font-weight: bold;
+      color: #55625c;
+      margin: 16px 0;
+    }
+    .subtitle {
+      font-size: 16px;
+      color: #55625c;
+      margin: 0;
+    }
+    .divider {
+      border: 1px solid #83bab4;
+      margin: 20px 0;
+    }
+    .content {
+      margin-top: 32px;
+    }
+    .text {
+      font-size: 16px;
+      color: #55625c;
+      margin-bottom: 24px;
+    }
+    .feature-list {
+      list-style: disc;
+      padding-left: 20px;
+      margin-bottom: 24px;
+    }
+    .feature-list li {
+      font-size: 16px;
+      color: #55625c;
+      margin-bottom: 8px;
+    }
+    .button-section {
+      text-align: center;
+      margin: 32px 0;
+    }
+    .button {
+      background-color: #83bab4;
+      color: white;
+      font-weight: bold;
+      padding: 12px 24px;
+      border-radius: 4px;
+      text-decoration: none;
+      display: inline-block;
+      box-sizing: border-box;
+    }
+    .open-source-box {
+      background-color: #f5f7f7;
+      border-left: 4px solid #83bab4;
+      padding: 16px;
+      border-radius: 4px;
+      margin: 32px 0;
+    }
+    .open-source-heading {
+      font-size: 18px;
+      font-weight: bold;
+      color: #55625c;
+      margin-bottom: 8px;
+    }
+    .open-source-text {
+      font-size: 16px;
+      color: #55625c;
+      margin: 0;
+    }
+    .section-heading {
+      font-size: 18px;
+      font-weight: bold;
+      color: #55625c;
+      margin-top: 32px;
+      margin-bottom: 16px;
+    }
+    .link {
+      color: #83bab4;
+      text-decoration: none;
+    }
+    .link-bold {
+      color: #83bab4;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    .signature {
+      font-size: 16px;
+      color: #55625c;
+      margin-bottom: 24px;
+    }
+    .footer-divider {
+      border: 1px solid #cbac91;
+      margin: 20px 0;
+    }
+    .footer {
+      margin-top: 32px;
+      text-align: center;
+    }
+    .footer-text {
+      font-size: 14px;
+      color: #55625c;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header with Logo -->
+    <div class="header">
+      <%= image_tag "https://s3.hogwarts.dev/assets/phishdirectory.jpeg",
+                    alt: "Phish Directory Logo",
+                    class: "logo" %>
+      <h1 class="main-heading">Welcome to Phish Directory</h1>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Main Content -->
+    <div class="content">
+      <p class="text">
+        Hi <%= @user.first_name %>! Thank you for joining Phish Directory, the community-driven database of phishing URLs.
+      </p>
+
+      <p class="text">
+        At Phish Directory, our mission is to help you stay safe from phishing attacks by providing you with the latest information on phishing URLs. With your participation, we can build a stronger defense against cyber threats.
+      </p>
+
+      <p class="text">
+        Here's what you can do with Phish Directory:
+      </p>
+
+      <ul class="feature-list">
+        <li>Report suspicious URLs to our database</li>
+        <li>Verify if a URL has been reported as phishing</li>
+        <li>Stay updated on the latest phishing trends</li>
+        <li>Contribute to a safer internet for everyone</li>
+      </ul>
+
+      <div class="button-section">
+        <%= link_to "Access Your Dashboard",
+                    "https://phish.directory/dashboard",
+                    class: "button" %>
+      </div>
+
+      <!-- Open Source Feature Box -->
+      <div class="open-source-box">
+        <h2 class="open-source-heading">🔧 We're open source!</h2>
+        <p class="open-source-text">
+          Interested in helping develop Phish Directory API? Join our Slack and let us know or email
+          <%= link_to "devrel@phish.directory",
+                      "mailto:devrel@phish.directory",
+                      class: "link-bold" %>.
+          We welcome contributors of all skill levels to help make our project even better.
+        </p>
+      </div>
+
+      <h2 class="section-heading">Join Our Community</h2>
+
+      <p class="text">
+        You'll receive an invitation to our Community Slack within the next 10 minutes. If you don't see it, please check your spam folder. Still having trouble? Email
+        <%= link_to "slack@phish.directory",
+                    "mailto:slack@phish.directory",
+                    class: "link" %>
+        for assistance.
+      </p>
+
+      <h2 class="section-heading">Share Your Work</h2>
+
+      <p class="text">
+        We'd love to see what you create with Phish Directory! Send your projects, tools, or integrations to
+        <%= link_to "showcase@phish.directory",
+                    "mailto:showcase@phish.directory",
+                    class: "link" %>
+        and we might feature your work in our community highlights.
+      </p>
+
+      <h2 class="section-heading">Need Help?</h2>
+
+      <p class="text">
+        If you have any questions or need assistance, please don't hesitate to reach out to our support team at
+        <%= link_to "support@phish.directory",
+                    "mailto:support@phish.directory",
+                    class: "link" %>.
+      </p>
+
+      <p class="signature">
+        Stay vigilant,<br>
+        The Phish Directory Team
+      </p>
+    </div>
+
+    <hr class="footer-divider">
+
+    <!-- Footer -->
+    <div class="footer">
+      <p class="footer-text">© 2025 Phish Directory. All rights reserved.</p>
+    </div>
+  </div>
+</body>
+</html>

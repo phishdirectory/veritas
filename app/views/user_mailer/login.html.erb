@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Sign-in Detected - Phish Directory</title>
+  <meta name="description" content="New Sign-in Detected - Phish Directory">
+  <meta name="author" content="Phish Directory">
+  <style>
+    body {
+      background-color: #f3f4f6;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      margin: 40px auto;
+      background-color: white;
+      padding: 48px;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+      max-width: 600px;
+    }
+    .logo {
+      width: 120px;
+      height: auto;
+      object-fit: cover;
+      margin: 0 auto 24px;
+      display: block;
+    }
+    .main-heading {
+      font-size: 24px;
+      font-weight: bold;
+      margin: 24px 0;
+      color: #55625c;
+    }
+    .text {
+      font-size: 16px;
+      color: #374151;
+      margin-bottom: 24px;
+    }
+    .text-small {
+      font-size: 16px;
+      color: #374151;
+      margin-bottom: 16px;
+    }
+    .details-box {
+      padding: 24px;
+      border-radius: 8px;
+      margin: 24px 0;
+      border-left: 4px solid #83bab4;
+      background-color: rgba(131, 186, 180, 0.125);
+    }
+    .details-heading {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      color: #55625c;
+    }
+    .detail-item {
+      font-size: 14px;
+      color: #374151;
+      margin-bottom: 8px;
+    }
+    .security-box {
+      padding: 24px;
+      border-radius: 8px;
+      margin: 24px 0;
+      border-left: 4px solid #cbac91;
+      background-color: rgba(203, 172, 145, 0.125);
+    }
+    .security-heading {
+      font-size: 16px;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #55625c;
+    }
+    .security-text {
+      font-size: 14px;
+      color: #374151;
+    }
+    .security-link {
+      color: #1aa6b8;
+      text-decoration: none;
+    }
+    .button {
+      padding: 12px 24px;
+      border-radius: 4px;
+      font-weight: bold;
+      text-decoration: none;
+      text-align: center;
+      display: block;
+      box-sizing: border-box;
+      color: white;
+      background-color: #1aa6b8;
+      margin: 24px 0;
+    }
+    .signature {
+      font-size: 16px;
+      color: #374151;
+      margin-top: 24px;
+      margin-bottom: 24px;
+    }
+    .divider {
+      margin: 24px 0;
+      border: 1px solid rgba(203, 172, 145, 0.25);
+    }
+    .footer-text {
+      font-size: 12px;
+      color: #6b7280;
+      margin: 0;
+    }
+    .footer-text-spaced {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div>
+      <%= image_tag "https://s3.hogwarts.dev/assets/phishdirectory.jpeg",
+                    alt: "Phish Directory Logo",
+                    class: "logo" %>
+
+      <h1 class="main-heading">New Sign-in Detected</h1>
+
+      <p class="text">Hi <%= @user.first_name || @user.name %>,</p>
+
+      <p class="text-small">
+        We detected a <strong>new sign-in</strong> to your phish.directory account. If this was you, no action is needed.
+      </p>
+
+      <div class="details-box">
+        <p class="details-heading">Sign-in Details:</p>
+        <p class="detail-item">
+          <strong>Date & Time:</strong> <%= @timestamp %>
+        </p>
+        <p class="detail-item">
+          <strong>IP Address:</strong> <%= @ip_address %>
+        </p>
+        <p class="detail-item">
+          <strong>Device/Browser:</strong> <%= @user_agent %>
+        </p>
+        <p class="detail-item">
+          <strong>Access Method:</strong> <%= @access_method %>
+        </p>
+      </div>
+
+      <div class="security-box">
+        <p class="security-heading">Important Security Notice</p>
+        <p class="security-text">
+          If this wasn't you, please contact
+          <%= link_to "security@phish.directory",
+                      "mailto:security@phish.directory",
+                      class: "security-link" %>
+          immediately AND change your password.
+        </p>
+      </div>
+
+      <%= link_to "Report Unauthorized Access",
+                  "mailto:security@phish.directory?subject=Unauthorized%20Account%20Access&body=I%20received%20a%20login%20notification%20that%20wasn't%20me.%20Please%20help%20secure%20my%20account.%0A%0ATimestamp:%20#{@timestamp}%0AIP%20Address:%20#{@ip_address}%0ADevice:%20#{@user_agent}",
+                  class: "button" %>
+
+      <p class="signature">
+        Thank you for helping keep your account secure,<br>
+        The phish.directory Security Team
+      </p>
+    </div>
+
+    <hr class="divider">
+
+    <div>
+      <p class="footer-text">
+        This is an automated security notification. If you need assistance, please contact security@phish.directory.
+      </p>
+      <p class="footer-text-spaced">
+        © <%= Date.current.year %> phish.directory. All rights reserved.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
