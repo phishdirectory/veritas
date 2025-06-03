@@ -6,7 +6,17 @@ class Admin::UsersController < Admin::BaseController
   before_action :ensure_not_already_impersonating, only: [:impersonate]
 
   def index
-    @users = User.order(created_at: :desc)
+    @users = User.all
+
+    if params[:search].present?
+      search_term = "%#{params[:search]}%"
+      @users = @users.where(
+        "first_name ILIKE ? OR last_name ILIKE ? OR email ILIKE ? OR pd_id ILIKE ?",
+        search_term, search_term, search_term, search_term
+      )
+    end
+
+    @users = @users.order(created_at: :desc)
   end
 
   def show
