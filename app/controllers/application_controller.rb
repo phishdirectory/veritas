@@ -57,6 +57,10 @@ class ApplicationController < ActionController::Base
 
   end
 
+  def sign_in(user:)
+    session[:user_id] = user.id
+  end
+
   helper_method :current_user, :impersonating?, :admin_user
 
   # Track papertrail edits to specific users

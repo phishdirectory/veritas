@@ -194,7 +194,9 @@ Rails.application.routes.draw do
   # root "articles#index"
   root "home#index"
 
-  # todo: User registration
+  # User registration
+  get "/signup", to: "users#new", as: :signup
+  post "/signup", to: "users#create"
 
   # Authentication routes
   get "/login", to: "auth#new_session", as: :login

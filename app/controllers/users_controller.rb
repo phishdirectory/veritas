@@ -2,7 +2,11 @@
 
 # app/controllers/users_controller.rb
 class UsersController < ApplicationController
+  skip_before_action :authenticate_user!, only: [:new, :create]
+
+  layout "sessions", only: [:new]
   def new
+    redirect_to root_path if current_user
     @user = User.new
   end
 
