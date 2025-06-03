@@ -2,7 +2,18 @@
 <body>
   <h1>Username Conflict</h1>
   <p> Hi @ops team! 👋</p>
-  <p> It looks like we have a username conflict for <%= @user.email %></p>
+  <p> It looks like we have a username conflict for <%= @desired_username %></p>
+  <p> Desiring User Email: <%= @email %></p>
+  <% if @existing_user %>
+    <p> Existing User: <%= @existing_user.email %> (ID: <%= @existing_user.pd_id %>)</p>
+  <% else %>
+    <p> <strong>ERROR:</strong> No existing user found with username '<%= @desired_username %>' - this shouldn't happen!</p>
+    <% if @similar_users&.any? %>
+      <p> Similar usernames found: <%= @similar_users.map(&:username).join(', ') %></p>
+    <% else %>
+      <p> No similar usernames found in the database.</p>
+    <% end %>
+  <% end %>
   <p>Thus I haven't been able to create a user for them. Please reach out to them! <p>
 </body>
 </html>

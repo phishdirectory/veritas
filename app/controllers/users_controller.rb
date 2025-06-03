@@ -2,7 +2,7 @@
 
 # app/controllers/users_controller.rb
 class UsersController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:new, :create]
+  skip_before_action :authenticate_user!, only: [:new, :create, :username_conflict]
 
   layout "sessions", only: [:new]
   def new
@@ -17,8 +17,17 @@ class UsersController < ApplicationController
       sign_in(user: @user)
       redirect_to root_path, notice: "Account successfully created!"
     else
-      render :new, status: :unprocessable_entity
+      # Check if this is a username conflict error
+      if @user.errors[:base]&.any? { |message| message.include?("snafu") }
+        redirect_to username_conflict_path
+      else
+        render :new, status: :unprocessable_entity
+      end
     end
+  end
+
+  def username_conflict
+    render "errors/username_conflict", layout: false
   end
 
   def update

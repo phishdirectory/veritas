@@ -197,9 +197,11 @@ class User < ApplicationRecord
   def set_username
     fname_length = first_name.length
     found = false
+    username_to_check = nil
 
-    (0...fname_length).each do |i|
-      username_to_check = "#{first_name[i].downcase}#{last_name.downcase}"
+    # Progressively build username: jmayone, jamayone, jasmayone, etc.
+    (1..fname_length).each do |i|
+      username_to_check = "#{first_name[0, i].downcase}#{last_name.downcase}"
       next if User.exists?(username: username_to_check)
 
       self.username = username_to_check
@@ -209,17 +211,15 @@ class User < ApplicationRecord
 
     return if found
 
-    # Try full first name + last name as a last resort
+    # Try full first name + last name as final attempt
     username_to_check = "#{first_name.downcase}#{last_name.downcase}"
-    if User.exists?(username: username_to_check)
-      errors.add(:username, "is already taken for all possible combinations")
-      UsernameFailJob.perform_later(self)
-      throw(:abort)
-    else
-      self.username = username_to_check
-    end
-
+    
+    # All options taken: add error, queue job, abort
+    errors.add(:base, "We've hit a snafu and your username seems to already be taken in our system. Operations will reach out within 24 business hours, and if you haven't heard from us at that point (very unlikely) you should email support@phish.directory")
+    UsernameFailJob.perform_later(email: self.email, desired_username: username_to_check)
+    throw(:abort)
   end
+
 
 
   def trusted_or_higher?

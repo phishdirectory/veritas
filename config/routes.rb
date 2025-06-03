@@ -199,6 +199,7 @@ Rails.application.routes.draw do
   # User registration
   get "/signup", to: "users#new", as: :signup
   post "/signup", to: "users#create"
+  get "/signup/username-conflict", to: "users#username_conflict", as: :username_conflict
 
   # Authentication routes
   get "/login", to: "auth#new_session", as: :login

@@ -17,7 +17,16 @@ class OpsMailer < ApplicationMailer
   end
 
   def username_fail
-    @user = params[:user]
+    @email = params[:email]
+    @desired_username = params[:desired_username]
+    @existing_user = User.find_by(username: @desired_username)
+
+    # If we can't find the existing user, check all users with similar usernames for debugging
+    if @existing_user.nil?
+      @similar_users = User.where("username ILIKE ?", "%#{@desired_username}%").limit(5)
+      Rails.logger.error "Username conflict reported for '#{@desired_username}' but no user found. Similar usernames: #{@similar_users.pluck(:username)}"
+    end
+
     mail(to: "ops@phish.directory",
          subject: env_subject("[!IMPORTANT] Username Conflict"))
   end

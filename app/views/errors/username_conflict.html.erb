@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Username Conflict - Veritas</title>
+
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+
+    <style>
+      body {
+        background-image: url('<%= asset_path('frame.png') %>');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+        margin: 0;
+        padding: 0;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        min-height: 100vh;
+      }
+
+      .gradient-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+
+      .error-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+      }
+
+      .error-card {
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 80vw;
+        max-height: 90vh;
+        padding: 20px;
+        text-align: center;
+        color: #1f2937;
+      }
+
+      .error-icon {
+        font-size: 4rem;
+        opacity: 0.7;
+      }
+
+      .error-title {
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #111827;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7);
+      }
+
+      .error-message {
+        font-size: 1.1rem;
+        margin-bottom: 24px;
+        color: #374151;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+        line-height: 1.6;
+      }
+
+      .error-details {
+        background: rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+        border-radius: 12px;
+        padding: 20px;
+        margin: 24px 0;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+      }
+
+      .error-details h3 {
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 12px;
+        color: #111827;
+      }
+
+      .error-details p {
+        margin-bottom: 8px;
+        color: #4b5563;
+      }
+
+      .glass-button {
+        background: rgba(255, 255, 255, 0.4) !important;
+        backdrop-filter: blur(5px) !important;
+        -webkit-backdrop-filter: blur(5px) !important;
+        border: 2px solid rgba(82, 122, 154, 1) !important;
+        color: #1f2937 !important;
+        text-shadow: 0 1px 2px rgba(255, 255, 255, 0.7) !important;
+        transition: all 0.3s ease !important;
+        position: relative !important;
+        z-index: 10 !important;
+        font-weight: 600 !important;
+        text-decoration: none !important;
+        display: inline-block !important;
+        padding: 12px 24px !important;
+        border-radius: 8px !important;
+        margin: 8px !important;
+      }
+
+      .glass-button:hover {
+        background: rgba(255, 255, 255, 0.6) !important;
+        border-color: rgba(0, 0, 0, 0.5) !important;
+        transform: translateY(-1px) !important;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2) !important;
+        color: #111827 !important;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="gradient-overlay"></div>
+
+    <div class="error-container">
+      <div class="error-card">
+        <div class="error-icon">🤦‍♂️</div>
+
+        <h1 class="error-title">Username Conflict</h1>
+
+        <p class="error-message">
+          We've hit a snafu and your username seems to already be taken in our system.
+        </p>
+
+        <div class="error-details">
+          <h3>What happened?</h3>
+          <p>When creating your account, we automatically generate a username based on your first and last name.</p>
+          <p>Unfortunately, all possible username combinations for your name are already taken by existing users.</p>
+        </div>
+
+        <div class="error-details">
+          <h3>What happens next?</h3>
+          <p><strong>Operations will reach out within 24 business hours</strong> to help resolve this issue.</p>
+          <p>If you haven't heard from us at that point (very unlikely), please email <a href="mailto:support@phish.directory" style="color: #1d4ed8; text-decoration: underline;">support@phish.directory</a></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
