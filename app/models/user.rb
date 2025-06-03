@@ -16,7 +16,9 @@
 #  password_digest          :string           not null
 #  pd_dev                   :boolean          default(FALSE), not null
 #  pretend_is_not_admin     :boolean          default(FALSE), not null
+#  services_used            :integer          default([]), is an Array
 #  session_duration_seconds :integer          default(2592000), not null
+#  signup_service           :integer
 #  staff                    :boolean          default(FALSE), not null
 #  status                   :string           default("active"), not null
 #  created_at               :datetime         not null
