@@ -4,7 +4,15 @@
 module EnsureEnabled
   extend ActiveSupport::Concern
 
-  class FeatureDisabled < StandardError; end
+  class FeatureDisabled < StandardError
+    attr_reader :feature, :actor
+    
+    def initialize(message = nil, feature: nil, actor: nil)
+      super(message)
+      @feature = feature
+      @actor = actor
+    end
+  end
 
   included do
     # Usage: before_action -> { ensure_enabled!(:my_feature) }
@@ -25,11 +33,13 @@ module EnsureEnabled
                 Flipper.enabled?(feature)
               end
 
-    raise FeatureDisabled unless enabled
+    raise FeatureDisabled.new("Feature '#{feature}' is disabled", feature: feature, actor: actor) unless enabled
   end
 
   # Override this method in your controller to customize the response
-  def feature_disabled_response
+  def feature_disabled_response(exception = nil)
+    @disabled_feature = exception&.feature
+    @disabled_actor = exception&.actor
     render "errors/feature_disabled", status: :forbidden, layout: false
   end
 end
