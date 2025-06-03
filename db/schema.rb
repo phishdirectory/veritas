@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_02_153223) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_03_022849) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_catalog.plpgsql"
@@ -362,6 +362,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_02_153223) do
     t.datetime "updated_at", null: false
     t.boolean "staff", default: false, null: false
     t.boolean "pd_dev", default: false, null: false
+    t.integer "signup_service"
+    t.integer "services_used", default: [], array: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["pd_id"], name: "index_users_on_pd_id", unique: true
   end
