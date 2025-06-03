@@ -1,7 +1,7 @@
 {
   "name": "@phishdirectory/veritas",
   "private": true,
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "Central authentication microservice for all phish.directory services.",
   "maintainers": [
     {
