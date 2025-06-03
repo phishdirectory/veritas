@@ -21,6 +21,7 @@
 #  signup_service           :integer
 #  staff                    :boolean          default(FALSE), not null
 #  status                   :string           default("active"), not null
+#  username                 :string           not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  pd_id                    :string           not null
@@ -213,7 +214,7 @@ class User < ApplicationRecord
 
     # Try full first name + last name as final attempt
     username_to_check = "#{first_name.downcase}#{last_name.downcase}"
-    
+
     # All options taken: add error, queue job, abort
     errors.add(:base, "We've hit a snafu and your username seems to already be taken in our system. Operations will reach out within 24 business hours, and if you haven't heard from us at that point (very unlikely) you should email support@phish.directory")
     UsernameFailJob.perform_later(email: self.email, desired_username: username_to_check)

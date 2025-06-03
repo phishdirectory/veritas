@@ -21,6 +21,7 @@
 #  signup_service           :integer
 #  staff                    :boolean          default(FALSE), not null
 #  status                   :string           default("active"), not null
+#  username                 :string           not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
 #  pd_id                    :string           not null

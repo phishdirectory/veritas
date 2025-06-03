@@ -6,12 +6,13 @@ module EnsureEnabled
 
   class FeatureDisabled < StandardError
     attr_reader :feature, :actor
-    
+
     def initialize(message = nil, feature: nil, actor: nil)
       super(message)
       @feature = feature
       @actor = actor
     end
+
   end
 
   included do
