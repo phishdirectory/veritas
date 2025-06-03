@@ -7,13 +7,19 @@ class OpsMailer < ApplicationMailer
     @user = params[:user]
     @error = params[:error]
     mail(to: "ops@phish.directory",
-         subject: env_subject("Failed to invite #{user.email} to Slack"))
+         subject: env_subject("[!IMPORTANT] Failed to invite #{user.email} to Slack"))
   end
 
   def new_user
     @user = params[:user]
     mail(to: "ops@phish.directory",
-         subject: env_subject("New User - Phish Directory"))
+         subject: env_subject("New User!"))
+  end
+
+  def username_fail
+    @user = params[:user]
+    mail(to: "ops@phish.directory",
+         subject: env_subject("[!IMPORTANT] Username Conflict"))
   end
 
 end

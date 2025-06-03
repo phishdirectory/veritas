@@ -56,6 +56,7 @@ class User < ApplicationRecord
   # Callbacks to handle syncing
   before_create :set_default_access_levels
   before_save :sync_access_levels
+  before_create :set_username
   after_update :notify_role_changes, if: :saved_change_to_roles?
   after_create :invite_to_slack # todo: add condition that we should verify their email first
   after_create :send_welcome_email
@@ -193,9 +194,33 @@ class User < ApplicationRecord
     "#{first_name[0]}#{last_name[0]}"
   end
 
-  def username
-    "#{first_name[0].downcase}#{last_name.downcase}"
+  def set_username
+    fname_length = first_name.length
+    found = false
+
+    (0...fname_length).each do |i|
+      username_to_check = "#{first_name[i].downcase}#{last_name.downcase}"
+      next if User.exists?(username: username_to_check)
+
+      self.username = username_to_check
+      found = true
+      break
+    end
+
+    return if found
+
+    # Try full first name + last name as a last resort
+    username_to_check = "#{first_name.downcase}#{last_name.downcase}"
+    if User.exists?(username: username_to_check)
+      errors.add(:username, "is already taken for all possible combinations")
+      UsernameFailJob.perform_later(self)
+      throw(:abort)
+    else
+      self.username = username_to_check
+    end
+
   end
+
 
   def trusted_or_higher?
     ["trusted", "admin", "superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
