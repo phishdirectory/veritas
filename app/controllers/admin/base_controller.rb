@@ -20,7 +20,7 @@ class Admin::BaseController < ApplicationController
 
   def ensure_ui_enabled_for_admin
     # For stop_impersonating action, check the admin user instead of the impersonated user
-    if action_name == 'stop_impersonating' && impersonating?
+    if action_name == "stop_impersonating" && impersonating?
       admin = admin_user
       ensure_enabled!(:ui, actor: admin) if admin
     else

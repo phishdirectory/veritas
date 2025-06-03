@@ -13,6 +13,7 @@
 #                              ok_computer        /ok                                                                                               OkComputer::Engine
 #                               admin_root GET    /admin(.:format)                                                                                  admin/dashboard#index
 #           stop_impersonating_admin_users DELETE /admin/users/stop_impersonating(.:format)                                                         admin/users#stop_impersonating
+#                                          GET    /admin/users/stop_impersonating(.:format)                                                         admin/users#stop_impersonating
 #                   impersonate_admin_user POST   /admin/users/:id/impersonate(.:format)                                                            admin/users#impersonate
 #                              admin_users GET    /admin/users(.:format)                                                                            admin/users#index
 #                                          POST   /admin/users(.:format)                                                                            admin/users#create
