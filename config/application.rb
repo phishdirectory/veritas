@@ -19,9 +19,9 @@ module Veritas
     # Common ones are `templates`, `generators`, or `middleware`, for example.
     config.autoload_lib(ignore: %w[assets tasks])
 
-    config.mission_control.jobs.base_controller_class = "AdminController"
+    config.mission_control.jobs.base_controller_class = "Admin::BaseController"
     config.mission_control.jobs.http_basic_auth_enabled = false
-    config.audits1984.base_controller_class = "AdminController"
+    config.audits1984.base_controller_class = "Admin::BaseController"
     config.console1984.incinerate = false
     config.console1984.protected_environments = %i[production test]
     config.console1984.production_data_warning = "You have access to production data here. That's a big deal. As part of our promise to keep customer data safe and private, we audit the commands you type here. Let's get started!"
