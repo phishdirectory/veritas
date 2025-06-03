@@ -5,7 +5,11 @@ class InviteToSlackJob < ApplicationJob
 
   def perform(*args)
     email = args[0]
-    SlackService.invite(email)
+    if Rails.env.production?
+      SlackService.invite(email)
+    else
+      Rails.logger.info("Would have invited #{email} to Slack")
+    end
   end
 
 end

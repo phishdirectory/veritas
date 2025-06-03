@@ -4,7 +4,7 @@ class WelcomeEmailJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    UserMailer.welcome(user: args[0]).deliver_later
+    UserMailer.welcome.with(user: args[0]).deliver_later
   end
 
 end
