@@ -6,6 +6,7 @@
 # Table name: services
 #
 #  id         :bigint           not null, primary key
+#  keys_count :integer          default(0), not null
 #  name       :string           not null
 #  status     :string           default("active"), not null
 #  created_at :datetime         not null

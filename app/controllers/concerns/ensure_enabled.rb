@@ -30,6 +30,6 @@ module EnsureEnabled
 
   # Override this method in your controller to customize the response
   def feature_disabled_response
-    render file: Rails.root.join("public/404.html"), status: :not_found, layout: false
+    render "errors/feature_disabled", status: :forbidden, layout: false
   end
 end
