@@ -152,9 +152,10 @@
           Veritas is an authentication API service used by the phish.directory microservices. Currently,
           there is no user interface - just a internal API! If you're a developer who needs help provisioning a service key for use, please reach out to Jasper via slack or email. If you're a user who has ended up here, that's a bit odd! Not to fear, go back to whatever directed you here, and if you keep ending up back here, please email <a href="mailto:support@phish.directory">support@phish.directory</a>
         </p>
+
         <%# display signed in user id %>
         <% if current_user %>
-          <p>Logged in as <%= current_user.flipper_id %></p>
+          <p className="my-1.5">Logged in as <%= current_user.flipper_id %></p>
 
           <% if current_user.admin_or_higher? %>
             <%= link_to "Admin Panel", admin_root_path,
@@ -165,17 +166,17 @@
             <%= button_to "Stop Impersonating", stop_impersonating_admin_users_path,
                           method: :delete,
                           form_class: "inline-block",
-                          class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-orange-600 text-sm transition-colors border-0 cursor-pointer" %>
+                          class: "text-white hover:text-gray-200 px-3 py-1.5 mt-5 rounded-md bg-orange-600 text-sm transition-colors border-0 cursor-pointer" %>
           <% else %>
             <%= button_to "Sign Out", logout_path,
                           method: :delete,
                           form_class: "inline-block",
-                          class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+                          class: "text-white hover:text-gray-200 px-3 py-1.5 mt-5 rounded-md bg-orange-600 text-sm transition-colors border-0 cursor-pointer" %>
           <% end %>
         <% else %>
           <%= button_to "Login", login_path,
                         form_class: "inline-block",
-                        class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
+                        class: "text-white hover:text-gray-200 px-3 py-1.5 mt-5 rounded-md bg-gray-700 text-sm transition-colors border-0 cursor-pointer" %>
         <% end %>
       </div>
     </div>
