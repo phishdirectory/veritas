@@ -218,6 +218,7 @@ Rails.application.routes.draw do
     resources :users do
       collection do
         delete :stop_impersonating
+        get :stop_impersonating
       end
       member do
         post :impersonate

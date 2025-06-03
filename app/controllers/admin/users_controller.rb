@@ -4,6 +4,7 @@ class Admin::UsersController < Admin::BaseController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :impersonate]
   before_action :ensure_can_impersonate, only: [:impersonate]
   before_action :ensure_not_already_impersonating, only: [:impersonate]
+  skip_before_action :require_admin, only: [:stop_impersonating]
 
   def index
     @users = User.all
