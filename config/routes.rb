@@ -30,6 +30,14 @@
 #                                          PATCH  /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#update
 #                                          PUT    /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#update
 #                                          DELETE /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#destroy
+#                   admin_service_webhooks GET    /admin/services/:service_id/webhooks(.:format)                                                    admin/service_webhooks#index
+#                                          POST   /admin/services/:service_id/webhooks(.:format)                                                    admin/service_webhooks#create
+#                new_admin_service_webhook GET    /admin/services/:service_id/webhooks/new(.:format)                                                admin/service_webhooks#new
+#               edit_admin_service_webhook GET    /admin/services/:service_id/webhooks/:id/edit(.:format)                                           admin/service_webhooks#edit
+#                    admin_service_webhook GET    /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#show
+#                                          PATCH  /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#update
+#                                          PUT    /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#update
+#                                          DELETE /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#destroy
 #                           admin_services GET    /admin/services(.:format)                                                                         admin/services#index
 #                                          POST   /admin/services(.:format)                                                                         admin/services#create
 #                        new_admin_service GET    /admin/services/new(.:format)                                                                     admin/services#new

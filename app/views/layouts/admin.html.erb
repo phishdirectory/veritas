@@ -101,6 +101,11 @@
         border-right: 2px solid rgba(0, 0, 0, 0.1);
       }
 
+      .admin-nav-item:nth-child(5) {
+        border-right: 2px solid transparent;
+        border-color: #527a9a;
+      }
+
       .admin-nav-item:last-child {
         border-right: none;
       }
@@ -279,14 +284,6 @@
           padding: 20px;
         }
 
-        .admin-nav-list {
-          flex-direction: column;
-        }
-
-        .admin-nav-link {
-          padding: 10px 20px;
-        }
-      }
     </style>
   </head>
 
@@ -373,6 +370,30 @@
               <%= link_to admin_services_path,
                   class: "admin-nav-link #{controller_name == 'service_keys' ? 'active' : ''}" do %>
                 Keys
+              <% end %>
+            </li>
+            <li class="admin-nav-item">
+              <%= link_to '/admin/jobs',
+                  class: "admin-nav-link #{controller_name == 'jobs' ? 'active' : ''}" do %>
+                Jobs
+              <% end %>
+            </li>
+            <li class="admin-nav-item">
+              <%= link_to '/admin/flipper',
+                  class: "admin-nav-link #{controller_name == 'flipper' ? 'active' : ''}" do %>
+                Flipper
+              <% end %>
+            </li>
+            <li class="admin-nav-item">
+              <%= link_to '/admin/blazer',
+                  class: "admin-nav-link #{controller_name == 'blazer' ? 'active' : ''}" do %>
+                Blazer
+              <% end %>
+            </li>
+            <li class="admin-nav-item">
+              <%= link_to '/admin/console',
+                  class: "admin-nav-link #{controller_name == 'console' ? 'active' : ''}" do %>
+                Console Audits
               <% end %>
             </li>
 
