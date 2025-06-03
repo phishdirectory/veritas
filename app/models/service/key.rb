@@ -31,7 +31,7 @@ class Service
 
     self.table_name = "service_keys" # Keep the same table name
 
-    belongs_to :service
+    belongs_to :service, counter_cache: :keys_count
     has_many :usages, class_name: "Service::KeyUsage", dependent: :destroy
 
     validates :api_key, presence: true, uniqueness: true

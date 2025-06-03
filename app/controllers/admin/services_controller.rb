@@ -4,7 +4,7 @@ class Admin::ServicesController < Admin::BaseController
   before_action :set_service, only: [:show, :edit, :update, :destroy]
 
   def index
-    @services = Service.order(created_at: :desc)
+    @services = Service.includes(:webhook).order(created_at: :desc)
   end
 
   def show

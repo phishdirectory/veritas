@@ -2,7 +2,7 @@
 
 <div class="mb-6">
   <h2 class="text-2xl font-bold mb-4">Services</h2>
-  
+
   <div class="flex justify-between items-center mb-4">
     <p class="text-gray-600">Manage API services and their configurations</p>
     <%= link_to "New Service", new_admin_service_path, class: "glass-button px-4 py-2 rounded" %>
@@ -25,12 +25,18 @@
       <% @services.each do |service| %>
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">
+            <% if current_user.superadmin? %>
             <div class="text-sm font-medium text-gray-900">
               <%= link_to service.name, admin_service_path(service), class: "hover:text-blue-600" %>
             </div>
+            <% else %>
+            <div class="text-sm font-medium text-gray-900">
+              <%= service.name %>
+            </div>
+            <% end %>
           </td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full 
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
               <%= case service.status
                   when 'active' then 'bg-green-100 text-green-800'
                   when 'suspended' then 'bg-yellow-100 text-yellow-800'
@@ -41,7 +47,7 @@
             </span>
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-            <%= service.keys.count %>
+            <%= service.keys_count %>
             <% if service.current_key %>
               <span class="text-green-600">(1 active)</span>
             <% else %>
@@ -59,17 +65,21 @@
             <%= time_ago_in_words(service.created_at) %> ago
           </td>
           <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-            <%= link_to "View", admin_service_path(service), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
-            <%= link_to "Edit", edit_admin_service_path(service), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
-            <%= link_to "Delete", admin_service_path(service), method: :delete, 
-                data: { confirm: "Are you sure?" }, 
-                class: "text-red-600 hover:text-red-900" %>
+            <% if current_user.superadmin? %>
+              <%= link_to "View", admin_service_path(service), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
+              <%= link_to "Edit", edit_admin_service_path(service), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
+            <% end %>
+            <% if current_user.owner? %>
+              <%= link_to "Delete", admin_service_path(service), method: :delete,
+                  data: { confirm: "Are you sure?" },
+                  class: "text-red-600 hover:text-red-900" %>
+            <% end %>
           </td>
         </tr>
       <% end %>
     </tbody>
   </table>
-  
+
   <% if @services.empty? %>
     <div class="text-center py-12">
       <p class="text-gray-500 text-lg mb-4">No services found</p>
