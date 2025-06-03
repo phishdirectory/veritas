@@ -4,7 +4,7 @@ class NotifyOpsOnSlackErrorJob < ApplicationJob
   queue_as :priority
 
   def perform(*args)
-    OpsMailer.failed_slack_invite(user: args[0], error: args[1]).deliver_later
+    OpsMailer.with(user: args[0], error: args[1]).failed_slack_invite.deliver_later
   end
 
 end

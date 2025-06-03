@@ -4,7 +4,7 @@ class NotifyOpsOnNewUserJob < ApplicationJob
   queue_as :default
 
   def perform(*args)
-    OpsMailer.new_user.with(user: args[0]).deliver_later
+    OpsMailer.with(user: args[0]).new_user.deliver_later
   end
 
 end
