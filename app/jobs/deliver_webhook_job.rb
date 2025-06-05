@@ -2,7 +2,7 @@
 
 # app/jobs/deliver_webhook_job.rb
 class DeliverWebhookJob < ApplicationJob
-  queue_as :webhooks
+  queue_as :default
   retry_on StandardError, wait: :exponentially_longer, attempts: 5
 
   def perform(webhook_url, payload, secret)

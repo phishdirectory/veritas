@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class UsernameFailJob < ApplicationJob
-  queue_as :priority
+  queue_as :critical
 
   def perform(**params)
     Rails.logger.info "UsernameFailJob params: #{params.inspect}"
