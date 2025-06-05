@@ -13,11 +13,9 @@ production:
     schedule: every day at 8am
 
 heartbeat_priority:
-  command: "HeartbeatJob.perform_later"
+  command: "HeartbeatJob.set(queue: :priority).perform_later('priority')"
   schedule: every 1 minute
-  queue: priority
 
 heartbeat_default:
-  command: "HeartbeatJob.perform_later"
+  command: "HeartbeatJob.set(queue: :default).perform_later('default')"
   schedule: every 1 minute
-  queue: default
