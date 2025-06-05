@@ -11,3 +11,13 @@ production:
   blazer_send_failing_checks:
     command: "Blazer.send_failing_checks"
     schedule: every day at 8am
+
+heartbeat_priority:
+  command: "HeartbeatJob.perform_later"
+  schedule: every 1 minute
+  queue: priority
+
+heartbeat_default:
+  command: "HeartbeatJob.perform_later"
+  schedule: every 1 minute
+  queue: default
