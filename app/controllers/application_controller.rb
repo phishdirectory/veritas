@@ -43,6 +43,7 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.html do
+        session[:return_to] = request.fullpath unless request.xhr?
         flash[:alert] = "You need to sign in before continuing"
         redirect_to "/login"
       end
