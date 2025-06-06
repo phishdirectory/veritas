@@ -22,7 +22,7 @@ class SessionsController < ApplicationController
       session = sign_in(user: user, fingerprint_info: fingerprint_info)
       session.touch_last_seen_at
 
-      redirect_back_or_to root_path, notice: "Successfully logged in!"
+      redirect_to root_path, notice: "Successfully logged in!"
     else
       flash.now[:alert] = "Invalid email or password"
       render :new, status: :unprocessable_entity
@@ -49,13 +49,6 @@ class SessionsController < ApplicationController
         redirect_to profile_path, alert: "Session not found or access denied."
       end
     end
-  end
-
-  private
-
-  def redirect_back_or_to(default, options = {})
-    redirect_to(session[:return_to] || default, options)
-    session.delete(:return_to)
   end
 
 end

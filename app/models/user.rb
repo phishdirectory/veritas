@@ -116,19 +116,27 @@ class User < ApplicationRecord
 
     # Define permission check methods
     define_method("#{prefix}trusted?") do
-      %w[trusted admin superadmin owner].include?(send(field))
+      result = %w[trusted admin superadmin owner].include?(send(field))
+      # For access_level (primary field), also check pretend_is_not_admin
+      field == :access_level ? result && !pretend_is_not_admin : result
     end
 
     define_method("#{prefix}admin?") do
-      %w[admin superadmin owner].include?(send(field))
+      result = %w[admin superadmin owner].include?(send(field))
+      # For access_level (primary field), also check pretend_is_not_admin
+      field == :access_level ? result && !pretend_is_not_admin : result
     end
 
     define_method("#{prefix}superadmin?") do
-      %w[superadmin owner].include?(send(field))
+      result = %w[superadmin owner].include?(send(field))
+      # For access_level (primary field), also check pretend_is_not_admin
+      field == :access_level ? result && !pretend_is_not_admin : result
     end
 
     define_method("#{prefix}owner?") do
-      send(field) == "owner"
+      result = send(field) == "owner"
+      # For access_level (primary field), also check pretend_is_not_admin
+      field == :access_level ? result && !pretend_is_not_admin : result
     end
 
     # Skip generating role methods for access_level (they already exist)
@@ -222,23 +230,6 @@ class User < ApplicationRecord
   end
 
 
-
-  def trusted_or_higher?
-    ["trusted", "admin", "superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
-  end
-
-  def admin_or_higher?
-    ["admin", "superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
-  end
-
-  def superadmin_or_owner?
-    ["superadmin", "owner"].include?(self.access_level) && !self.pretend_is_not_admin
-  end
-
-  def owner?
-    access_level == "owner" && !self.pretend_is_not_admin
-  end
-
   def admin_override_pretend?
     ["admin"].include?(self.access_level)
   end
@@ -248,7 +239,7 @@ class User < ApplicationRecord
     # Only active, non-pretending admins and above can impersonate
     return false unless can_authenticate? && !pretend_is_not_admin
 
-    admin_or_higher?
+    admin?
   end
 
   def is_impersonatable?(impersonator)
@@ -264,7 +255,7 @@ class User < ApplicationRecord
     when :superadmin
       !owner? # Superadmin can impersonate anyone except owner
     when :admin
-      !admin_or_higher? # Admin can only impersonate trusted and regular users
+      !admin? # Admin can only impersonate trusted and regular users
     else
       false # trusted and user levels cannot impersonate
     end
@@ -273,7 +264,7 @@ class User < ApplicationRecord
   def impersonatable?
     # This is a convenience method for views - checks if user is impersonatable by the current admin
     # This should be overridden by passing current_user context, but provides basic check
-    !admin_or_higher?
+    !admin?
   end
 
 

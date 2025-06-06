@@ -28,7 +28,7 @@ class AuthController < ApplicationController
     else
       session[:user_id] = user.id
       respond_to do |format|
-        format.html { redirect_back_or_to root_path, notice: "Logged in successfully" }
+        format.html { redirect_to root_path, notice: "Logged in successfully" }
         format.json { render json: { user: user.as_json(except: :password_digest) } }
       end
     end
@@ -83,11 +83,6 @@ class AuthController < ApplicationController
   def user_params
     params.expect(user: [:email, :username, :password, :password_confirmation,
                          :first_name, :last_name, :role])
-  end
-
-  def redirect_back_or_to(default, options = {})
-    redirect_to(session[:return_to] || default, options)
-    session.delete(:return_to)
   end
 
 end

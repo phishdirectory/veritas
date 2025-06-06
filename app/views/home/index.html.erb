@@ -122,7 +122,7 @@
         </tr>
       </table>
 
-       <% if current_user&.admin_or_higher? %>
+       <% if current_user&.admin? %>
          <%= link_to "Admin Panel", admin_root_path,
                      class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-blue-600 text-sm transition-colors mr-2 inline-block text-decoration-none" %>
        <% end %>
@@ -157,7 +157,7 @@
         <% if current_user %>
           <p className="my-1.5">Logged in as <%= current_user.flipper_id %></p>
 
-          <% if current_user.admin_or_higher? %>
+          <% if current_user.admin? %>
             <%= link_to "Admin Panel", admin_root_path,
                         class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-blue-600 text-sm transition-colors mr-2 inline-block text-decoration-none" %>
           <% end %>

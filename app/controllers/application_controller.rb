@@ -43,7 +43,6 @@ class ApplicationController < ActionController::Base
 
     respond_to do |format|
       format.html do
-        session[:return_to] = request.fullpath unless request.xhr?
         flash[:alert] = "You need to sign in before continuing"
         redirect_to "/login"
       end
@@ -52,7 +51,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_admin
-    return if current_user&.admin_or_higher?
+    return if current_user&.admin?
 
     render json: { error: "You are not authorized to perform this action" }, status: :forbidden
 

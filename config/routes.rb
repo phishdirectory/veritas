@@ -248,6 +248,7 @@ Rails.application.routes.draw do
   end
 
   # Fallback redirect if adminconstraint fails
+  get "admin", to: redirect("/login")
   get "admin/*path", to: redirect("/login")
 
 

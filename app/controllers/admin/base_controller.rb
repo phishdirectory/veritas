@@ -13,7 +13,7 @@ class Admin::BaseController < ApplicationController
   private
 
   def require_admin
-    return if current_user&.admin_or_higher?
+    return if current_user&.admin?
 
     redirect_to login_path, alert: "You are not authorized to access this page"
   end
