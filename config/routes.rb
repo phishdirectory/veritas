@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require_relative "../lib/admin_constraint"
-
 # == Route Map
 #
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
@@ -191,6 +189,8 @@ require_relative "../lib/admin_constraint"
 #      delete_all_broken_versions POST /broken_versions/delete_all(.:format)      actual_db_schema/broken_versions#delete_all
 #                 broken_versions GET  /broken_versions(.:format)                 actual_db_schema/broken_versions#index
 #                          schema GET  /schema(.:format)                          actual_db_schema/schema#index
+
+require_relative "../lib/admin_constraint"
 
 Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

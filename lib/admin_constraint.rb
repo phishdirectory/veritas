@@ -7,6 +7,7 @@ class AdminConstraint
     user = User.find_by(id: request.session[:user_id])
     return false unless user&.can_authenticate?
 
-    user.admin_or_higher?
+    user.admin?
   end
+
 end
