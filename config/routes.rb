@@ -216,34 +216,34 @@ Rails.application.routes.draw do
 
 
   # Admin namespace with constraint
-  # constraints AdminConstraint.new do
-  namespace :admin do
-    # Admin dashboard is the root of the admin namespace
-    root to: "dashboard#index"
+  constraints AdminConstraint.new do
+    namespace :admin do
+      # Admin dashboard is the root of the admin namespace
+      root to: "dashboard#index"
 
-    # Resources and sub-resources
-    resources :users do
-      collection do
-        delete :stop_impersonating
-        get :stop_impersonating
+      # Resources and sub-resources
+      resources :users do
+        collection do
+          delete :stop_impersonating
+          get :stop_impersonating
+        end
+        member do
+          post :impersonate
+        end
       end
-      member do
-        post :impersonate
+
+      resources :services do
+        resources :keys, controller: "service_keys"
+        resources :webhooks, controller: "service_webhooks"
       end
-    end
 
-    resources :services do
-      resources :keys, controller: "service_keys"
-      resources :webhooks, controller: "service_webhooks"
+      # Mount engines under /admin path
+      mount MissionControl::Jobs::Engine, at: "/jobs"
+      mount Audits1984::Engine => "/console"
+      mount Flipper::UI.app(Flipper), at: "/flipper"
+      mount Blazer::Engine, at: "/blazer"
     end
-
-    # Mount engines under /admin path
-    mount MissionControl::Jobs::Engine, at: "/jobs"
-    mount Audits1984::Engine => "/console"
-    mount Flipper::UI.app(Flipper), at: "/flipper"
-    mount Blazer::Engine, at: "/blazer"
   end
-  # end
 
   # # Fallback redirect if adminconstraint fails
   get "admin/*path", to: redirect("/login")
