@@ -1,16 +1,19 @@
-production:
-  blazer_run_checks_5_minutes:
-    command: "Blazer.run_checks(schedule: '5 minutes')"
-    schedule: every 5 minutes
-  blazer_run_checks_1_hour:
-    command: "Blazer.run_checks(schedule: '1 hour')"
-    schedule: every hour
-  blazer_run_checks_1_day:
-    command: "Blazer.run_checks(schedule: '1 day')"
-    schedule: every day at 7:30am
-  blazer_send_failing_checks:
-    command: "Blazer.send_failing_checks"
-    schedule: every day at 8am
+
+blazer_run_checks_5_minutes:
+  command: "Blazer.run_checks(schedule: '5 minutes')"
+  schedule: every 5 minutes
+
+blazer_run_checks_1_hour:
+  command: "Blazer.run_checks(schedule: '1 hour')"
+  schedule: every hour
+
+blazer_run_checks_1_day:
+  command: "Blazer.run_checks(schedule: '1 day')"
+  schedule: every day at 7:30am
+
+blazer_send_failing_checks:
+  command: "Blazer.send_failing_checks"
+  schedule: every day at 8am
 
 heartbeat_priority:
   command: "HeartbeatJob.set(queue: :priority).perform_later('priority')"

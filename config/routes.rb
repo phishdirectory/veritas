@@ -54,6 +54,7 @@
 #                         admin_audits1984        /admin/console                                                                                    Audits1984::Engine
 #                                                 /admin/flipper                                                                                    Flipper::UI
 #                             admin_blazer        /admin/blazer                                                                                     Blazer::Engine
+#                                    admin GET    /admin(.:format)                                                                                  redirect(301, /login)
 #                                          GET    /admin/*path(.:format)                                                                            redirect(301, /login)
 #                        letter_opener_web        /letter_opener                                                                                    LetterOpenerWeb::Engine
 #                             api_rswag_ui        /api/docs                                                                                         Rswag::Ui::Engine
