@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "../lib/admin_constraint"
+
 # == Route Map
 #
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
@@ -245,7 +247,7 @@ Rails.application.routes.draw do
     end
   end
 
-  # # Fallback redirect if adminconstraint fails
+  # Fallback redirect if adminconstraint fails
   get "admin/*path", to: redirect("/login")
 
 
