@@ -52,7 +52,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_admin
-    return if current_user&.admin?
+    return if current_user&.admin_or_higher?
 
     render json: { error: "You are not authorized to perform this action" }, status: :forbidden
 
