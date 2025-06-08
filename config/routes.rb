@@ -200,6 +200,9 @@ Rails.application.routes.draw do
   # root "articles#index"
   root "home#index"
 
+  # Well-known routes for standards compliance
+  get ".well-known/*path", to: "well_known#show", format: false
+
   # User registration
   get "/signup", to: "users#new", as: :signup
   post "/signup", to: "users#create"
