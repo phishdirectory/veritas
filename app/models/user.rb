@@ -318,7 +318,7 @@ class User < ApplicationRecord
   private
 
   def password_complexity
-    return unless password.present?
+    return if password.blank?
 
     errors.add(:password, "must contain at least one uppercase letter") unless password.match(/[A-Z]/)
     errors.add(:password, "must contain at least one lowercase letter") unless password.match(/[a-z]/)

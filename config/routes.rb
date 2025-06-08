@@ -5,6 +5,7 @@
 #                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
 #                                                 /assets                                                                                           Propshaft::Server
 #                                     root GET    /                                                                                                 home#index
+#                                          GET    /.well-known/*path                                                                                well_known#show
 #                                   signup GET    /signup(.:format)                                                                                 users#new
 #                                          POST   /signup(.:format)                                                                                 users#create
 #                        username_conflict GET    /signup/username-conflict(.:format)                                                               users#username_conflict
