@@ -80,6 +80,7 @@ class User < ApplicationRecord
   validates :last_name, presence: true
   validates :email, presence: true, uniqueness: true
   validates_email_format_of :email
+  validates :email, undisposable: { message: 'Sorry, but we do not accept disposable email providers.' }
   normalizes :email, with: ->(email) { email.strip.downcase }
   validates :password, presence: true, length: { minimum: 8 }, if: lambda {
     new_record? || password.present?

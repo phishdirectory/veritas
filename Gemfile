@@ -36,6 +36,7 @@ gem "webauthn", "~> 3.2"                 # WebAuthn support
 gem "rack-attack"                        # Rate limiting
 gem "rack-cors"                          # CORS management
 gem "validates_email_format_of"          # Email validation
+gem "disposable_mail"                    # Block disposable email domains
 gem "lockbox"                            # Encryption
 gem "blind_index"                        # Encrypted search
 gem "geocoder"
