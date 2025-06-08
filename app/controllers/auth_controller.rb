@@ -33,9 +33,17 @@ class AuthController < ApplicationController
       handle_login_error("Incorrect password", email)
     else
       session[:user_id] = user.id
-      respond_to do |format|
-        format.html { redirect_to root_path, notice: "Logged in successfully" }
-        format.json { render json: { user: user.as_json(except: :password_digest) } }
+      
+      if user.email_verified?
+        respond_to do |format|
+          format.html { redirect_to root_path, notice: "Logged in successfully" }
+          format.json { render json: { user: user.as_json(except: :password_digest) } }
+        end
+      else
+        respond_to do |format|
+          format.html { redirect_to email_confirmation_path, notice: "Please confirm your email address to continue" }
+          format.json { render json: { message: "Email confirmation required", redirect_to: email_confirmation_path }, status: :forbidden }
+        end
       end
     end
   end

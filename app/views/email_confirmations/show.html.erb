@@ -1,0 +1,39 @@
+<div class="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-md">
+    <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      Please confirm your email
+    </h2>
+    <p class="mt-2 text-center text-sm text-gray-600">
+      We've sent a confirmation email to <strong><%= @user.email %></strong>
+    </p>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+    <div class="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div class="space-y-6">
+        <div class="text-center">
+          <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        
+        <div class="text-center">
+          <h3 class="text-lg font-medium text-gray-900">Check your email</h3>
+          <p class="mt-2 text-sm text-gray-600">
+            Click the confirmation link in the email we sent you to verify your account and start using Phish Directory.
+          </p>
+        </div>
+
+        <%= turbo_frame_tag "resend_section" do %>
+          <%= render "resend_section", user: @user %>
+        <% end %>
+
+        <div class="text-center mt-4">
+          <p class="text-xs text-gray-400">
+            Still having trouble? Contact us at <a href="mailto:support@phish.directory" class="text-indigo-600 hover:text-indigo-500">support@phish.directory</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

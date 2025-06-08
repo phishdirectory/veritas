@@ -20,8 +20,7 @@ class UsersController < ApplicationController
     end
 
     if @user.save
-      sign_in(user: @user)
-      redirect_to root_path, notice: "Account successfully created!"
+      redirect_to email_confirmation_path, notice: "Account created! Please check your email to verify your account."
     else
       # Check if this is a username conflict error
       if @user.errors[:base]&.any? { |message| message.include?("snafu") }

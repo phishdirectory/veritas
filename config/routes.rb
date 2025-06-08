@@ -215,6 +215,11 @@ Rails.application.routes.draw do
   delete "/logout", to: "auth#logout", as: :logout
   get "/auth/me", to: "auth#me", as: :me
 
+  # Email confirmation routes
+  get "/email_confirmation", to: "email_confirmations#show", as: :email_confirmation
+  get "/confirm_email/:token", to: "email_confirmations#confirm", as: :confirm_email
+  post "/email_confirmation/resend", to: "email_confirmations#resend", as: :resend_email_confirmation
+
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
   # Can be used by load balancers and uptime monitors to verify that the app is live.

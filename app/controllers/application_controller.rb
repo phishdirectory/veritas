@@ -39,6 +39,29 @@ class ApplicationController < ActionController::Base
   end
 
   def authenticate_user!
+    unless current_user
+      respond_to do |format|
+        format.html do
+          flash[:alert] = "You need to sign in before continuing"
+          redirect_to "/login"
+        end
+        format.json { render json: { error: "You need to sign in before continuing" }, status: :unauthorized }
+      end
+      return
+    end
+
+    unless current_user.email_verified?
+      respond_to do |format|
+        format.html do
+          flash[:alert] = "Please verify your email address before continuing"
+          redirect_to email_confirmation_path
+        end
+        format.json { render json: { error: "Email verification required", redirect_to: email_confirmation_path }, status: :forbidden }
+      end
+    end
+  end
+
+  def authenticate_user_without_email_verification!
     return if current_user
 
     respond_to do |format|

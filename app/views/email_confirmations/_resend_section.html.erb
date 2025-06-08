@@ -1,0 +1,45 @@
+<% if user.confirmation_period_valid? %>
+  <% time_left = 5.minutes - (Time.current - user.confirmation_sent_at) %>
+  <% expires_at = Time.current + time_left %>
+  
+  <div data-controller="countdown" 
+       data-countdown-expires-at-value="<%= expires_at.iso8601 %>"
+       data-countdown-total-duration-value="5"
+       class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+    <div class="flex items-center justify-between mb-3">
+      <div class="flex items-center">
+        <div class="flex-shrink-0">
+          <svg class="h-5 w-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+          </svg>
+        </div>
+        <div class="ml-3">
+          <p class="text-sm text-yellow-700" data-countdown-target="message">
+            Please wait before requesting another confirmation email.
+          </p>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="text-lg font-mono font-bold text-yellow-800" data-countdown-target="timer">
+          <!-- Timer will be populated by JS -->
+        </div>
+      </div>
+    </div>
+    
+    <!-- Progress bar -->
+    <div class="w-full bg-yellow-200 rounded-full h-2">
+      <div class="bg-yellow-400 h-2 rounded-full transition-all duration-1000" 
+           data-countdown-target="progressBar" 
+           style="width: 0%"></div>
+    </div>
+  </div>
+<% else %>
+  <div class="text-center">
+    <p class="text-sm text-gray-500">
+      Didn't receive the email? Check your spam folder or 
+      <%= form_with url: resend_email_confirmation_path, method: :post, local: false, class: "inline" do |form| %>
+        <%= form.submit "resend confirmation email", class: "font-medium text-indigo-600 hover:text-indigo-500 bg-transparent border-none underline cursor-pointer" %>
+      <% end %>
+    </p>
+  </div>
+<% end %>

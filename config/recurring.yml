@@ -26,3 +26,7 @@ default_priority_queue_heartbeat_job:
 low_priority_queue_heartbeat_job:
   command: "HeartbeatJob.set(queue: :low).perform_later('low')"
   schedule: every hour
+
+cleanup_unverified_accounts:
+  command: "CleanupUnverifiedAccountsJob.perform_later"
+  schedule: every day at 2am

@@ -58,10 +58,8 @@ class User < ApplicationRecord
   before_create :set_default_access_levels
   before_save :sync_access_levels
   before_create :set_username
-  after_update :notify_role_changes, if: :saved_change_to_roles?
-  after_create :invite_to_slack # todo: add condition that we should verify their email first
-  after_create :send_welcome_email
-  after_create :ops_new_user
+  after_update :notify_role_changes, if: :saved_change_to_access_level?
+  after_create :send_confirmation_email
 
   scope :verified, -> { where(email_verified: true) }
   scope :unverified, -> { where(email_verified: false) }
@@ -95,6 +93,7 @@ class User < ApplicationRecord
   }
 
   before_validation :generate_pd_id, on: :create
+  before_create :generate_confirmation_token
 
   # State machine for user status
   aasm column: :status do
@@ -186,13 +185,26 @@ class User < ApplicationRecord
   def verify_email
     self.email_verified = true
     self.email_verified_at = Time.current
+    self.confirmation_token = nil
     save!
   end
 
   def unverify_email
     self.email_verified = false
     self.email_verified_at = nil
+    generate_confirmation_token
     save!
+  end
+
+  def send_confirmation_email
+    generate_confirmation_token unless confirmation_token.present?
+    self.confirmation_sent_at = Time.current
+    save!
+    EmailConfirmationJob.perform_later(self)
+  end
+
+  def confirmation_period_valid?
+    confirmation_sent_at && confirmation_sent_at > 5.minutes.ago
   end
 
   def full_name
@@ -340,10 +352,10 @@ class User < ApplicationRecord
   end
 
   def notify_role_changes
-    old_roles = saved_change_to_roles[0] || []
-    new_roles = saved_change_to_roles[1] || []
+    old_access_level = saved_change_to_access_level[0] || 'user'
+    new_access_level = saved_change_to_access_level[1] || 'user'
 
-    WebhookService.notify_user_role_changed(pd_id, new_roles, old_roles)
+    WebhookService.notify_user_role_changed(pd_id, new_access_level, old_access_level)
   end
 
   def set_default_access_levels
@@ -378,6 +390,10 @@ class User < ApplicationRecord
     remaining_chars = random_digits[0...7] # Take only 7 characters from the hex
 
     self.pd_id ||= "PDU#{numeric_first}#{remaining_chars}"
+  end
+
+  def generate_confirmation_token
+    self.confirmation_token = SecureRandom.urlsafe_base64(32)
   end
 
 end

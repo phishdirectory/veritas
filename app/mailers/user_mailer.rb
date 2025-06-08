@@ -20,4 +20,12 @@ class UserMailer < ApplicationMailer
          subject: env_subject("New Sign-in Detected - Phish Directory"))
   end
 
+  def email_confirmation(user)
+    @user = user
+    @confirmation_url = confirm_email_url(token: @user.confirmation_token)
+    mail(to: email_address_with_name(@user.email, @user.name),
+         from: email_address_with_name("confirm@transactional.phish.directory", "Phish Directory"),
+         subject: env_subject("Please confirm your email address"))
+  end
+
 end
