@@ -4,5 +4,8 @@
 
 import { application } from "./application"
 
+import PasswordController from "./password_controller"
+application.register("password", PasswordController)
+
 import SearchController from "./search_controller"
 application.register("search", SearchController)

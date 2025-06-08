@@ -84,6 +84,9 @@ class User < ApplicationRecord
   validates :password, presence: true, length: { minimum: 8 }, if: lambda {
     new_record? || password.present?
   }
+  validate :password_complexity, if: lambda {
+    new_record? || password.present?
+  }
   validates :pd_id, presence: true, uniqueness: true, length: { is: 11 }, format: {
     # format is PDU{digit}{7 alphanumeric characters}
     with: /\APDU\d[a-zA-Z0-9]{7}\z/,
@@ -313,6 +316,15 @@ class User < ApplicationRecord
   end
 
   private
+
+  def password_complexity
+    return unless password.present?
+
+    errors.add(:password, "must contain at least one uppercase letter") unless password.match(/[A-Z]/)
+    errors.add(:password, "must contain at least one lowercase letter") unless password.match(/[a-z]/)
+    errors.add(:password, "must contain at least one number") unless password.match(/\d/)
+    errors.add(:password, "must contain at least one special character (!@#$%^&*()_+-=[]{}|;:,.<>?)") unless password.match(/[!@#$%^&*()_+\-=\[\]{}|;:,.<>?]/)
+  end
 
   def invite_to_slack
     InviteToSlackJob.perform_later(self.email)
