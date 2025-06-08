@@ -21,16 +21,17 @@ RUN apt-get update -qq && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Install bun for node packages
-RUN curl -fsSL https://bun.sh/install | bash
-ENV PATH="/root/.bun/bin:${PATH}"
+# Install Node.js and Yarn
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    npm install -g yarn
 
 # Install specific bundler version
 RUN gem install bundler -v 2.5.17
 
 # Copy dependency definitions first for better caching
 COPY Gemfile Gemfile.lock .ruby-version ./
-COPY package.json bun.lock ./
+COPY package.json yarn.lock ./
 
 # Set bundle config - IMPORTANT: Removed BUNDLE_PATH to use system location
 ENV BUNDLE_GEMFILE=Gemfile \
@@ -41,7 +42,7 @@ ENV BUNDLE_GEMFILE=Gemfile \
 # Added --no-cache to ensure gems are properly installed
 RUN bundle config set --local without 'development test' && \
     bundle install --no-cache && \
-    bun install
+    yarn install --frozen-lockfile
 
 # Add source code
 COPY . .
@@ -71,6 +72,12 @@ RUN apt-get update -qq && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+# Install Node.js for runtime (needed for some Rails assets)
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # Set editor for credentials
 ENV EDITOR=nano
 
@@ -80,9 +87,8 @@ WORKDIR /rails
 COPY --from=builder /usr/local/lib/ruby/gems/ /usr/local/lib/ruby/gems/
 COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
 
-# Copy bun from builder
-COPY --from=builder /root/.bun /root/.bun
-ENV PATH="/root/.bun/bin:${PATH}"
+# Copy node_modules from builder
+COPY --from=builder /rails/node_modules /rails/node_modules
 
 # Copy application from builder
 COPY --from=builder /rails /rails
