@@ -7,6 +7,8 @@
 #  id                       :bigint           not null, primary key
 #  access_level             :integer          default("user"), not null
 #  api_access_level         :integer          default("user"), not null
+#  confirmation_sent_at     :datetime
+#  confirmation_token       :string
 #  email                    :string           not null
 #  email_verified           :boolean          default(FALSE)
 #  email_verified_at        :datetime
@@ -28,8 +30,9 @@
 #
 # Indexes
 #
-#  index_users_on_email  (email) UNIQUE
-#  index_users_on_pd_id  (pd_id) UNIQUE
+#  index_users_on_confirmation_token  (confirmation_token) UNIQUE
+#  index_users_on_email               (email) UNIQUE
+#  index_users_on_pd_id               (pd_id) UNIQUE
 #
 class User < ApplicationRecord
   include AASM

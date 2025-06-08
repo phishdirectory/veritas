@@ -13,6 +13,9 @@
 #                                          POST   /login(.:format)                                                                                  auth#login
 #                                   logout DELETE /logout(.:format)                                                                                 auth#logout
 #                                       me GET    /auth/me(.:format)                                                                                auth#me
+#                       email_confirmation GET    /email_confirmation(.:format)                                                                     email_confirmations#show
+#                            confirm_email GET    /confirm_email/:token(.:format)                                                                   email_confirmations#confirm
+#                resend_email_confirmation POST   /email_confirmation/resend(.:format)                                                              email_confirmations#resend
 #                       rails_health_check GET    /up(.:format)                                                                                     rails/health#show
 #                              ok_computer        /ok                                                                                               OkComputer::Engine
 #                               admin_root GET    /admin(.:format)                                                                                  admin/dashboard#index
