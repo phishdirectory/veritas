@@ -15,10 +15,14 @@ blazer_send_failing_checks:
   command: "Blazer.send_failing_checks"
   schedule: every day at 8am
 
-heartbeat_priority:
+high_priority_queue_heartbeat_job:
   command: "HeartbeatJob.set(queue: :priority).perform_later('priority')"
-  schedule: every 1 minute
+  schedule: every 30 seconds
 
-heartbeat_default:
+default_priority_queue_heartbeat_job:
   command: "HeartbeatJob.set(queue: :default).perform_later('default')"
-  schedule: every 1 minute
+  schedule: every 5 minutes
+
+low_priority_queue_heartbeat_job:
+  command: "HeartbeatJob.set(queue: :low).perform_later('low')"
+  schedule: every hour
