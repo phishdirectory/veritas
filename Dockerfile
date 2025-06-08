@@ -68,7 +68,8 @@ RUN apt-get update -qq && \
     libpq5 \
     libvips42 \
     libffi8 \
-    libyaml-0-2 && \
+    libyaml-0-2 \
+    curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 

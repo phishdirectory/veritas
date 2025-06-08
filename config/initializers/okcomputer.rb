@@ -18,7 +18,10 @@ OkComputer::Registry.register "migrations", OkComputer::ActiveRecordMigrationsCh
 OkComputer::Registry.register "cache", OkComputer::CacheCheckSolidCache.new
 OkComputer::Registry.register "ruby_version", OkComputer::RubyVersionCheck.new
 
-OkComputer.require_authentication(Rails.application.credentials.okcomputer[:username], Rails.application.credentials.okcomputer[:password], except: %w(default nonsecret))
+# Only require authentication if credentials are available (not during asset precompilation)
+if Rails.application.credentials.okcomputer.present?
+  OkComputer.require_authentication(Rails.application.credentials.okcomputer[:username], Rails.application.credentials.okcomputer[:password], except: %w(default nonsecret))
+end
 
 # Run checks in parallel
 OkComputer.check_in_parallel = true
