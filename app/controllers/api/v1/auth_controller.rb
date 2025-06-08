@@ -4,7 +4,6 @@
 module Api
   module V1
     class AuthController < BaseController
-
       def authenticate
         # Dehash the credentials from the request
         credentials = dehash_credentials(params[:credentials])

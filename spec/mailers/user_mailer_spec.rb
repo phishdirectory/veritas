@@ -4,7 +4,7 @@ require "rails_helper"
 
 RSpec.describe UserMailer, type: :mailer do
   describe "signup" do
-    let(:mail) { UserMailer.signup }
+    let(:mail) { described_class.signup }
 
     it "renders the headers" do
       expect(mail.subject).to eq("Signup")

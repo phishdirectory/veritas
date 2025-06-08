@@ -129,6 +129,9 @@ group :development, :test do
   gem "rubocop-capybara", "~> 2.22", ">= 2.22.1"
   gem "relaxed-rubocop"
   gem "overcommit", require: false # Git hooks
+  gem "rubocop-rspec_rails", "~> 2.31"
+  gem "rubocop-rspec", "~> 3.6"
+
 
   # Performance
   gem "query_count" # SQL query counter

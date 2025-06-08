@@ -69,10 +69,10 @@ class AuthController < ApplicationController
 
   def sanitize_input(input, options = {})
     return nil if input.nil?
-    
+
     original_input = input.to_s
     sanitized = original_input.strip
-    
+
     # Check for SQL injection patterns
     sql_injection_patterns = [
       /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)/i,
@@ -80,7 +80,7 @@ class AuthController < ApplicationController
       /('.*'|".*")/,
       /(\bOR\b|\bAND\b).*[=<>]/i
     ]
-    
+
     if sql_injection_patterns.any? { |pattern| sanitized.match?(pattern) }
       notify_security_incident(
         email: options[:email],
@@ -89,16 +89,16 @@ class AuthController < ApplicationController
       )
       raise SecurityError, "Potentially malicious input detected"
     end
-    
+
     # Remove potentially dangerous characters that could be used for XSS or injection
     sanitized = sanitized.gsub(/[<>'"&]/, {
-      '<' => '&lt;',
-      '>' => '&gt;',
-      "'" => '&#39;',
-      '"' => '&quot;',
-      '&' => '&amp;'
-    })
-    
+                                 "<" => "&lt;",
+                                 ">" => "&gt;",
+                                 "'" => "&#39;",
+                                 '"' => "&quot;",
+                                 "&" => "&amp;"
+                               })
+
     # Limit length to prevent buffer overflow attacks
     max_length = options[:max_length] || 255
     sanitized.truncate(max_length)
@@ -106,16 +106,16 @@ class AuthController < ApplicationController
 
   def sanitize_password(password, options = {})
     return nil if password.nil?
-    
+
     original_password = password.to_s
-    
+
     # Check for SQL injection patterns in password
     sql_injection_patterns = [
       /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)/i,
       /(--|\/\*|\*\/)/,
       /(\bOR\b|\bAND\b).*[=<>]/i
     ]
-    
+
     if sql_injection_patterns.any? { |pattern| original_password.match?(pattern) }
       notify_security_incident(
         email: options[:email],
@@ -124,7 +124,7 @@ class AuthController < ApplicationController
       )
       raise SecurityError, "Invalid password format"
     end
-    
+
     # Don't modify password content but check length
     if original_password.length > 255
       notify_security_incident(
@@ -134,7 +134,7 @@ class AuthController < ApplicationController
       )
       raise SecurityError, "Password too long"
     end
-    
+
     original_password
   end
 

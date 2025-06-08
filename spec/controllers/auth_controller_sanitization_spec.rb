@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe AuthController, type: :controller do
   describe "input sanitization" do
@@ -16,16 +16,16 @@ RSpec.describe AuthController, type: :controller do
             ip_address: anything,
             user_agent: anything
           )
-          
+
           post :login, params: { user: { email: "test@example.com' OR 1=1; SELECT * FROM users--", password: "validpassword" } }
-          
+
           expect(response).to have_http_status(:unprocessable_entity)
           expect(flash[:alert]).to include("Invalid input")
         end
 
         it "rejects email with malicious SQL comments" do
           post :login, params: { user: { email: "test@example.com'--", password: "validpassword" } }
-          
+
           expect(response).to have_http_status(:unprocessable_entity)
           expect(flash[:alert]).to include("Invalid input")
         end
@@ -40,23 +40,23 @@ RSpec.describe AuthController, type: :controller do
             ip_address: anything,
             user_agent: anything
           )
-          
+
           post :login, params: { user: { email: "test@example.com", password: "password' OR 1=1; SELECT * FROM users--" } }
-          
+
           expect(response).to have_http_status(:unprocessable_entity)
           expect(flash[:alert]).to include("Invalid input")
         end
 
         it "rejects password with SQL comments" do
           post :login, params: { user: { email: "test@example.com", password: "password'--" } }
-          
+
           expect(response).to have_http_status(:unprocessable_entity)
           expect(flash[:alert]).to include("Invalid input")
         end
 
         it "rejects password with UNION attack" do
           post :login, params: { user: { email: "test@example.com", password: "password' UNION SELECT username,password FROM users WHERE '1'='1" } }
-          
+
           expect(response).to have_http_status(:unprocessable_entity)
           expect(flash[:alert]).to include("Invalid input")
         end
@@ -65,7 +65,7 @@ RSpec.describe AuthController, type: :controller do
       context "with XSS attempts" do
         it "sanitizes email with script tags" do
           post :login, params: { user: { email: "<script>alert('xss')</script>test@example.com", password: "validpassword" } }
-          
+
           expect(response).to have_http_status(:unprocessable_entity)
           # Should show sanitized version in error form
         end
@@ -74,8 +74,8 @@ RSpec.describe AuthController, type: :controller do
       context "with valid input" do
         it "allows normal login" do
           post :login, params: { user: { email: user.email, password: "validpassword" } }
-          
-          expect(response).to have_http_status(:found)  # redirect on success
+
+          expect(response).to have_http_status(:found) # redirect on success
         end
       end
     end

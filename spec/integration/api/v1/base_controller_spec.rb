@@ -39,6 +39,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
 
     context "with a revoked key" do
       before { service_key.update(revoked: true) }
+
       it "returns unauthorized" do
         get api_v1_user_path(user.pd_id), headers: { "X-Api-Key" => api_key }
         expect(response).to have_http_status(:unauthorized)
@@ -48,6 +49,7 @@ RSpec.describe Api::V1::UsersController, type: :request do
 
     context "with a deprecated key" do
       before { service_key.update(deprecated: true) }
+
       it "still allows access if key is otherwise valid" do
         get api_v1_user_path(user.pd_id), headers: { "X-Api-Key" => api_key }
         expect(response).not_to have_http_status(:unauthorized)

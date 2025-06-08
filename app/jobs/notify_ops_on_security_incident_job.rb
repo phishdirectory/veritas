@@ -13,4 +13,5 @@ class NotifyOpsOnSecurityIncidentJob < ApplicationJob
       timestamp: Time.current
     ).security_incident.deliver_later
   end
+
 end
