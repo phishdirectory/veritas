@@ -14,10 +14,11 @@
 # end
 
 OkComputer::Registry.register "database", OkComputer::ActiveRecordCheck.new
-OkComputer::Registry.register "cache", OkComputer::CacheCheck.new
+OkComputer::Registry.register "migrations", OkComputer::ActiveRecordMigrationsCheck.new
+OkComputer::Registry.register "cache", OkComputer::CacheCheckSolidCache.new
+OkComputer::Registry.register "ruby_version", OkComputer::RubyVersionCheck.new
 
-OkComputer::Registry.register "app_version", OkComputer::AppVersionCheck.new
-OkComputer::Registry.register "action_mailer", OkComputer::ActionMailerCheck.new
+OkComputer.require_authentication(Rails.application.credentials.okcomputer[:username], Rails.application.credentials.okcomputer[:password], except: %w(default nonsecret))
 
 # Run checks in parallel
 OkComputer.check_in_parallel = true
