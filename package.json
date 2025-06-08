@@ -10,7 +10,7 @@
     }
   ],
   "scripts": {
-    "build": "bun run build",
+    "build": "rollup -c --bundleConfigAsCjs rollup.config.js",
     "start": "bun run start"
   },
   "keywords": [],
@@ -19,5 +19,9 @@
     "@fingerprintjs/fingerprintjs": "^4.6.2",
     "@hotwired/stimulus": "^3.2.2",
     "@hotwired/turbo-rails": "^8.0.13"
+  },
+  "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "rollup": "^4.42.0"
   }
 }
