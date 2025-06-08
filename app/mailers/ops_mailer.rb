@@ -31,4 +31,16 @@ class OpsMailer < ApplicationMailer
          subject: env_subject("[!IMPORTANT] Username Conflict"))
   end
 
+  def security_incident
+    @email = params[:email]
+    @input_type = params[:input_type]
+    @malicious_input = params[:malicious_input]
+    @ip_address = params[:ip_address]
+    @user_agent = params[:user_agent]
+    @timestamp = params[:timestamp]
+
+    mail(to: "ops@phish.directory",
+         subject: env_subject("[🚨 SECURITY ALERT] Malicious Input Detected"))
+  end
+
 end

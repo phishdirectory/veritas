@@ -11,8 +11,14 @@ class AuthController < ApplicationController
   end
 
   def login
-    email = params.dig(:user, :email)
-    password = params.dig(:user, :password)
+    user_email = params.dig(:user, :email)
+    begin
+      email = sanitize_input(user_email, email: user_email, field_name: "email")
+      password = sanitize_password(params.dig(:user, :password), email: user_email)
+    rescue SecurityError => e
+      handle_login_error("Invalid input: #{e.message}", user_email)
+      return
+    end
 
     if email.blank? || password.blank?
       handle_login_error("Email and password are required", email)
@@ -60,6 +66,87 @@ class AuthController < ApplicationController
   end
 
   private
+
+  def sanitize_input(input, options = {})
+    return nil if input.nil?
+    
+    original_input = input.to_s
+    sanitized = original_input.strip
+    
+    # Check for SQL injection patterns
+    sql_injection_patterns = [
+      /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)/i,
+      /(--|\/\*|\*\/|;)/,
+      /('.*'|".*")/,
+      /(\bOR\b|\bAND\b).*[=<>]/i
+    ]
+    
+    if sql_injection_patterns.any? { |pattern| sanitized.match?(pattern) }
+      notify_security_incident(
+        email: options[:email],
+        input_type: options[:field_name] || "unknown",
+        malicious_input: original_input
+      )
+      raise SecurityError, "Potentially malicious input detected"
+    end
+    
+    # Remove potentially dangerous characters that could be used for XSS or injection
+    sanitized = sanitized.gsub(/[<>'"&]/, {
+      '<' => '&lt;',
+      '>' => '&gt;',
+      "'" => '&#39;',
+      '"' => '&quot;',
+      '&' => '&amp;'
+    })
+    
+    # Limit length to prevent buffer overflow attacks
+    max_length = options[:max_length] || 255
+    sanitized.truncate(max_length)
+  end
+
+  def sanitize_password(password, options = {})
+    return nil if password.nil?
+    
+    original_password = password.to_s
+    
+    # Check for SQL injection patterns in password
+    sql_injection_patterns = [
+      /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|EXEC|UNION)\b)/i,
+      /(--|\/\*|\*\/)/,
+      /(\bOR\b|\bAND\b).*[=<>]/i
+    ]
+    
+    if sql_injection_patterns.any? { |pattern| original_password.match?(pattern) }
+      notify_security_incident(
+        email: options[:email],
+        input_type: "password",
+        malicious_input: "[REDACTED - PASSWORD FIELD]"
+      )
+      raise SecurityError, "Invalid password format"
+    end
+    
+    # Don't modify password content but check length
+    if original_password.length > 255
+      notify_security_incident(
+        email: options[:email],
+        input_type: "password",
+        malicious_input: "[REDACTED - OVERSIZED PASSWORD]"
+      )
+      raise SecurityError, "Password too long"
+    end
+    
+    original_password
+  end
+
+  def notify_security_incident(email:, input_type:, malicious_input:)
+    NotifyOpsOnSecurityIncidentJob.perform_later(
+      email: email,
+      input_type: input_type,
+      malicious_input: malicious_input,
+      ip_address: request.remote_ip,
+      user_agent: request.user_agent
+    )
+  end
 
   def handle_login_error(message, email)
     respond_to do |format|
