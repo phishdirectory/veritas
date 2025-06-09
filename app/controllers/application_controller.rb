@@ -50,15 +50,16 @@ class ApplicationController < ActionController::Base
       return
     end
 
-    unless current_user.email_verified?
-      respond_to do |format|
-        format.html do
-          flash[:alert] = "Please verify your email address before continuing"
-          redirect_to email_confirmation_path
-        end
-        format.json { render json: { error: "Email verification required", redirect_to: email_confirmation_path }, status: :forbidden }
+    return if current_user.email_verified?
+
+    respond_to do |format|
+      format.html do
+        flash[:alert] = "Please verify your email address before continuing"
+        redirect_to email_confirmation_path
       end
+      format.json { render json: { error: "Email verification required", redirect_to: email_confirmation_path }, status: :forbidden }
     end
+
   end
 
   def authenticate_user_without_email_verification!
@@ -82,6 +83,7 @@ class ApplicationController < ActionController::Base
 
   def sign_in(user:)
     session[:user_id] = user.id
+    ahoy.authenticate(user)
   end
 
   helper_method :current_user, :impersonating?, :admin_user

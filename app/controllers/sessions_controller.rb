@@ -21,6 +21,7 @@ class SessionsController < ApplicationController
 
       session = sign_in(user: user, fingerprint_info: fingerprint_info)
       session.touch_last_seen_at
+      ahoy.authenticate(user)
 
       redirect_to root_path, notice: "Successfully logged in!"
     else
