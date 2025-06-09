@@ -170,3 +170,9 @@ gem "sentry-rails"
 gem "stackprof"
 gem "httparty" # For making HTTP requests
 gem "postmark-rails"
+gem "rollups" # todo: better utilize this package!
+gem "prophet-rb" # todo: better utilize this package!
+gem "anomaly_detection" # todo: better utilize this package!
+gem "breakout-detection" # todo: better utilize this package!
+gem "disco" # todo: better utilize this package!
+gem "chartkick" # todo: better utilize this package!

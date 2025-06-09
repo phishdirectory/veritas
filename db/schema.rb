@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_08_210947) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_09_015045) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_catalog.plpgsql"
@@ -263,6 +263,15 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_08_210947) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable"
+  end
+
+  create_table "rollups", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "interval", null: false
+    t.datetime "time", null: false
+    t.jsonb "dimensions", default: {}, null: false
+    t.float "value"
+    t.index ["name", "interval", "time", "dimensions"], name: "index_rollups_on_name_and_interval_and_time_and_dimensions", unique: true
   end
 
   create_table "service_key_usages", force: :cascade do |t|

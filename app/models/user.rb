@@ -45,6 +45,8 @@ class User < ApplicationRecord
   has_paper_trail
   has_secure_password
 
+  has_many :visits, class_name: "Ahoy::Visit", dependent: :destroy
+
   # Define access level values centrally
   ACCESS_LEVELS = { user: 0, trusted: 1, admin: 2, superadmin: 3, owner: 4 }.freeze
   ACCESS_LEVEL_FIELDS = [:access_level, :api_access_level].freeze
@@ -81,7 +83,7 @@ class User < ApplicationRecord
   validates :last_name, presence: true
   validates :email, presence: true, uniqueness: true
   validates_email_format_of :email
-  validates :email, undisposable: { message: 'Sorry, but we do not accept disposable email providers.' }
+  validates :email, undisposable: { message: "Sorry, but we do not accept disposable email providers." }
   normalizes :email, with: ->(email) { email.strip.downcase }
   validates :password, presence: true, length: { minimum: 8 }, if: lambda {
     new_record? || password.present?
@@ -355,8 +357,8 @@ class User < ApplicationRecord
   end
 
   def notify_role_changes
-    old_access_level = saved_change_to_access_level[0] || 'user'
-    new_access_level = saved_change_to_access_level[1] || 'user'
+    old_access_level = saved_change_to_access_level[0] || "user"
+    new_access_level = saved_change_to_access_level[1] || "user"
 
     WebhookService.notify_user_role_changed(pd_id, new_access_level, old_access_level)
   end
