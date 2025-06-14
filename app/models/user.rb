@@ -202,7 +202,7 @@ class User < ApplicationRecord
   end
 
   def send_confirmation_email
-    generate_confirmation_token unless confirmation_token.present?
+    generate_confirmation_token if confirmation_token.blank?
     self.confirmation_sent_at = Time.current
     save!
     EmailConfirmationJob.perform_later(self)

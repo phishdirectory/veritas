@@ -45,11 +45,10 @@ class Admin::OauthApplicationsController < Admin::BaseController
     @application.secret = Doorkeeper::OAuth::Helpers::UniqueToken.generate
     if @application.save
       flash[:notice] = "Client secret has been regenerated. Please update your application with the new secret."
-      redirect_to admin_oauth_application_path(@application)
     else
       flash[:alert] = "Failed to regenerate secret."
-      redirect_to admin_oauth_application_path(@application)
     end
+    redirect_to admin_oauth_application_path(@application)
   end
 
   private
@@ -61,4 +60,5 @@ class Admin::OauthApplicationsController < Admin::BaseController
   def application_params
     params.require(:doorkeeper_application).permit(:name, :redirect_uri, :scopes, :confidential)
   end
+
 end

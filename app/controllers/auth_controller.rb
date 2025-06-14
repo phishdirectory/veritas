@@ -12,7 +12,7 @@ class AuthController < ApplicationController
 
   def oauth_login
     redirect_to root_path if current_user
-    
+
     # Check if this is a legitimate OAuth flow
     client_id = session[:oauth_client_id] || params[:client_id]
     if client_id.blank?
@@ -20,9 +20,9 @@ class AuthController < ApplicationController
       redirect_to login_path
       return
     end
-    
+
     @user = User.new
-    
+
     # Get OAuth client information
     @oauth_client_name = nil
     oauth_app = Doorkeeper::Application.find_by(uid: client_id)

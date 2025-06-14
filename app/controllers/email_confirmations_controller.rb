@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class EmailConfirmationsController < ApplicationController
   skip_before_action :authenticate_user!, only: [:show, :confirm, :resend]
   before_action :authenticate_user_without_email_verification!, only: [:show, :resend]
-  
+
   def show
     # Show the confirmation required page
     @user = current_user
@@ -10,13 +12,11 @@ class EmailConfirmationsController < ApplicationController
 
   def confirm
     @user = User.find_by(confirmation_token: params[:token])
-    
+
     if @user.nil?
       flash[:alert] = "Invalid confirmation token."
-      redirect_to login_path
     elsif @user.email_verified?
       flash[:notice] = "Your email has already been confirmed."
-      redirect_to login_path
     else
       @user.verify_email
       # Send welcome email, invite to slack, and notify ops now that email is confirmed
@@ -24,13 +24,13 @@ class EmailConfirmationsController < ApplicationController
       InviteToSlackJob.perform_later(@user.email)
       NotifyOpsOnNewUserJob.perform_later(@user)
       flash[:notice] = "Your email has been successfully confirmed! You can now log in."
-      redirect_to login_path
     end
+    redirect_to login_path
   end
 
   def resend
     @user = current_user
-    
+
     if @user.email_verified?
       respond_to do |format|
         format.html do
@@ -45,7 +45,7 @@ class EmailConfirmationsController < ApplicationController
     elsif @user.confirmation_period_valid?
       time_left = 5.minutes - (Time.current - @user.confirmation_sent_at)
       minutes_left = (time_left / 60).ceil
-      
+
       respond_to do |format|
         format.html do
           flash[:alert] = "Please wait #{minutes_left} minutes before requesting another confirmation email."
@@ -58,7 +58,7 @@ class EmailConfirmationsController < ApplicationController
       end
     else
       @user.send_confirmation_email
-      
+
       respond_to do |format|
         format.html do
           flash[:notice] = "A new confirmation email has been sent to your email address."
@@ -71,4 +71,5 @@ class EmailConfirmationsController < ApplicationController
       end
     end
   end
+
 end

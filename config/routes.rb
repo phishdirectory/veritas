@@ -228,10 +228,10 @@ require_relative "../lib/admin_constraint"
 
 Rails.application.routes.draw do
   use_doorkeeper
-  
+
   # OAuth 2.0 UserInfo endpoint (separate from API)
   namespace :oauth do
-    get 'userinfo', to: 'userinfo#show'
+    get "userinfo", to: "userinfo#show"
   end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
