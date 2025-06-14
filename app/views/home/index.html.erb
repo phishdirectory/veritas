@@ -127,6 +127,9 @@
                      class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-blue-600 text-sm transition-colors mr-2 inline-block text-decoration-none" %>
        <% end %>
 
+       <%= link_to "Edit Profile", edit_profile_path,
+                   class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-green-600 text-sm transition-colors mr-2 inline-block text-decoration-none" %>
+
        <% if impersonating? %>
          <%= button_to "Stop Impersonating", stop_impersonating_admin_users_path,
                         method: :delete,
@@ -155,11 +158,24 @@
 
         <%# display signed in user id %>
         <% if current_user %>
-          <p className="my-1.5">Logged in as <%= current_user.flipper_id %></p>
+          <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+            <img src="<%= current_user.public_avatar_url(variant: :medium) %>" 
+                 alt="<%= current_user.full_name %>'s avatar"
+                 style="width: 60px; height: 60px; border-radius: 50%; object-fit: cover; margin-right: 15px; border: 2px solid #ddd;">
+            <div>
+              <p style="margin: 0; font-weight: bold;"><%= current_user.full_name %></p>
+              <p style="margin: 0; color: #666; font-size: 14px;">ID: <%= current_user.flipper_id %></p>
+            </div>
+          </div>
 
           <% if current_user.admin? %>
             <%= link_to "Admin Panel", admin_root_path,
                         class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-blue-600 text-sm transition-colors mr-2 inline-block text-decoration-none" %>
+          <% end %>
+
+          <% if Flipper.enabled?(:ui, current_user) %>
+            <%= link_to "Edit Profile", edit_profile_path,
+                        class: "text-white hover:text-gray-200 px-3 py-1.5 rounded-md bg-green-600 text-sm transition-colors mr-2 inline-block text-decoration-none" %>
           <% end %>
 
           <% if impersonating? %>

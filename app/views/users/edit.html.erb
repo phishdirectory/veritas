@@ -1,0 +1,421 @@
+<!-- app/views/users/edit.html.erb -->
+<html lang="en">
+  <head>
+    <title>Edit Profile - Veritas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        position: relative;
+      }
+
+      .gradient-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(to bottom,
+          rgba(255,255,255,0) 0%,
+          rgba(0,0,0,0.2) 100%);
+        z-index: -1;
+      }
+
+      .card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 20px;
+        position: relative;
+      }
+
+      .card {
+        background-color: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        padding: 40px;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 32px;
+        margin: 0 0 20px 0;
+        font-weight: 700;
+        color: #111;
+      }
+
+      .form-group {
+        margin-bottom: 24px;
+        text-align: left;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      input[type="text"], input[type="email"], input[type="file"] {
+        width: 100%;
+        padding: 12px 16px;
+        border: 2px solid #e1e5e9;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.2s;
+        box-sizing: border-box;
+      }
+
+      input[type="text"]:focus, input[type="email"]:focus, input[type="file"]:focus {
+        outline: none;
+        border-color: #007bff;
+      }
+
+      .current-photo {
+        margin-bottom: 16px;
+        text-align: center;
+      }
+
+      .current-photo img {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #e1e5e9;
+        margin-bottom: 12px;
+      }
+
+      .btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s;
+        margin: 4px;
+      }
+
+      .btn-primary {
+        background-color: #007bff;
+        color: white;
+      }
+
+      .btn-primary:hover {
+        background-color: #0056b3;
+      }
+
+      .btn-danger {
+        background-color: #dc3545;
+        color: white;
+      }
+
+      .btn-danger:hover {
+        background-color: #c82333;
+      }
+
+      .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+      }
+
+      .btn-secondary:hover {
+        background-color: #545b62;
+      }
+
+      .file-info {
+        font-size: 14px;
+        color: #666;
+        margin-top: 8px;
+      }
+
+      .actions {
+        text-align: center;
+        margin-top: 32px;
+      }
+
+      .error-messages {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        color: #721c24;
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 24px;
+        text-align: left;
+      }
+
+      .error-messages ul {
+        margin: 0;
+        padding-left: 20px;
+      }
+
+      /* Crop Modal Styles */
+      .crop-modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.8);
+      }
+
+      .crop-modal-content {
+        background-color: white;
+        margin: 2% auto;
+        padding: 20px;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 800px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .crop-container {
+        max-height: 400px;
+        margin: 20px 0;
+      }
+
+      .crop-image {
+        max-width: 100%;
+        display: block;
+      }
+
+      .crop-actions {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        background-color: #ccc;
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 600px) {
+        .card {
+          padding: 24px 16px;
+        }
+
+        h1 {
+          font-size: 24px;
+        }
+
+        .crop-modal-content {
+          margin: 5% auto;
+          padding: 15px;
+          width: 95%;
+        }
+
+        .crop-container {
+          max-height: 300px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gradient-overlay"></div>
+
+    <div class="card-container">
+      <div class="card">
+        <h1>Edit Profile</h1>
+
+        <% if @user.errors.any? %>
+          <div class="error-messages">
+            <strong>Please fix the following errors:</strong>
+            <ul>
+              <% @user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <%= form_with(model: @user, url: update_profile_path, method: :patch, multipart: true, local: true) do |f| %>
+          <div class="form-group" aria-disabled="true">
+            <%= f.label :first_name, "First Name" %>
+            <%= f.text_field :first_name, required: true, disabled: true, class: "disabled" %>
+          </div>
+
+          <div class="form-group" aria-disabled="true">
+            <%= f.label :last_name, "Last Name" %>
+            <%= f.text_field :last_name, required: true, disabled: true, class: "disabled" %>
+          </div>
+
+          <div class="form-group" aria-disabled="true">
+            <%= f.label :email, "Email Address" %>
+            <%= f.email_field :email, required: true, disabled: true, class: "disabled" %>
+          </div>
+
+          <div class="form-group">
+            <%= f.label :profile_photo, "Profile Photo" %>
+
+            <% if @user.has_profile_photo? %>
+              <div class="current-photo">
+                <img src="<%= @user.public_avatar_url(variant: :medium) %>" alt="Current profile photo">
+                <div>
+                  <%= button_to "Remove Photo", destroy_profile_photo_path,
+                      method: :delete,
+                      class: "btn btn-danger",
+                      confirm: "Are you sure you want to remove your profile photo?",
+                      form: { style: "display: inline;" } %>
+                </div>
+              </div>
+            <% else %>
+              <div class="current-photo">
+                <img src="<%= @user.public_avatar_url(variant: :medium) %>" alt="Current avatar">
+                <div style="color: #666; font-size: 14px;">Currently using initials</div>
+              </div>
+            <% end %>
+
+            <input type="file" id="photo-input" accept="image/jpeg,image/jpg,image/png,image/webp" style="display: none;">
+            <button type="button" id="select-photo-btn" class="btn btn-secondary">Select New Photo</button>
+            <div class="file-info">JPEG, PNG, or WebP. Max 5MB. You'll be able to crop the image after selecting.</div>
+
+            <!-- Hidden field for cropped image data -->
+            <%= f.hidden_field :cropped_image_data, id: "cropped-image-data" %>
+          </div>
+
+          <div class="actions">
+            <%= f.submit "Update Profile", class: "btn btn-primary" %>
+            <%= link_to "Cancel", root_path, class: "btn btn-secondary" %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Crop Modal -->
+    <div id="crop-modal" class="crop-modal">
+      <div class="crop-modal-content">
+        <h2 style="text-align: center; margin-bottom: 20px;">Crop Your Photo</h2>
+        <div class="crop-container">
+          <img id="crop-image" class="crop-image" style="max-width: 100%;">
+        </div>
+        <div class="crop-actions">
+          <button type="button" id="crop-save-btn" class="btn btn-primary">Save Crop</button>
+          <button type="button" id="crop-cancel-btn" class="btn btn-secondary">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    <script>
+      let cropper;
+      const photoInput = document.getElementById('photo-input');
+      const selectPhotoBtn = document.getElementById('select-photo-btn');
+      const cropModal = document.getElementById('crop-modal');
+      const cropImage = document.getElementById('crop-image');
+      const cropSaveBtn = document.getElementById('crop-save-btn');
+      const cropCancelBtn = document.getElementById('crop-cancel-btn');
+      const croppedImageData = document.getElementById('cropped-image-data');
+
+      // Open file dialog when button is clicked
+      selectPhotoBtn.addEventListener('click', function() {
+        photoInput.click();
+      });
+
+      // Handle file selection
+      photoInput.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+          if (file.size > 5 * 1024 * 1024) {
+            alert('File size must be less than 5MB');
+            return;
+          }
+
+          const reader = new FileReader();
+          reader.onload = function(e) {
+            cropImage.src = e.target.result;
+            cropModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+
+            // Initialize cropper
+            cropper = new Cropper(cropImage, {
+              aspectRatio: 1, // Square crop
+              viewMode: 1,
+              dragMode: 'move',
+              background: false,
+              modal: true,
+              guides: true,
+              highlight: true,
+              cropBoxMovable: true,
+              cropBoxResizable: true,
+              toggleDragModeOnDblclick: false,
+            });
+          };
+          reader.readAsDataURL(file);
+        }
+      });
+
+      // Save cropped image
+      cropSaveBtn.addEventListener('click', function() {
+        if (cropper) {
+          const canvas = cropper.getCroppedCanvas({
+            width: 400,
+            height: 400,
+            minWidth: 256,
+            minHeight: 256,
+            maxWidth: 4096,
+            maxHeight: 4096,
+            fillColor: '#fff',
+            imageSmoothingEnabled: false,
+            imageSmoothingQuality: 'high',
+          });
+
+          // Convert to base64 and store in hidden field
+          const croppedDataURL = canvas.toDataURL('image/jpeg', 0.9);
+          croppedImageData.value = croppedDataURL;
+
+          // Update preview image
+          const currentPhoto = document.querySelector('.current-photo img');
+          if (currentPhoto) {
+            currentPhoto.src = croppedDataURL;
+          }
+
+          closeCropModal();
+        }
+      });
+
+      // Cancel cropping
+      cropCancelBtn.addEventListener('click', closeCropModal);
+
+      // Close modal when clicking outside
+      cropModal.addEventListener('click', function(e) {
+        if (e.target === cropModal) {
+          closeCropModal();
+        }
+      });
+
+      function closeCropModal() {
+        cropModal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        if (cropper) {
+          cropper.destroy();
+          cropper = null;
+        }
+        photoInput.value = ''; // Reset file input
+      }
+
+      // Handle escape key
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && cropModal.style.display === 'block') {
+          closeCropModal();
+        }
+      });
+    </script>
+  </body>
+</html>

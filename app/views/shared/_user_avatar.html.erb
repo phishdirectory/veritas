@@ -1,0 +1,35 @@
+<%
+  # Profile photo component with fallback to initials
+  # Usage: render 'shared/user_avatar', user: user, size: :medium, class: 'additional-classes', shape: :circle
+  
+  size ||= :medium
+  user_class ||= ''
+  shape ||= :circle  # Default to circle for UI consistency
+  
+  size_classes = {
+    small: 'w-8 h-8 text-xs',
+    medium: 'w-12 h-12 text-sm', 
+    large: 'w-16 h-16 text-lg',
+    xl: 'w-24 h-24 text-xl'
+  }
+  
+  # Choose URL based on shape preference
+  avatar_url = case shape
+               when :square
+                 user.public_avatar_square_url(variant: size)
+               when :circle
+                 user.public_avatar_circle_url(variant: size)
+               else
+                 user.public_avatar_url(variant: size)  # Default behavior
+               end
+  
+  avatar_class = if shape == :circle
+                   "#{size_classes[size]} rounded-full flex items-center justify-center #{user_class}"
+                 else
+                   "#{size_classes[size]} flex items-center justify-center #{user_class}"
+                 end
+%>
+
+<%= image_tag avatar_url, 
+    alt: "#{user.full_name}'s avatar",
+    class: "#{avatar_class} object-cover border-2 border-gray-200" %>

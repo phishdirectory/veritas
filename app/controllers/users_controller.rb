@@ -35,10 +35,19 @@ class UsersController < ApplicationController
     render "errors/username_conflict", layout: false
   end
 
+  def edit
+    @user = current_user
+  end
+
   def update
     @user = current_user
     begin
-      if @user.update(sanitized_user_params)
+      # Handle cropped image data if present
+      if params[:user][:cropped_image_data].present?
+        process_cropped_image(params[:user][:cropped_image_data])
+      end
+
+      if @user.update(sanitized_user_params.except(:cropped_image_data))
         redirect_to root_path, notice: "Account successfully updated!"
       else
         render :edit, status: :unprocessable_entity
@@ -46,6 +55,16 @@ class UsersController < ApplicationController
     rescue ActiveRecord::RecordInvalid => e
       @user = e.record
       render :edit, status: :unprocessable_entity
+    end
+  end
+
+  def destroy_profile_photo
+    @user = current_user
+    if @user.profile_photo.attached?
+      @user.profile_photo.purge
+      redirect_to edit_profile_path, notice: "Profile photo removed successfully!"
+    else
+      redirect_to edit_profile_path, alert: "No profile photo to remove."
     end
   end
 
@@ -133,7 +152,7 @@ class UsersController < ApplicationController
   end
 
   def sanitized_user_params
-    permitted_params = params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation)
+    permitted_params = params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation, :profile_photo, :cropped_image_data)
     user_email = permitted_params[:email]
 
     begin
@@ -149,6 +168,7 @@ class UsersController < ApplicationController
             sanitized_params[key] = sanitize_input(value, email: user_email, field_name: key.to_s)
           end
         else
+          # Handle file uploads and other non-string parameters
           sanitized_params[key] = value
         end
       end
@@ -169,6 +189,31 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:first_name, :last_name, :email, :password, :password_confirmation)
+  end
+
+  def process_cropped_image(base64_data)
+    # Remove the data:image/jpeg;base64, prefix
+    image_data = base64_data.split(",")[1]
+    return if image_data.blank?
+
+    # Decode base64 data
+    decoded_image = Base64.decode64(image_data)
+
+    # Create a temporary file
+    temp_file = Tempfile.new(["cropped_image", ".jpg"])
+    temp_file.binmode
+    temp_file.write(decoded_image)
+    temp_file.rewind
+
+    # Attach the cropped image
+    @user.profile_photo.attach(
+      io: temp_file,
+      filename: "profile_photo_#{@user.pd_id}.jpg",
+      content_type: "image/jpeg"
+    )
+
+    temp_file.close
+    temp_file.unlink
   end
 
 end

@@ -46,6 +46,7 @@ class User < ApplicationRecord
   has_secure_password
 
   has_many :visits, class_name: "Ahoy::Visit", dependent: :destroy
+  has_one_attached :profile_photo
 
   # Define access level values centrally
   ACCESS_LEVELS = { user: 0, trusted: 1, admin: 2, superadmin: 3, owner: 4 }.freeze
@@ -96,6 +97,10 @@ class User < ApplicationRecord
     with: /\APDU\d[a-zA-Z0-9]{7}\z/,
     message: "must be in the format PDU{digit}{7 alphanumeric characters}"
   }
+  validates :profile_photo, content_type: { in: %w[image/jpeg image/jpeg image/png image/webp],
+                                            message: "must be a JPEG, PNG, or WebP image"
+},
+                            size: { less_than: 5.megabytes, message: "must be less than 5MB" }
 
   before_validation :generate_pd_id, on: :create
   before_create :generate_confirmation_token
@@ -222,6 +227,69 @@ class User < ApplicationRecord
 
   def initials
     "#{first_name[0]}#{last_name[0]}"
+  end
+
+  def profile_photo_url(variant: :thumb)
+    return nil unless profile_photo.attached?
+
+    case variant
+    when :thumb
+      profile_photo.variant(resize_to_limit: [100, 100])
+    when :medium
+      profile_photo.variant(resize_to_limit: [200, 200])
+    when :large
+      profile_photo.variant(resize_to_limit: [400, 400])
+    else
+      profile_photo
+    end
+  end
+
+  def has_profile_photo?
+    profile_photo.attached?
+  end
+
+  # Public URL for external services to access profile photos or initials
+  def public_profile_photo_url
+    Rails.application.routes.url_helpers.user_profile_photo_url(pd_id: pd_id, **url_options)
+  end
+
+  def public_avatar_url(variant: :thumb)
+    Rails.application.routes.url_helpers.user_avatar_url(pd_id: pd_id, variant: variant, **url_options)
+  end
+
+  # Direct URL to initials avatar (useful for external services that want to force initials)
+  def public_initials_url(variant: :thumb)
+    Rails.application.routes.url_helpers.user_initials_url(pd_id: pd_id, variant: variant, **url_options)
+  end
+
+  # Square profile photo URLs (explicit square shape)
+  def public_avatar_square_url(variant: :thumb)
+    Rails.application.routes.url_helpers.user_avatar_square_url(pd_id: pd_id, variant: variant, **url_options)
+  end
+
+  # Circle profile photo URLs (circular masked images)
+  def public_avatar_circle_url(variant: :thumb)
+    Rails.application.routes.url_helpers.user_avatar_circle_url(pd_id: pd_id, variant: variant, **url_options)
+  end
+
+  # Circle initials URL
+  def public_initials_circle_url(variant: :thumb)
+    Rails.application.routes.url_helpers.user_initials_circle_url(pd_id: pd_id, variant: variant, **url_options)
+  end
+
+  private
+
+  def url_options
+    case Rails.env
+    when "development"
+      { host: "localhost", port: 3000, protocol: "http" }
+    when "staging"
+      { host: "staging.veritas.phish.directory", protocol: "https" }
+    when "production"
+      { host: "veritas.phish.directory", protocol: "https" }
+    else
+      { host: "localhost", port: 3000, protocol: "http" }
+    end
   end
 
   def set_username

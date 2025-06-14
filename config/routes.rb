@@ -255,10 +255,23 @@ Rails.application.routes.draw do
   delete "/logout", to: "auth#logout", as: :logout
   get "/auth/me", to: "auth#me", as: :me
 
+  # Profile management routes (requires authentication)
+  get "/profile/edit", to: "users#edit", as: :edit_profile
+  patch "/profile", to: "users#update", as: :update_profile
+  delete "/profile/photo", to: "users#destroy_profile_photo", as: :destroy_profile_photo
+
   # Email confirmation routes
   get "/email_confirmation", to: "email_confirmations#show", as: :email_confirmation
   get "/confirm_email/:token", to: "email_confirmations#confirm", as: :confirm_email
   post "/email_confirmation/resend", to: "email_confirmations#resend", as: :resend_email_confirmation
+
+  # Profile photo routes (public, no auth required)
+  get "/user/:pd_id/pfp", to: "profile_photos#show", as: :user_profile_photo
+  get "/user/:pd_id/avatar/:variant", to: "profile_photos#avatar", as: :user_avatar
+  get "/user/:pd_id/avatar/:variant/square", to: "profile_photos#avatar_square", as: :user_avatar_square
+  get "/user/:pd_id/avatar/:variant/circle", to: "profile_photos#avatar_circle", as: :user_avatar_circle
+  get "/user/:pd_id/initials(/:variant)", to: "profile_photos#initials", as: :user_initials, defaults: { format: :svg }
+  get "/user/:pd_id/initials/:variant/circle", to: "profile_photos#initials_circle", as: :user_initials_circle, defaults: { format: :svg }
 
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
