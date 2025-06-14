@@ -2,7 +2,6 @@
 
 # app/services/webhook_service.rb
 class WebhookService
-  include HTTParty
 
   def self.notify_user_role_changed(user_id, new_roles, old_roles = nil)
     # Services have_one webhook. Webhooks have a url and a secret.

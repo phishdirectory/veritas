@@ -169,7 +169,6 @@ end
 gem "sentry-ruby"
 gem "sentry-rails"
 gem "stackprof"
-gem "httparty" # For making HTTP requests
 gem "postmark-rails"
 gem "rollups" # todo: better utilize this package!
 gem "prophet-rb" # todo: better utilize this package!

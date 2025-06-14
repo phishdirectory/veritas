@@ -17,17 +17,26 @@ class DeliverWebhookJob < ApplicationJob
     begin
       signature = generate_signature(payload.to_json, secret)
 
-      response = HTTParty.post(webhook_url,
-                               headers: {
-                                 "Content-Type"        => "application/json",
-                                 "X-Webhook-Signature" => signature,
-                                 "X-Webhook-Event"     => payload[:event],
-                                 "User-Agent"          => "Veritas-Webhook/#{Veritas::VERSION}"
-                               },
-                               body: payload.to_json,
-                               timeout: 10)
+      connection = Faraday.new do |faraday|
+        faraday.options.timeout = 10
+        faraday.adapter Faraday.default_adapter
+      end
 
-      delivery.update!(status: "delivered", attempts: delivery.attempts + 1, last_attempt_at: Time.current, response: response.to_json)
+      response = connection.post(webhook_url) do |req|
+        req.headers["Content-Type"] = "application/json"
+        req.headers["X-Webhook-Signature"] = signature
+        req.headers["X-Webhook-Event"] = payload[:event]
+        req.headers["User-Agent"] = "Veritas-Webhook/#{Veritas::VERSION}"
+        req.body = payload.to_json
+      end
+
+      response_data = {
+        status: response.status,
+        headers: response.headers,
+        body: response.body
+      }
+
+      delivery.update!(status: "delivered", attempts: delivery.attempts + 1, last_attempt_at: Time.current, response: response_data.to_json)
     rescue => e
       delivery.update!(status: "failed", attempts: delivery.attempts + 1, last_attempt_at: Time.current, response: e.to_json)
       raise e
