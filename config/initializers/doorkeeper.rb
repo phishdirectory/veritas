@@ -12,7 +12,9 @@ Doorkeeper.configure do
     if current_user&.email_verified?
       current_user
     else
-      redirect_to "/login"
+      # Store the client_id in session for the OAuth login page
+      session[:oauth_client_id] = params[:client_id] if params[:client_id]
+      redirect_to "/oauth/login?client_id=#{params[:client_id]}"
     end
   end
 

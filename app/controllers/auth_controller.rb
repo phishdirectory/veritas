@@ -1,13 +1,38 @@
 # frozen_string_literal: true
 
 class AuthController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:login, :new_session]
+  skip_before_action :authenticate_user!, only: [:login, :new_session, :oauth_login]
 
-  layout "sessions", only: [:new_session]
+  layout "sessions", only: [:new_session, :oauth_login]
 
   def new_session
     redirect_to root_path if current_user
     @user = User.new
+  end
+
+  def oauth_login
+    redirect_to root_path if current_user
+    
+    # Check if this is a legitimate OAuth flow
+    client_id = session[:oauth_client_id] || params[:client_id]
+    if client_id.blank?
+      # No client_id means this isn't part of an OAuth flow
+      redirect_to login_path
+      return
+    end
+    
+    @user = User.new
+    
+    # Get OAuth client information
+    @oauth_client_name = nil
+    oauth_app = Doorkeeper::Application.find_by(uid: client_id)
+    if oauth_app
+      @oauth_client_name = oauth_app.name
+    else
+      # Invalid client_id, redirect to regular login
+      redirect_to login_path
+      return
+    end
   end
 
   def login
@@ -33,7 +58,7 @@ class AuthController < ApplicationController
       handle_login_error("Incorrect password", email)
     else
       session[:user_id] = user.id
-      
+
       if user.email_verified?
         respond_to do |format|
           format.html { redirect_to root_path, notice: "Logged in successfully" }

@@ -2,99 +2,127 @@
 
 # == Route Map
 #
-#                                   Prefix Verb   URI Pattern                                                                                       Controller#Action
-#                                                 /assets                                                                                           Propshaft::Server
-#                                     root GET    /                                                                                                 home#index
-#                                          GET    /.well-known/*path                                                                                well_known#show
-#                                   signup GET    /signup(.:format)                                                                                 users#new
-#                                          POST   /signup(.:format)                                                                                 users#create
-#                        username_conflict GET    /signup/username-conflict(.:format)                                                               users#username_conflict
-#                                    login GET    /login(.:format)                                                                                  auth#new_session
-#                                          POST   /login(.:format)                                                                                  auth#login
-#                                   logout DELETE /logout(.:format)                                                                                 auth#logout
-#                                       me GET    /auth/me(.:format)                                                                                auth#me
-#                       email_confirmation GET    /email_confirmation(.:format)                                                                     email_confirmations#show
-#                            confirm_email GET    /confirm_email/:token(.:format)                                                                   email_confirmations#confirm
-#                resend_email_confirmation POST   /email_confirmation/resend(.:format)                                                              email_confirmations#resend
-#                       rails_health_check GET    /up(.:format)                                                                                     rails/health#show
-#                              ok_computer        /ok                                                                                               OkComputer::Engine
-#                               admin_root GET    /admin(.:format)                                                                                  admin/dashboard#index
-#           stop_impersonating_admin_users DELETE /admin/users/stop_impersonating(.:format)                                                         admin/users#stop_impersonating
-#                                          GET    /admin/users/stop_impersonating(.:format)                                                         admin/users#stop_impersonating
-#                   impersonate_admin_user POST   /admin/users/:id/impersonate(.:format)                                                            admin/users#impersonate
-#                              admin_users GET    /admin/users(.:format)                                                                            admin/users#index
-#                                          POST   /admin/users(.:format)                                                                            admin/users#create
-#                           new_admin_user GET    /admin/users/new(.:format)                                                                        admin/users#new
-#                          edit_admin_user GET    /admin/users/:id/edit(.:format)                                                                   admin/users#edit
-#                               admin_user GET    /admin/users/:id(.:format)                                                                        admin/users#show
-#                                          PATCH  /admin/users/:id(.:format)                                                                        admin/users#update
-#                                          PUT    /admin/users/:id(.:format)                                                                        admin/users#update
-#                                          DELETE /admin/users/:id(.:format)                                                                        admin/users#destroy
-#                       admin_service_keys GET    /admin/services/:service_id/keys(.:format)                                                        admin/service_keys#index
-#                                          POST   /admin/services/:service_id/keys(.:format)                                                        admin/service_keys#create
-#                    new_admin_service_key GET    /admin/services/:service_id/keys/new(.:format)                                                    admin/service_keys#new
-#                   edit_admin_service_key GET    /admin/services/:service_id/keys/:id/edit(.:format)                                               admin/service_keys#edit
-#                        admin_service_key GET    /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#show
-#                                          PATCH  /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#update
-#                                          PUT    /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#update
-#                                          DELETE /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#destroy
-#                   admin_service_webhooks GET    /admin/services/:service_id/webhooks(.:format)                                                    admin/service_webhooks#index
-#                                          POST   /admin/services/:service_id/webhooks(.:format)                                                    admin/service_webhooks#create
-#                new_admin_service_webhook GET    /admin/services/:service_id/webhooks/new(.:format)                                                admin/service_webhooks#new
-#               edit_admin_service_webhook GET    /admin/services/:service_id/webhooks/:id/edit(.:format)                                           admin/service_webhooks#edit
-#                    admin_service_webhook GET    /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#show
-#                                          PATCH  /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#update
-#                                          PUT    /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#update
-#                                          DELETE /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#destroy
-#                           admin_services GET    /admin/services(.:format)                                                                         admin/services#index
-#                                          POST   /admin/services(.:format)                                                                         admin/services#create
-#                        new_admin_service GET    /admin/services/new(.:format)                                                                     admin/services#new
-#                       edit_admin_service GET    /admin/services/:id/edit(.:format)                                                                admin/services#edit
-#                            admin_service GET    /admin/services/:id(.:format)                                                                     admin/services#show
-#                                          PATCH  /admin/services/:id(.:format)                                                                     admin/services#update
-#                                          PUT    /admin/services/:id(.:format)                                                                     admin/services#update
-#                                          DELETE /admin/services/:id(.:format)                                                                     admin/services#destroy
-#               admin_mission_control_jobs        /admin/jobs                                                                                       MissionControl::Jobs::Engine
-#                         admin_audits1984        /admin/console                                                                                    Audits1984::Engine
-#                                                 /admin/flipper                                                                                    Flipper::UI
-#                             admin_blazer        /admin/blazer                                                                                     Blazer::Engine
-#                                    admin GET    /admin(.:format)                                                                                  redirect(301, /login)
-#                                          GET    /admin/*path(.:format)                                                                            redirect(301, /login)
-#                        letter_opener_web        /letter_opener                                                                                    LetterOpenerWeb::Engine
-#                             api_rswag_ui        /api/docs                                                                                         Rswag::Ui::Engine
-#                            api_rswag_api        /api/docs                                                                                         Rswag::Api::Engine
-#                            api_v1_health GET    /api/v1/health(.:format)                                                                          api/v1/health#index
-#                 api_v1_auth_authenticate POST   /api/v1/auth/authenticate(.:format)                                                               api/v1/auth#authenticate
-#                             api_v1_users POST   /api/v1/users(.:format)                                                                           api/v1/users#create
-#                              api_v1_user GET    /api/v1/users/:id(.:format)                                                                       api/v1/users#show
-#                    api_v1_users_by_email GET    /api/v1/users/by_email(.:format)                                                                  api/v1/users#show
-#         turbo_recede_historical_location GET    /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
-#         turbo_resume_historical_location GET    /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
-#        turbo_refresh_historical_location GET    /refresh_historical_location(.:format)                                                            turbo/native/navigation#refresh
-#            rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
-#               rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                              action_mailbox/ingresses/relay/inbound_emails#create
-#            rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                           action_mailbox/ingresses/sendgrid/inbound_emails#create
-#      rails_mandrill_inbound_health_check GET    /rails/action_mailbox/mandrill/inbound_emails(.:format)                                           action_mailbox/ingresses/mandrill/inbound_emails#health_check
-#            rails_mandrill_inbound_emails POST   /rails/action_mailbox/mandrill/inbound_emails(.:format)                                           action_mailbox/ingresses/mandrill/inbound_emails#create
-#             rails_mailgun_inbound_emails POST   /rails/action_mailbox/mailgun/inbound_emails/mime(.:format)                                       action_mailbox/ingresses/mailgun/inbound_emails#create
-#           rails_conductor_inbound_emails GET    /rails/conductor/action_mailbox/inbound_emails(.:format)                                          rails/conductor/action_mailbox/inbound_emails#index
-#                                          POST   /rails/conductor/action_mailbox/inbound_emails(.:format)                                          rails/conductor/action_mailbox/inbound_emails#create
-#        new_rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/new(.:format)                                      rails/conductor/action_mailbox/inbound_emails#new
-#            rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/:id(.:format)                                      rails/conductor/action_mailbox/inbound_emails#show
-# new_rails_conductor_inbound_email_source GET    /rails/conductor/action_mailbox/inbound_emails/sources/new(.:format)                              rails/conductor/action_mailbox/inbound_emails/sources#new
-#    rails_conductor_inbound_email_sources POST   /rails/conductor/action_mailbox/inbound_emails/sources(.:format)                                  rails/conductor/action_mailbox/inbound_emails/sources#create
-#    rails_conductor_inbound_email_reroute POST   /rails/conductor/action_mailbox/:inbound_email_id/reroute(.:format)                               rails/conductor/action_mailbox/reroutes#create
-# rails_conductor_inbound_email_incinerate POST   /rails/conductor/action_mailbox/:inbound_email_id/incinerate(.:format)                            rails/conductor/action_mailbox/incinerates#create
-#                       rails_service_blob GET    /rails/active_storage/blobs/redirect/:signed_id/*filename(.:format)                               active_storage/blobs/redirect#show
-#                 rails_service_blob_proxy GET    /rails/active_storage/blobs/proxy/:signed_id/*filename(.:format)                                  active_storage/blobs/proxy#show
-#                                          GET    /rails/active_storage/blobs/:signed_id/*filename(.:format)                                        active_storage/blobs/redirect#show
-#                rails_blob_representation GET    /rails/active_storage/representations/redirect/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations/redirect#show
-#          rails_blob_representation_proxy GET    /rails/active_storage/representations/proxy/:signed_blob_id/:variation_key/*filename(.:format)    active_storage/representations/proxy#show
-#                                          GET    /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format)          active_storage/representations/redirect#show
-#                       rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                                       active_storage/disk#show
-#                update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                               active_storage/disk#update
-#                     rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                                    active_storage/direct_uploads#create
-#                         actual_db_schema        /rails                                                                                            ActualDbSchema::Engine
+#                                    Prefix Verb   URI Pattern                                                                                       Controller#Action
+#                                                  /assets                                                                                           Propshaft::Server
+#                native_oauth_authorization GET    /oauth/authorize/native(.:format)                                                                 doorkeeper/authorizations#show
+#                       oauth_authorization GET    /oauth/authorize(.:format)                                                                        doorkeeper/authorizations#new
+#                                           DELETE /oauth/authorize(.:format)                                                                        doorkeeper/authorizations#destroy
+#                                           POST   /oauth/authorize(.:format)                                                                        doorkeeper/authorizations#create
+#                               oauth_token POST   /oauth/token(.:format)                                                                            doorkeeper/tokens#create
+#                              oauth_revoke POST   /oauth/revoke(.:format)                                                                           doorkeeper/tokens#revoke
+#                          oauth_introspect POST   /oauth/introspect(.:format)                                                                       doorkeeper/tokens#introspect
+#                        oauth_applications GET    /oauth/applications(.:format)                                                                     doorkeeper/applications#index
+#                                           POST   /oauth/applications(.:format)                                                                     doorkeeper/applications#create
+#                     new_oauth_application GET    /oauth/applications/new(.:format)                                                                 doorkeeper/applications#new
+#                    edit_oauth_application GET    /oauth/applications/:id/edit(.:format)                                                            doorkeeper/applications#edit
+#                         oauth_application GET    /oauth/applications/:id(.:format)                                                                 doorkeeper/applications#show
+#                                           PATCH  /oauth/applications/:id(.:format)                                                                 doorkeeper/applications#update
+#                                           PUT    /oauth/applications/:id(.:format)                                                                 doorkeeper/applications#update
+#                                           DELETE /oauth/applications/:id(.:format)                                                                 doorkeeper/applications#destroy
+#             oauth_authorized_applications GET    /oauth/authorized_applications(.:format)                                                          doorkeeper/authorized_applications#index
+#              oauth_authorized_application DELETE /oauth/authorized_applications/:id(.:format)                                                      doorkeeper/authorized_applications#destroy
+#                          oauth_token_info GET    /oauth/token/info(.:format)                                                                       doorkeeper/token_info#show
+#                            oauth_userinfo GET    /oauth/userinfo(.:format)                                                                         oauth/userinfo#show
+#                                      root GET    /                                                                                                 home#index
+#                                           GET    /.well-known/*path                                                                                well_known#show
+#                                    signup GET    /signup(.:format)                                                                                 users#new
+#                                           POST   /signup(.:format)                                                                                 users#create
+#                         username_conflict GET    /signup/username-conflict(.:format)                                                               users#username_conflict
+#                                     login GET    /login(.:format)                                                                                  auth#new_session
+#                                           POST   /login(.:format)                                                                                  auth#login
+#                                    logout DELETE /logout(.:format)                                                                                 auth#logout
+#                                        me GET    /auth/me(.:format)                                                                                auth#me
+#                        email_confirmation GET    /email_confirmation(.:format)                                                                     email_confirmations#show
+#                             confirm_email GET    /confirm_email/:token(.:format)                                                                   email_confirmations#confirm
+#                 resend_email_confirmation POST   /email_confirmation/resend(.:format)                                                              email_confirmations#resend
+#                        rails_health_check GET    /up(.:format)                                                                                     rails/health#show
+#                               ok_computer        /ok                                                                                               OkComputer::Engine
+#                                admin_root GET    /admin(.:format)                                                                                  admin/dashboard#index
+#            stop_impersonating_admin_users DELETE /admin/users/stop_impersonating(.:format)                                                         admin/users#stop_impersonating
+#                                           GET    /admin/users/stop_impersonating(.:format)                                                         admin/users#stop_impersonating
+#                    impersonate_admin_user POST   /admin/users/:id/impersonate(.:format)                                                            admin/users#impersonate
+#                               admin_users GET    /admin/users(.:format)                                                                            admin/users#index
+#                                           POST   /admin/users(.:format)                                                                            admin/users#create
+#                            new_admin_user GET    /admin/users/new(.:format)                                                                        admin/users#new
+#                           edit_admin_user GET    /admin/users/:id/edit(.:format)                                                                   admin/users#edit
+#                                admin_user GET    /admin/users/:id(.:format)                                                                        admin/users#show
+#                                           PATCH  /admin/users/:id(.:format)                                                                        admin/users#update
+#                                           PUT    /admin/users/:id(.:format)                                                                        admin/users#update
+#                                           DELETE /admin/users/:id(.:format)                                                                        admin/users#destroy
+#                        admin_service_keys GET    /admin/services/:service_id/keys(.:format)                                                        admin/service_keys#index
+#                                           POST   /admin/services/:service_id/keys(.:format)                                                        admin/service_keys#create
+#                     new_admin_service_key GET    /admin/services/:service_id/keys/new(.:format)                                                    admin/service_keys#new
+#                    edit_admin_service_key GET    /admin/services/:service_id/keys/:id/edit(.:format)                                               admin/service_keys#edit
+#                         admin_service_key GET    /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#show
+#                                           PATCH  /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#update
+#                                           PUT    /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#update
+#                                           DELETE /admin/services/:service_id/keys/:id(.:format)                                                    admin/service_keys#destroy
+#                    admin_service_webhooks GET    /admin/services/:service_id/webhooks(.:format)                                                    admin/service_webhooks#index
+#                                           POST   /admin/services/:service_id/webhooks(.:format)                                                    admin/service_webhooks#create
+#                 new_admin_service_webhook GET    /admin/services/:service_id/webhooks/new(.:format)                                                admin/service_webhooks#new
+#                edit_admin_service_webhook GET    /admin/services/:service_id/webhooks/:id/edit(.:format)                                           admin/service_webhooks#edit
+#                     admin_service_webhook GET    /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#show
+#                                           PATCH  /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#update
+#                                           PUT    /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#update
+#                                           DELETE /admin/services/:service_id/webhooks/:id(.:format)                                                admin/service_webhooks#destroy
+#                            admin_services GET    /admin/services(.:format)                                                                         admin/services#index
+#                                           POST   /admin/services(.:format)                                                                         admin/services#create
+#                         new_admin_service GET    /admin/services/new(.:format)                                                                     admin/services#new
+#                        edit_admin_service GET    /admin/services/:id/edit(.:format)                                                                admin/services#edit
+#                             admin_service GET    /admin/services/:id(.:format)                                                                     admin/services#show
+#                                           PATCH  /admin/services/:id(.:format)                                                                     admin/services#update
+#                                           PUT    /admin/services/:id(.:format)                                                                     admin/services#update
+#                                           DELETE /admin/services/:id(.:format)                                                                     admin/services#destroy
+# regenerate_secret_admin_oauth_application PATCH  /admin/oauth_applications/:id/regenerate_secret(.:format)                                         admin/oauth_applications#regenerate_secret
+#                  admin_oauth_applications GET    /admin/oauth_applications(.:format)                                                               admin/oauth_applications#index
+#                                           POST   /admin/oauth_applications(.:format)                                                               admin/oauth_applications#create
+#               new_admin_oauth_application GET    /admin/oauth_applications/new(.:format)                                                           admin/oauth_applications#new
+#              edit_admin_oauth_application GET    /admin/oauth_applications/:id/edit(.:format)                                                      admin/oauth_applications#edit
+#                   admin_oauth_application GET    /admin/oauth_applications/:id(.:format)                                                           admin/oauth_applications#show
+#                                           PATCH  /admin/oauth_applications/:id(.:format)                                                           admin/oauth_applications#update
+#                                           PUT    /admin/oauth_applications/:id(.:format)                                                           admin/oauth_applications#update
+#                                           DELETE /admin/oauth_applications/:id(.:format)                                                           admin/oauth_applications#destroy
+#                admin_mission_control_jobs        /admin/jobs                                                                                       MissionControl::Jobs::Engine
+#                          admin_audits1984        /admin/console                                                                                    Audits1984::Engine
+#                                                  /admin/flipper                                                                                    Flipper::UI
+#                              admin_blazer        /admin/blazer                                                                                     Blazer::Engine
+#                                     admin GET    /admin(.:format)                                                                                  redirect(301, /login)
+#                                           GET    /admin/*path(.:format)                                                                            redirect(301, /login)
+#                         letter_opener_web        /letter_opener                                                                                    LetterOpenerWeb::Engine
+#                              api_rswag_ui        /api/docs                                                                                         Rswag::Ui::Engine
+#                             api_rswag_api        /api/docs                                                                                         Rswag::Api::Engine
+#                             api_v1_health GET    /api/v1/health(.:format)                                                                          api/v1/health#index
+#                  api_v1_auth_authenticate POST   /api/v1/auth/authenticate(.:format)                                                               api/v1/auth#authenticate
+#                              api_v1_users POST   /api/v1/users(.:format)                                                                           api/v1/users#create
+#                               api_v1_user GET    /api/v1/users/:id(.:format)                                                                       api/v1/users#show
+#                     api_v1_users_by_email GET    /api/v1/users/by_email(.:format)                                                                  api/v1/users#show
+#          turbo_recede_historical_location GET    /recede_historical_location(.:format)                                                             turbo/native/navigation#recede
+#          turbo_resume_historical_location GET    /resume_historical_location(.:format)                                                             turbo/native/navigation#resume
+#         turbo_refresh_historical_location GET    /refresh_historical_location(.:format)                                                            turbo/native/navigation#refresh
+#             rails_postmark_inbound_emails POST   /rails/action_mailbox/postmark/inbound_emails(.:format)                                           action_mailbox/ingresses/postmark/inbound_emails#create
+#                rails_relay_inbound_emails POST   /rails/action_mailbox/relay/inbound_emails(.:format)                                              action_mailbox/ingresses/relay/inbound_emails#create
+#             rails_sendgrid_inbound_emails POST   /rails/action_mailbox/sendgrid/inbound_emails(.:format)                                           action_mailbox/ingresses/sendgrid/inbound_emails#create
+#       rails_mandrill_inbound_health_check GET    /rails/action_mailbox/mandrill/inbound_emails(.:format)                                           action_mailbox/ingresses/mandrill/inbound_emails#health_check
+#             rails_mandrill_inbound_emails POST   /rails/action_mailbox/mandrill/inbound_emails(.:format)                                           action_mailbox/ingresses/mandrill/inbound_emails#create
+#              rails_mailgun_inbound_emails POST   /rails/action_mailbox/mailgun/inbound_emails/mime(.:format)                                       action_mailbox/ingresses/mailgun/inbound_emails#create
+#            rails_conductor_inbound_emails GET    /rails/conductor/action_mailbox/inbound_emails(.:format)                                          rails/conductor/action_mailbox/inbound_emails#index
+#                                           POST   /rails/conductor/action_mailbox/inbound_emails(.:format)                                          rails/conductor/action_mailbox/inbound_emails#create
+#         new_rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/new(.:format)                                      rails/conductor/action_mailbox/inbound_emails#new
+#             rails_conductor_inbound_email GET    /rails/conductor/action_mailbox/inbound_emails/:id(.:format)                                      rails/conductor/action_mailbox/inbound_emails#show
+#  new_rails_conductor_inbound_email_source GET    /rails/conductor/action_mailbox/inbound_emails/sources/new(.:format)                              rails/conductor/action_mailbox/inbound_emails/sources#new
+#     rails_conductor_inbound_email_sources POST   /rails/conductor/action_mailbox/inbound_emails/sources(.:format)                                  rails/conductor/action_mailbox/inbound_emails/sources#create
+#     rails_conductor_inbound_email_reroute POST   /rails/conductor/action_mailbox/:inbound_email_id/reroute(.:format)                               rails/conductor/action_mailbox/reroutes#create
+#  rails_conductor_inbound_email_incinerate POST   /rails/conductor/action_mailbox/:inbound_email_id/incinerate(.:format)                            rails/conductor/action_mailbox/incinerates#create
+#                        rails_service_blob GET    /rails/active_storage/blobs/redirect/:signed_id/*filename(.:format)                               active_storage/blobs/redirect#show
+#                  rails_service_blob_proxy GET    /rails/active_storage/blobs/proxy/:signed_id/*filename(.:format)                                  active_storage/blobs/proxy#show
+#                                           GET    /rails/active_storage/blobs/:signed_id/*filename(.:format)                                        active_storage/blobs/redirect#show
+#                 rails_blob_representation GET    /rails/active_storage/representations/redirect/:signed_blob_id/:variation_key/*filename(.:format) active_storage/representations/redirect#show
+#           rails_blob_representation_proxy GET    /rails/active_storage/representations/proxy/:signed_blob_id/:variation_key/*filename(.:format)    active_storage/representations/proxy#show
+#                                           GET    /rails/active_storage/representations/:signed_blob_id/:variation_key/*filename(.:format)          active_storage/representations/redirect#show
+#                        rails_disk_service GET    /rails/active_storage/disk/:encoded_key/*filename(.:format)                                       active_storage/disk#show
+#                 update_rails_disk_service PUT    /rails/active_storage/disk/:encoded_token(.:format)                                               active_storage/disk#update
+#                      rails_direct_uploads POST   /rails/active_storage/direct_uploads(.:format)                                                    active_storage/direct_uploads#create
+#                          actual_db_schema        /rails                                                                                            ActualDbSchema::Engine
 #
 # Routes for OkComputer::Engine:
 #              root GET|OPTIONS /                 ok_computer/ok_computer#show {check: "default"}
@@ -221,6 +249,7 @@ Rails.application.routes.draw do
 
   # Authentication routes
   get "/login", to: "auth#new_session", as: :login
+  get "/oauth/login", to: "auth#oauth_login", as: :oauth_login
   post "/login", to: "auth#login"
   delete "/logout", to: "auth#logout", as: :logout
   get "/auth/me", to: "auth#me", as: :me

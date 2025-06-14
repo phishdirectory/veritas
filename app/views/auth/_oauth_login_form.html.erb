@@ -1,0 +1,52 @@
+<div id="login_form">
+<%= form_with(model: user, url: "/login", data: { turbo: true }) do |f| %>
+  <div class="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl border border-white/20 m-10">
+    <!-- Card Header -->
+    <div class="p-10 pb-6">
+      <h2 class="text-3xl font-bold text-gray-900 text-center">Veritas Dashboard</h2>
+      <p class="text-gray-600 text-center mt-2">Please sign in to your account.</p>
+      
+      <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+        <p class="text-sm text-blue-800 text-center">
+          <% if oauth_client_name.present? %>
+            The website you are trying to log in to (<strong><%= oauth_client_name %></strong>) is using the phish.directory authentication system. 
+          <% else %>
+            The website you are trying to log in to is using the phish.directory authentication system. 
+          <% end %>
+          In this system you create a central account that is used to log into phish.directory services. 
+          Once you are logged into this account, you will automatically be logged in to the associated phish.directory services.
+        </p>
+      </div>
+    </div>
+
+    <!-- Card Content -->
+    <div class="px-10 pb-8 space-y-6">
+      <div class="space-y-2">
+        <%= f.label :email, "Email address", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.email_field :email,
+            class: "w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400",
+            placeholder: "you@example.com",
+            required: true %>
+      </div>
+
+      <div class="space-y-2">
+        <%= f.label :password, "Password", class: "block text-sm font-medium text-gray-700" %>
+        <%= f.password_field :password,
+            class: "w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400",
+            placeholder: "Enter your password",
+            required: true %>
+      </div>
+
+      <%= f.submit "Sign in",
+          class: "w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
+
+      <div class="text-center">
+        <p class="text-sm text-gray-600">
+          Don't have an account? 
+          <%= link_to "Sign up", signup_path, class: "text-blue-600 hover:text-blue-800 font-medium" %>
+        </p>
+      </div>
+    </div>
+  </div>
+<% end %>
+</div>
