@@ -29,6 +29,7 @@
 #                                           POST   /signup(.:format)                                                                                 users#create
 #                         username_conflict GET    /signup/username-conflict(.:format)                                                               users#username_conflict
 #                                     login GET    /login(.:format)                                                                                  auth#new_session
+#                               oauth_login GET    /oauth/login(.:format)                                                                            auth#oauth_login
 #                                           POST   /login(.:format)                                                                                  auth#login
 #                                    logout DELETE /logout(.:format)                                                                                 auth#logout
 #                                        me GET    /auth/me(.:format)                                                                                auth#me
