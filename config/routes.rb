@@ -33,9 +33,18 @@
 #                                           POST   /login(.:format)                                                                                  auth#login
 #                                    logout DELETE /logout(.:format)                                                                                 auth#logout
 #                                        me GET    /auth/me(.:format)                                                                                auth#me
+#                              edit_profile GET    /profile/edit(.:format)                                                                           users#edit
+#                            update_profile PATCH  /profile(.:format)                                                                                users#update
+#                     destroy_profile_photo DELETE /profile/photo(.:format)                                                                          users#destroy_profile_photo
 #                        email_confirmation GET    /email_confirmation(.:format)                                                                     email_confirmations#show
 #                             confirm_email GET    /confirm_email/:token(.:format)                                                                   email_confirmations#confirm
 #                 resend_email_confirmation POST   /email_confirmation/resend(.:format)                                                              email_confirmations#resend
+#                        user_profile_photo GET    /user/:pd_id/pfp(.:format)                                                                        profile_photos#show
+#                               user_avatar GET    /user/:pd_id/avatar/:variant(.:format)                                                            profile_photos#avatar
+#                        user_avatar_square GET    /user/:pd_id/avatar/:variant/square(.:format)                                                     profile_photos#avatar_square
+#                        user_avatar_circle GET    /user/:pd_id/avatar/:variant/circle(.:format)                                                     profile_photos#avatar_circle
+#                             user_initials GET    /user/:pd_id/initials(/:variant)(.:format)                                                        profile_photos#initials {format: :svg}
+#                      user_initials_circle GET    /user/:pd_id/initials/:variant/circle(.:format)                                                   profile_photos#initials_circle {format: :svg}
 #                        rails_health_check GET    /up(.:format)                                                                                     rails/health#show
 #                               ok_computer        /ok                                                                                               OkComputer::Engine
 #                                admin_root GET    /admin(.:format)                                                                                  admin/dashboard#index
