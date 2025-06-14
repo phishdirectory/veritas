@@ -240,10 +240,6 @@ GEM
     hashids (1.0.6)
     htmlbeautifier (1.4.3)
     htmlentities (4.3.4)
-    httparty (0.23.1)
-      csv
-      mini_mime (>= 1.0.0)
-      multi_xml (>= 0.5.2)
     i18n (1.14.7)
       concurrent-ruby (~> 1.0)
     image_processing (1.14.0)
@@ -334,8 +330,6 @@ GEM
       stimulus-rails
       turbo-rails
     msgpack (1.8.0)
-    multi_xml (0.7.2)
-      bigdecimal (~> 3.1)
     net-http (0.6.0)
       uri
     net-imap (0.5.8)
@@ -760,7 +754,6 @@ DEPENDENCIES
   geocoder
   hashid-rails (~> 1.0)
   htmlbeautifier
-  httparty
   image_processing (~> 1.2)
   importmap-rails
   invisible_captcha
