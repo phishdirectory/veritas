@@ -198,6 +198,13 @@
 require_relative "../lib/admin_constraint"
 
 Rails.application.routes.draw do
+  use_doorkeeper
+  
+  # OAuth 2.0 UserInfo endpoint (separate from API)
+  namespace :oauth do
+    get 'userinfo', to: 'userinfo#show'
+  end
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
@@ -252,6 +259,12 @@ Rails.application.routes.draw do
         resources :webhooks, controller: "service_webhooks"
       end
 
+      resources :oauth_applications do
+        member do
+          patch :regenerate_secret
+        end
+      end
+
       # Mount engines under /admin path
       mount MissionControl::Jobs::Engine, at: "/jobs"
       mount Audits1984::Engine => "/console"
@@ -279,7 +292,7 @@ Rails.application.routes.draw do
 
       post "auth/authenticate", to: "auth#authenticate"
 
-      # Remove the namespace prefix since we're already in the namespace
+      # Service key protected endpoints
       resources :users, only: [:show, :create]
       get "users/by_email", to: "users#show"
     end

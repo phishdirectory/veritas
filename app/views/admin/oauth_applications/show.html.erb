@@ -1,0 +1,191 @@
+<% content_for :title, @application.name %>
+
+<div class="mb-6">
+  <div class="flex justify-between items-center mb-4">
+    <div>
+      <h2 class="text-2xl font-bold"><%= @application.name %></h2>
+      <p class="text-gray-600">OAuth Application Details</p>
+    </div>
+    <div class="flex space-x-3">
+      <%= link_to "Back to Applications", admin_oauth_applications_path, class: "glass-button px-4 py-2 rounded" %>
+      <% if current_user.superadmin? %>
+        <%= link_to "Edit", edit_admin_oauth_application_path(@application), class: "glass-button px-4 py-2 rounded" %>
+      <% end %>
+    </div>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <!-- Application Details -->
+  <div class="bg-white bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-lg p-6 border border-white border-opacity-50 shadow-lg">
+    <h3 class="text-lg font-semibold mb-4">Application Details</h3>
+    
+    <dl class="space-y-4">
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Name</dt>
+        <dd class="mt-1 text-sm text-gray-900"><%= @application.name %></dd>
+      </div>
+      
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Application Type</dt>
+        <dd class="mt-1">
+          <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+            <%= @application.confidential? ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800' %>">
+            <%= @application.confidential? ? 'Confidential' : 'Public' %>
+          </span>
+        </dd>
+      </div>
+      
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Scopes</dt>
+        <dd class="mt-1 text-sm text-gray-900">
+          <% if @application.scopes.present? %>
+            <% @application.scopes.split(' ').each do |scope| %>
+              <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full mr-2 mb-1">
+                <%= scope %>
+              </span>
+            <% end %>
+          <% else %>
+            <span class="text-gray-500">Using default scopes: profile</span>
+          <% end %>
+        </dd>
+      </div>
+      
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Created</dt>
+        <dd class="mt-1 text-sm text-gray-900">
+          <%= @application.created_at.strftime("%B %d, %Y at %I:%M %p") %>
+          (<%= time_ago_in_words(@application.created_at) %> ago)
+        </dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- Credentials -->
+  <div class="bg-white bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-lg p-6 border border-white border-opacity-50 shadow-lg">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold">Credentials</h3>
+      <% if current_user.superadmin? %>
+        <%= link_to "Regenerate Secret", regenerate_secret_admin_oauth_application_path(@application), 
+            method: :patch,
+            data: { confirm: "Are you sure? This will invalidate all existing tokens." },
+            class: "text-sm glass-button px-3 py-1 rounded" %>
+      <% end %>
+    </div>
+    
+    <dl class="space-y-4">
+      <div>
+        <dt class="text-sm font-medium text-gray-500">Client ID</dt>
+        <dd class="mt-1">
+          <div class="flex items-center space-x-2">
+            <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1 overflow-x-auto">
+              <%= @application.uid %>
+            </code>
+            <button onclick="navigator.clipboard.writeText('<%= @application.uid %>')" 
+                    class="text-sm text-gray-500 hover:text-gray-700"
+                    title="Copy to clipboard">
+              📋
+            </button>
+          </div>
+        </dd>
+      </div>
+      
+      <% if @application.confidential? %>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Client Secret</dt>
+          <dd class="mt-1">
+            <div class="flex items-center space-x-2">
+              <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1 overflow-x-auto" id="client-secret">
+                <%= "•" * 20 %>
+              </code>
+              <button onclick="toggleSecret()" 
+                      class="text-sm text-gray-500 hover:text-gray-700"
+                      title="Show/Hide secret"
+                      id="secret-toggle">
+                👁️
+              </button>
+              <button onclick="navigator.clipboard.writeText('<%= @application.secret %>')" 
+                      class="text-sm text-gray-500 hover:text-gray-700"
+                      title="Copy to clipboard">
+                📋
+              </button>
+            </div>
+            <div class="hidden" id="secret-value"><%= @application.secret %></div>
+          </dd>
+        </div>
+      <% end %>
+    </dl>
+  </div>
+
+  <!-- Redirect URIs -->
+  <div class="bg-white bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-lg p-6 border border-white border-opacity-50 shadow-lg lg:col-span-2">
+    <h3 class="text-lg font-semibold mb-4">Redirect URIs</h3>
+    
+    <div class="space-y-2">
+      <% @application.redirect_uri.split("\n").each do |uri| %>
+        <div class="flex items-center space-x-2">
+          <code class="text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-1">
+            <%= uri.strip %>
+          </code>
+          <button onclick="navigator.clipboard.writeText('<%= uri.strip %>')" 
+                  class="text-sm text-gray-500 hover:text-gray-700"
+                  title="Copy to clipboard">
+            📋
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Usage Instructions -->
+  <div class="bg-white bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-lg p-6 border border-white border-opacity-50 shadow-lg lg:col-span-2">
+    <h3 class="text-lg font-semibold mb-4">Integration Instructions</h3>
+    
+    <div class="space-y-4">
+      <div>
+        <h4 class="font-medium text-gray-900 mb-2">1. Authorization URL</h4>
+        <code class="text-xs font-mono bg-gray-100 p-3 rounded block overflow-x-auto">
+/oauth/authorize?client_id=<%= @application.uid %>&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=profile%20email
+        </code>
+      </div>
+      
+      <div>
+        <h4 class="font-medium text-gray-900 mb-2">2. Token Exchange</h4>
+        <code class="text-xs font-mono bg-gray-100 p-3 rounded block overflow-x-auto">
+POST /oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=authorization_code&client_id=<%= @application.uid %>&client_secret=YOUR_SECRET&code=AUTHORIZATION_CODE&redirect_uri=YOUR_REDIRECT_URI
+        </code>
+      </div>
+      
+      <div>
+        <h4 class="font-medium text-gray-900 mb-2">3. User Info</h4>
+        <code class="text-xs font-mono bg-gray-100 p-3 rounded block overflow-x-auto">
+GET /oauth/userinfo
+Authorization: Bearer ACCESS_TOKEN
+        </code>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  let secretVisible = false;
+  
+  function toggleSecret() {
+    const secretElement = document.getElementById('client-secret');
+    const secretValue = document.getElementById('secret-value').textContent;
+    const toggle = document.getElementById('secret-toggle');
+    
+    if (secretVisible) {
+      secretElement.textContent = '<%= "•" * 20 %>';
+      toggle.textContent = '👁️';
+      secretVisible = false;
+    } else {
+      secretElement.textContent = secretValue;
+      toggle.textContent = '🙈';
+      secretVisible = true;
+    }
+  }
+</script>

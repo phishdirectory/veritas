@@ -1,0 +1,81 @@
+<% content_for :title, "OAuth Applications" %>
+
+<div class="mb-6">
+  <h2 class="text-2xl font-bold mb-4">OAuth Applications</h2>
+
+  <div class="flex justify-between items-center mb-4">
+    <p class="text-gray-600">Manage OAuth 2.0 client applications</p>
+    <%= link_to "New OAuth Application", new_admin_oauth_application_path, class: "glass-button px-4 py-2 rounded" %>
+  </div>
+</div>
+
+<div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+  <table class="min-w-full divide-y divide-gray-300">
+    <thead>
+      <tr>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Client ID</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Scopes</th>
+        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+        <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+      </tr>
+    </thead>
+    <tbody class="divide-y divide-gray-200">
+      <% @applications.each do |application| %>
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm font-medium text-gray-900">
+              <%= link_to application.name, admin_oauth_application_path(application), class: "hover:text-blue-600" %>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm font-mono text-gray-900">
+              <%= application.uid %>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full
+              <%= application.confidential? ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-800' %>">
+              <%= application.confidential? ? 'Confidential' : 'Public' %>
+            </span>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <% if application.scopes.present? %>
+              <%= application.scopes %>
+            <% else %>
+              <span class="text-gray-500">Default</span>
+            <% end %>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+            <%= time_ago_in_words(application.created_at) %> ago
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+            <%= link_to "View", admin_oauth_application_path(application), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
+            <% if current_user.superadmin? %>
+              <%= link_to "Edit", edit_admin_oauth_application_path(application), class: "text-indigo-600 hover:text-indigo-900 mr-3" %>
+            <% end %>
+            <% if current_user.owner? %>
+              <%= link_to "Delete", admin_oauth_application_path(application), method: :delete,
+                  data: { confirm: "Are you sure? This will revoke all access tokens for this application." },
+                  class: "text-red-600 hover:text-red-900" %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if @applications.empty? %>
+    <div class="text-center py-12">
+      <div class="mx-auto h-12 w-12 text-gray-400 mb-4">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+        </svg>
+      </div>
+      <p class="text-gray-500 text-lg mb-4">No OAuth applications found</p>
+      <p class="text-gray-500 text-sm mb-6">Create your first OAuth application to allow external services to authenticate users.</p>
+      <%= link_to "Create your first OAuth application", new_admin_oauth_application_path, class: "glass-button px-6 py-3 rounded" %>
+    </div>
+  <% end %>
+</div>

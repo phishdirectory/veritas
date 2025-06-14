@@ -101,13 +101,19 @@
         border-right: 2px solid rgba(177, 216, 218, 0.1);
       }
 
-      .admin-nav-item:nth-child(3) {
+       .admin-nav-item:nth-child(2) {
+        border-right: 2px solid transparent;
+        border-color: rgba(82, 122, 154, 0.8);
+      }
+
+      .admin-nav-item:nth-child(4) {
         border-right: 2px solid transparent;
         border-color: rgba(82, 122, 154, 0.8);
       }
 
       .admin-nav-item:last-child {
-        border-right: none;
+        border-right: 2px solid transparent;
+        border-color: rgba(82, 122, 154, 0.8);
       }
 
       .admin-nav-link {
@@ -354,6 +360,12 @@
               <%= link_to admin_services_path,
                   class: "admin-nav-link #{controller_name == 'services' ? 'active' : ''}" do %>
                 Services
+              <% end %>
+            </li>
+            <li class="admin-nav-item">
+              <%= link_to admin_oauth_applications_path,
+                  class: "admin-nav-link #{controller_name == 'oauth_applications' ? 'active' : ''}" do %>
+                OAuth Apps
               <% end %>
             </li>
             <li class="admin-nav-item">
