@@ -297,6 +297,26 @@ class User < ApplicationRecord
     end
   end
 
+  def is_viewable?(viewer)
+
+    # you can view yourself
+    return true if self == viewer
+
+    viewer_level = ACCESS_LEVELS[viewer.access_level.to_sym]
+    target_level = ACCESS_LEVELS[access_level.to_sym]
+
+    case viewer.access_level.to_sym
+    when :owner
+      true # Owner can view anyone including themselves
+    when :superadmin
+      !owner? # Superadmin can view anyone except owner, including themselves
+    when :admin
+      !admin? # Admin can only view trusted and regular users, including themselves
+    else
+      false # trusted and user levels cannot view anyone
+    end
+  end
+
 
   def can_impersonate?
     # Determines if THIS user can impersonate others
@@ -310,6 +330,29 @@ class User < ApplicationRecord
     # This is a convenience method for views - checks if user is impersonatable by the current admin
     # This should be overridden by passing current_user context, but provides basic check
     !admin?
+  end
+
+  def last_seen_at
+    user_sessions.maximum(:last_seen_at)
+  end
+
+  def last_login_at
+    user_sessions.maximum(:created_at)
+  end
+
+  def locked?
+    locked_at.present?
+  end
+
+  def lock!
+    update!(locked_at: Time.zone.now)
+
+    # Invalidate all sessions
+    user_sessions.destroy_all
+  end
+
+  def unlock!
+    update!(locked_at: nil)
   end
 
   private
@@ -376,30 +419,6 @@ class User < ApplicationRecord
 
   def remove_trusted!
     user!
-  end
-
-  def last_seen_at
-    user_sessions.maximum(:last_seen_at)
-  end
-
-  def last_login_at
-    user_sessions.maximum(:created_at)
-  end
-
-
-  def locked?
-    locked_at.present?
-  end
-
-  def lock!
-    update!(locked_at: Time.zone.now)
-
-    # Invalidate all sessions
-    user_sessions.destroy_all
-  end
-
-  def unlock!
-    update!(locked_at: nil)
   end
 
   private

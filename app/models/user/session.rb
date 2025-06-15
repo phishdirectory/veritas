@@ -53,11 +53,30 @@ class User
     geocoded_by :ip
     after_validation :geocode, if: ->(session){ session.ip.present? and session.ip_changed? }
 
+    # Location display helper
+    def location_name
+      if latitude.present? && longitude.present?
+        "#{latitude.round(2)}, #{longitude.round(2)}"
+      else
+        "Unknown Location"
+      end
+    end
+
+    # Map display data
+    def map_data
+      return nil unless latitude.present? && longitude.present?
+
+      {
+        latitude: latitude,
+        longitude: longitude,
+        tooltip: map_tooltip,
+        color: session_color
+      }
+    end
+
     def impersonated?
       !impersonated_by.nil?
     end
-
-    LAST_SEEN_AT_COOLDOWN = 5.minutes
 
     def touch_last_seen_at
       return if last_seen_at&.after? LAST_SEEN_AT_COOLDOWN.ago # prevent spamming writes
@@ -69,6 +88,28 @@ class User
       expiration_at <= Time.zone.now
     end
 
+    LAST_SEEN_AT_COOLDOWN = 5.minutes
+
+    private
+
+    def map_tooltip
+      parts = []
+      parts << "IP: #{ip}" if ip.present?
+      parts << "Device: #{device_info}" if device_info.present?
+      parts << "Created: #{created_at.strftime('%m/%d/%Y %I:%M %p')}"
+      parts << "Status: #{expired? || signed_out_at ? 'Expired' : 'Active'}"
+      parts.join("<br>")
+    end
+
+    def session_color
+      if expired? || signed_out_at
+        "#6B7280" # Gray for expired sessions
+      elsif impersonated?
+        "#F59E0B" # Orange for impersonated sessions
+      else
+        "#10B981" # Green for active sessions
+      end
+    end
 
   end
 

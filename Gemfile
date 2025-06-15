@@ -175,4 +175,5 @@ gem "prophet-rb" # todo: better utilize this package!
 gem "anomaly_detection" # todo: better utilize this package!
 gem "breakout-detection" # todo: better utilize this package!
 gem "disco" # todo: better utilize this package!
-gem "chartkick" # todo: better utilize this package!
+gem "chartkick"
+gem "mapkick-rb"

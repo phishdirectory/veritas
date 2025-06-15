@@ -312,6 +312,7 @@ GEM
       net-imap
       net-pop
       net-smtp
+    mapkick-rb (0.2.0)
     marcel (1.0.4)
     matrix (0.4.2)
     mini_magick (5.2.0)
@@ -764,6 +765,7 @@ DEPENDENCIES
   letter_opener_web
   listen (~> 3.9)
   lockbox
+  mapkick-rb
   mission_control-jobs
   okcomputer
   overcommit

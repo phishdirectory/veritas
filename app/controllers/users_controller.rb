@@ -35,6 +35,15 @@ class UsersController < ApplicationController
     render "errors/username_conflict", layout: false
   end
 
+  def show
+    @user = current_user
+  end
+
+  def sessions
+    @user = current_user
+    @sessions = @user.user_sessions.order(created_at: :desc)
+  end
+
   def edit
     @user = current_user
   end

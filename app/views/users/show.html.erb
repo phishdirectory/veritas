@@ -1,0 +1,95 @@
+<div class="container mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900">My Profile</h1>
+      <p class="text-gray-600">Manage your account settings and view activity</p>
+    </div>
+    <div class="space-x-2">
+      <%= link_to 'Edit Profile', edit_profile_path, 
+          class: 'inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Profile Information -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Profile Information</h2>
+      <dl class="space-y-3">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Full Name</dt>
+          <dd class="text-sm text-gray-900"><%= @user.full_name %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Email</dt>
+          <dd class="text-sm text-gray-900"><%= @user.email %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Username</dt>
+          <dd class="text-sm text-gray-900"><%= @user.username %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">PD ID</dt>
+          <dd class="text-sm text-gray-900"><%= @user.pd_id %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Email Status</dt>
+          <dd class="text-sm">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= @user.email_verified? ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+              <%= @user.email_verified? ? 'Verified' : 'Unverified' %>
+            </span>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Member Since</dt>
+          <dd class="text-sm text-gray-900"><%= @user.created_at.strftime("%B %d, %Y") %></dd>
+        </div>
+      </dl>
+    </div>
+
+    <!-- Security Information -->
+    <div class="bg-white shadow rounded-lg p-6">
+      <h2 class="text-lg font-medium text-gray-900 mb-4">Security & Activity</h2>
+      <dl class="space-y-3">
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Active Sessions</dt>
+          <dd class="text-sm text-gray-900"><%= @user.user_sessions.not_expired.count %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Total Sessions</dt>
+          <dd class="text-sm text-gray-900"><%= @user.user_sessions.count %></dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Last Login</dt>
+          <dd class="text-sm text-gray-900">
+            <% if @user.last_login_at %>
+              <%= @user.last_login_at.strftime("%B %d, %Y at %I:%M %p") %>
+            <% else %>
+              Never
+            <% end %>
+          </dd>
+        </div>
+        <div>
+          <dt class="text-sm font-medium text-gray-500">Last Activity</dt>
+          <dd class="text-sm text-gray-900">
+            <% if @user.last_seen_at %>
+              <%= time_ago_in_words(@user.last_seen_at) %> ago
+            <% else %>
+              Never
+            <% end %>
+          </dd>
+        </div>
+      </dl>
+      
+      <div class="mt-6 space-y-3">
+        <%= link_to 'View My Sessions', profile_sessions_path, 
+            class: 'block w-full text-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500' %>
+        
+        <% if @user.user_sessions.not_expired.count > 1 %>
+          <%= button_to 'Sign Out All Other Sessions', destroy_all_sessions_path, method: :delete,
+              class: 'block w-full px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500',
+              data: { turbo_confirm: 'Are you sure you want to sign out of all other sessions?' } %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

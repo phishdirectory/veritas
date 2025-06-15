@@ -264,7 +264,9 @@ Rails.application.routes.draw do
   get "/auth/me", to: "auth#me", as: :me
 
   # Profile management routes (requires authentication)
+  get "/profile", to: "users#show", as: :profile
   get "/profile/edit", to: "users#edit", as: :edit_profile
+  get "/profile/sessions", to: "users#sessions", as: :profile_sessions
   patch "/profile", to: "users#update", as: :update_profile
   delete "/profile/photo", to: "users#destroy_profile_photo", as: :destroy_profile_photo
 

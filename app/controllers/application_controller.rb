@@ -35,7 +35,15 @@ class ApplicationController < ActionController::Base
     return @current_user_session if defined?(@current_user_session)
 
     @current_user_session = if current_user && session.id
-                              current_user.user_sessions.find_by(session_token: session.id.to_s)
+                              # Try to find existing session first
+                              existing_session = current_user.user_sessions.find_by(session_token: session.id.to_s)
+
+                              # If no session exists, create one for existing logged-in users
+                              if existing_session.nil?
+                                create_session_for_existing_user
+                              else
+                                existing_session
+                              end
                             end
   end
 
@@ -127,6 +135,25 @@ class ApplicationController < ActionController::Base
       session.update!(signed_out_at: Time.current, expiration_at: Time.current)
     end
     reset_session
+  end
+
+  def create_session_for_existing_user
+    return nil unless current_user && session.id
+
+    # Create a session record for users who were logged in before fingerprint tracking
+    current_user.user_sessions.create!(
+      session_token: session.id.to_s,
+      expiration_at: 30.days.from_now,
+      ip: request.remote_ip,
+      last_seen_at: Time.zone.now,
+      fingerprint: nil, # No fingerprint data available for existing sessions
+      device_info: request.user_agent,
+      os_info: nil,
+      timezone: nil
+    )
+  rescue ActiveRecord::RecordInvalid
+    # If creation fails (e.g., duplicate session_token), try to find existing
+    current_user.user_sessions.find_by(session_token: session.id.to_s)
   end
 
   helper_method :current_user, :impersonating?, :admin_user
