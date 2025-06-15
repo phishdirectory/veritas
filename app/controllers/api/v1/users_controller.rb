@@ -56,7 +56,7 @@ module Api
           locked_at: user.locked_at.presence,
         }
 
-        render json: json
+        render json: json, status: :ok
       end
 
       def create
@@ -95,7 +95,7 @@ module Api
             pd_id: user.pd_id,
             email: user.email,
             created_at: user.created_at
-          }
+          }, status: :created
         else
           render json: {
             success: false,

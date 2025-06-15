@@ -8,7 +8,7 @@ module Api
       skip_before_action :authenticate_user!
 
       def index
-        render json: { status: "ok" }
+        render json: { status: "ok" }, status: :ok
       end
 
     end

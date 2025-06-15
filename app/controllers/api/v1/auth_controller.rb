@@ -22,7 +22,7 @@ module Api
           render json: {
             authenticated: true,
             pd_id: user.pd_id
-          }
+          }, status: :ok
         else
           render json: { authenticated: false }, status: :unauthorized
         end
