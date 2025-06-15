@@ -152,7 +152,7 @@ group :development do
   gem "letter_opener_web"                # Preview emails
   gem "foreman"                          # Process manager
   gem "awesome_print"                    # Pretty print objects
-  gem "rack-mini-profiler", "~> 3.3", require: false # Performance profiling
+  gem "rack-mini-profiler", "~> 4.0", require: false # Performance profiling
 
   # IDE Support
   gem "solargraph" # Ruby language server
