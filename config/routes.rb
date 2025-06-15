@@ -47,9 +47,8 @@
 #                      user_initials_circle GET    /user/:pd_id/initials/:variant/circle(.:format)                                                   profile_photos#initials_circle {format: :svg}
 #                        rails_health_check GET    /up(.:format)                                                                                     rails/health#show
 #                               ok_computer        /ok                                                                                               OkComputer::Engine
-#                                admin_root GET    /admin(.:format)                                                                                  admin/dashboard#index
 #            stop_impersonating_admin_users DELETE /admin/users/stop_impersonating(.:format)                                                         admin/users#stop_impersonating
-#                                           GET    /admin/users/stop_impersonating(.:format)                                                         admin/users#stop_impersonating
+#                                admin_root GET    /admin(.:format)                                                                                  admin/dashboard#index
 #                    impersonate_admin_user POST   /admin/users/:id/impersonate(.:format)                                                            admin/users#impersonate
 #                               admin_users GET    /admin/users(.:format)                                                                            admin/users#index
 #                                           POST   /admin/users(.:format)                                                                            admin/users#create

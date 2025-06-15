@@ -61,16 +61,16 @@ class Admin::UsersController < Admin::BaseController
 
   def impersonate
     Rails.logger.info "Attempting to impersonate user #{@user.id} as admin #{current_user.id}"
-    
+
     if @user.is_impersonatable?(current_user)
       Rails.logger.info "Impersonation allowed, setting session variables"
       session[:admin_id] = current_user.id
       session[:user_id] = @user.id
       Rails.logger.info "Session set: admin_id=#{session[:admin_id]}, user_id=#{session[:user_id]}"
-      
+
       # Clear the current_user cache to force reload
       @current_user = nil
-      
+
       flash[:notice] = "Now impersonating #{@user.full_name}"
       redirect_to root_path, allow_other_host: true
     else
@@ -81,14 +81,14 @@ class Admin::UsersController < Admin::BaseController
 
   def stop_impersonating
     Rails.logger.info "Stop impersonating called. Current session: admin_id=#{session[:admin_id]}, user_id=#{session[:user_id]}"
-    
+
     if session[:admin_id]
       admin_user = User.find(session[:admin_id])
       Rails.logger.info "Found admin user: #{admin_user.full_name} (#{admin_user.id})"
-      
+
       session[:user_id] = session[:admin_id]
       session.delete(:admin_id)
-      
+
       Rails.logger.info "Session reset. New session: admin_id=#{session[:admin_id]}, user_id=#{session[:user_id]}"
       redirect_to admin_root_path, notice: "Stopped impersonating. Welcome back, #{admin_user.full_name}!"
     else
