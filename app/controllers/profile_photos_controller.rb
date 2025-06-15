@@ -149,7 +149,7 @@ class ProfilePhotosController < ApplicationController
     # Set appropriate cache headers
     expires_in 1.day, public: true
 
-    svg_content = generate_initials_svg(user.initials, size, color_hue, false)
+    svg_content = generate_initials_svg(user.initials, size, color_hue, circle_clip: false)
 
     respond_to do |format|
       format.svg { render xml: svg_content, content_type: "image/svg+xml" }
@@ -179,7 +179,7 @@ class ProfilePhotosController < ApplicationController
     # Set appropriate cache headers
     expires_in 1.day, public: true
 
-    svg_content = generate_initials_svg(user.initials, size, color_hue, true)
+    svg_content = generate_initials_svg(user.initials, size, color_hue, circle_clip: true)
 
     respond_to do |format|
       format.svg { render xml: svg_content, content_type: "image/svg+xml" }
@@ -188,7 +188,7 @@ class ProfilePhotosController < ApplicationController
 
   private
 
-  def generate_initials_svg(initials, size, color_hue, circle_clip = false)
+  def generate_initials_svg(initials, size, color_hue, circle_clip: false)
     # Generate consistent colors
     bg_color = "hsl(#{color_hue}, 65%, 55%)"
     text_color = "#ffffff"

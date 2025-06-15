@@ -109,6 +109,9 @@ class ApiMetricsService
         .downcase
   end
 
+  private_class_method :sanitize_endpoint
+
+
   def self.calculate_and_record_success_rate
     # Calculate success rate for the last hour
     time_range = 1.hour.ago..Time.current
@@ -121,5 +124,7 @@ class ApiMetricsService
 
     StatsD.gauge("api.success_rate", success_rate_value)
   end
+
+  private_class_method :calculate_and_record_success_rate
 
 end
