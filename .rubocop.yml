@@ -5,6 +5,7 @@ plugins:
   # - rubocop-rspec_rails
 
 AllCops:
+  NewCops: disable
   Exclude:
     - "db/**/*"
     - "lib/tasks/**/*"

@@ -7,6 +7,7 @@ module Api
       skip_before_action :verify_authenticity_token
       skip_before_action :authenticate_user!
       before_action :authenticate_service
+      around_action :log_api_request
 
       private
 
@@ -20,13 +21,18 @@ module Api
 
         key = Service::Key.find_by(api_key: api_key)
 
-        # Record the usage attempt
+        # Store the key for logging purposes
+        @current_key_for_logging = key
+
+        # Create initial usage record for detailed logging
         if key
-          key.usages.create(
+          @usage_record = key.usages.create(
             request_path: request.path,
             request_method: request.method,
             ip_address: request.remote_ip,
-            response_code: key.may_use? && key.service.active? ? 200 : 401
+            response_code: key.may_use? && key.service.active? ? 200 : 401,
+            user_agent: request.user_agent,
+            requested_at: Time.current
           )
 
           # Log deprecated keys
@@ -83,6 +89,116 @@ module Api
           Rails.logger.error("Failed to dehash data: #{e.message}")
           nil
         end
+      end
+
+      def log_api_request
+        start_time = Time.current
+
+        yield
+
+        duration_ms = ((Time.current - start_time) * 1000).round
+
+        # Update the usage record with comprehensive logging data
+        if @usage_record
+          update_usage_record_with_details(duration_ms)
+        end
+      rescue => e
+        # Log error details and ensure usage record is updated even on errors
+        Rails.logger.error("API request error: #{e.message}")
+        @usage_record&.update(
+          response_code: 500,
+          duration_ms: ((Time.current - start_time) * 1000).round,
+          response_body: { error: "Internal server error", message: e.message }.to_json
+        )
+        raise
+      end
+
+      def update_usage_record_with_details(duration_ms)
+        return unless @usage_record
+
+        # Filter sensitive data from headers and params
+        filtered_headers = filter_sensitive_headers(request.headers.to_h)
+        filtered_params = filter_sensitive_params(request.params)
+        filtered_response_headers = filter_sensitive_headers(response.headers.to_h) if response
+
+        # Extract user information if available
+        user_id = nil
+        if respond_to?(:current_user) && current_user
+          user_id = current_user.id
+        elsif filtered_params["user_id"]
+          user_id = filtered_params["user_id"]
+        end
+
+        # Get request body (for POST/PUT/PATCH requests)
+        request_body = nil
+        if %w[POST PUT PATCH].include?(request.method) && request.raw_post.present?
+          begin
+            request_body = filter_sensitive_params(JSON.parse(request.raw_post)).to_json
+          rescue JSON::ParserError
+            request_body = "[Non-JSON request body]"
+          end
+        end
+
+        # Get response body if it's JSON
+        response_body = nil
+        if response && response.body.present?
+          begin
+            parsed_response = JSON.parse(response.body)
+            response_body = filter_sensitive_params(parsed_response).to_json
+          rescue JSON::ParserError
+            response_body = "[Non-JSON response body]"
+          end
+        end
+
+        # Update the usage record
+        @usage_record.update(
+          response_code: response&.status || 500,
+          duration_ms: duration_ms,
+          request_headers: filtered_headers.to_json,
+          request_body: request_body,
+          response_headers: filtered_response_headers&.to_json,
+          response_body: response_body,
+          user_id: user_id
+        )
+
+        # Send metrics to StatsD/Grafana
+        send_metrics_to_statsd
+      rescue => e
+        Rails.logger.error("Failed to update usage record: #{e.message}")
+      end
+
+      def send_metrics_to_statsd
+        return unless @usage_record
+
+        # Record metrics using the ApiMetricsService
+        ApiMetricsService.record_request(@usage_record)
+
+        # Also record real-time metrics for immediate Grafana visibility
+        ApiMetricsService.record_endpoint_metrics(
+          @usage_record.request_path,
+          @usage_record.request_method,
+          @usage_record.duration_ms,
+          @usage_record.response_code,
+          @current_service&.name
+        )
+      rescue => e
+        Rails.logger.error("Failed to send metrics to StatsD: #{e.message}")
+      end
+
+      def filter_sensitive_headers(headers)
+        # Remove sensitive headers
+        sensitive_headers = %w[
+          authorization x-api-key cookie set-cookie
+          x-csrf-token x-forwarded-for x-real-ip
+        ]
+
+        headers.reject { |key, _| sensitive_headers.include?(key.downcase) }
+      end
+
+      def filter_sensitive_params(params)
+        # Use Rails' built-in parameter filtering
+        filter = ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+        filter.filter(params)
       end
 
     end

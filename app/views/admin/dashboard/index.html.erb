@@ -45,7 +45,160 @@
     </div>
   </div>
 
-  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  <!-- API Performance Summary -->
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-lg font-medium text-gray-500">Total API Requests</div>
+          </div>
+        </div>
+        <div class="mt-1 text-3xl font-semibold text-gray-900">
+          <%= number_with_delimiter(@api_summary[:total_requests]) %>
+        </div>
+        <div class="text-sm text-gray-500">Last 24 hours</div>
+      </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-lg font-medium text-gray-500">Avg Response Time</div>
+          </div>
+        </div>
+        <div class="mt-1 text-3xl font-semibold text-gray-900">
+          <%= @api_summary[:avg_response_time] %>ms
+        </div>
+        <div class="text-sm text-gray-500">Last 24 hours</div>
+      </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-lg font-medium text-gray-500">Success Rate</div>
+          </div>
+        </div>
+        <div class="mt-1 text-3xl font-semibold text-green-600">
+          <%= @api_summary[:success_rate] %>%
+        </div>
+        <div class="text-sm text-gray-500">Last 24 hours</div>
+      </div>
+    </div>
+
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+      <div class="p-5">
+        <div class="flex items-center">
+          <div class="flex-shrink-0">
+            <div class="text-lg font-medium text-gray-500">Slow Requests</div>
+          </div>
+        </div>
+        <div class="mt-1 text-3xl font-semibold text-amber-600">
+          <%= number_with_delimiter(@api_summary[:slow_requests]) %>
+        </div>
+        <div class="text-sm text-gray-500">&gt; 1000ms</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- API Metrics Charts -->
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Requests Over Time -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">API Requests Over Time</h3>
+        <%= line_chart @requests_over_time, 
+            height: "300px",
+            colors: ["#3B82F6"],
+            suffix: " requests",
+            library: {
+              elements: { point: { radius: 3 } },
+              scales: {
+                y: { beginAtZero: true }
+              }
+            } %>
+      </div>
+    </div>
+
+    <!-- Response Time Trends -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Average Response Time</h3>
+        <%= line_chart @response_time_trends, 
+            height: "300px",
+            colors: ["#10B981"],
+            suffix: "ms",
+            library: {
+              elements: { point: { radius: 3 } },
+              scales: {
+                y: { beginAtZero: true }
+              }
+            } %>
+      </div>
+    </div>
+
+    <!-- Status Code Distribution -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Status Code Distribution</h3>
+        <%= pie_chart @status_code_distribution, 
+            height: "300px",
+            colors: ["#10B981", "#F59E0B", "#EF4444", "#8B5CF6"],
+            library: {
+              plugins: {
+                legend: { position: "bottom" }
+              }
+            } %>
+      </div>
+    </div>
+
+    <!-- Error Rate Over Time -->
+    <div class="bg-white shadow rounded-lg">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Error Rate Over Time</h3>
+        <%= line_chart @error_rate_over_time, 
+            height: "300px",
+            colors: ["#EF4444"],
+            suffix: "%",
+            library: {
+              elements: { point: { radius: 3 } },
+              scales: {
+                y: { beginAtZero: true, max: 100 }
+              }
+            } %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Endpoints -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+    <div class="bg-white shadow rounded-lg lg:col-span-2">
+      <div class="px-4 py-5 sm:p-6">
+        <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Top API Endpoints</h3>
+        <%= column_chart @top_endpoints, 
+            height: "300px",
+            colors: ["#6366F1"],
+            suffix: " requests",
+            library: {
+              plugins: {
+                legend: { display: false }
+              },
+              scales: {
+                y: { beginAtZero: true },
+                x: {
+                  ticks: {
+                    maxRotation: 45,
+                    minRotation: 45
+                  }
+                }
+              }
+            } %>
+      </div>
+    </div>
+
     <!-- Quick Actions -->
     <div class="bg-white shadow rounded-lg">
       <div class="px-4 py-5 sm:p-6">
@@ -55,6 +208,8 @@
               class: "block w-full text-left px-4 py-2 text-sm text-blue-500 hover:bg-blue-50 rounded" %>
           <%= link_to "Manage Services", admin_services_path,
               class: "block w-full text-left px-4 py-2 text-sm text-blue-500 hover:bg-blue-100 rounded" %>
+          <%= link_to "Query API Data", admin_blazer_path,
+              class: "block w-full text-left px-4 py-2 text-sm text-blue-500 hover:bg-blue-50 rounded" %>
         </div>
       </div>
     </div>

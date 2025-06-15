@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_14_170354) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_14_234339) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_catalog.plpgsql"
@@ -325,8 +325,17 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_14_170354) do
     t.datetime "requested_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.text "user_agent"
+    t.text "request_headers"
+    t.text "request_body"
+    t.text "response_body"
+    t.text "response_headers"
+    t.integer "duration_ms"
+    t.bigint "user_id"
+    t.index ["duration_ms"], name: "index_service_key_usages_on_duration_ms"
     t.index ["key_id"], name: "index_service_key_usages_on_key_id"
     t.index ["requested_at"], name: "index_service_key_usages_on_requested_at"
+    t.index ["user_id"], name: "index_service_key_usages_on_user_id"
   end
 
   create_table "service_keys", force: :cascade do |t|
@@ -453,6 +462,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_14_170354) do
   add_foreign_key "oauth_access_tokens", "oauth_applications", column: "application_id"
   add_foreign_key "oauth_access_tokens", "users", column: "resource_owner_id"
   add_foreign_key "service_key_usages", "service_keys", column: "key_id"
+  add_foreign_key "service_key_usages", "users", on_delete: :nullify, validate: false
   add_foreign_key "service_keys", "services"
   add_foreign_key "service_webhooks", "services"
   add_foreign_key "user_sessions", "users"
