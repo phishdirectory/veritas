@@ -33,7 +33,9 @@
 #                                           POST   /login(.:format)                                                                                  auth#login
 #                                    logout DELETE /logout(.:format)                                                                                 auth#logout
 #                                        me GET    /auth/me(.:format)                                                                                auth#me
+#                                   profile GET    /profile(.:format)                                                                                users#show
 #                              edit_profile GET    /profile/edit(.:format)                                                                           users#edit
+#                          profile_sessions GET    /profile/sessions(.:format)                                                                       users#sessions
 #                            update_profile PATCH  /profile(.:format)                                                                                users#update
 #                     destroy_profile_photo DELETE /profile/photo(.:format)                                                                          users#destroy_profile_photo
 #                        email_confirmation GET    /email_confirmation(.:format)                                                                     email_confirmations#show
