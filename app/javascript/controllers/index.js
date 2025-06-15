@@ -7,6 +7,9 @@ import { application } from "./application"
 import CountdownController from "./countdown_controller"
 application.register("countdown", CountdownController)
 
+import LoginFormController from "./login_form_controller"
+application.register("login-form", LoginFormController)
+
 import PasswordController from "./password_controller"
 application.register("password", PasswordController)
 

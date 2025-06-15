@@ -1,0 +1,20 @@
+<h2>Sign in to your account</h2>
+
+<p>Hi <%= @user.first_name %>,</p>
+
+<p>Click the link below to securely sign in to your account. This link will expire in 15 minutes for your security.</p>
+
+<p style="margin: 20px 0;">
+  <a href="<%= @magic_link_url %>" 
+     style="background-color: #2563eb; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">
+    Sign In Securely
+  </a>
+</p>
+
+<p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+<p><%= @magic_link_url %></p>
+
+<p><small>If you didn't request this login link, you can safely ignore this email. The link will expire automatically.</small></p>
+
+<p>Thanks,<br>
+The <%= Rails.application.class.module_parent_name %> Team</p>

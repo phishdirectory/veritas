@@ -1,12 +1,10 @@
 <div id="login_form" class="absolute inset-0 flex items-center justify-center">
-<%= form_with(model: user, url: "/login", data: { turbo: true }) do |f| %>
+<%= form_with(model: user, url: "/login", data: { turbo: true, controller: "login-form", action: "submit->login-form#submitForm" }, local: true, id: "login_form_element") do |f| %>
   <div class="w-full max-w-md bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl border border-white/20 m-10">
     <!-- Card Header -->
     <div class="p-10 pb-6">
       <h2 class="text-3xl font-bold text-gray-900 text-center">Veritas Dashboard</h2>
       <p class="text-gray-600 text-center mt-2">Please sign in to your account.</p>
-      <%# <p>Looking to use o-auth to sign in to an external service? Go back to the service and follow their flow. </p> %>
-      <%# <p class="text-gray-600 text-center mt-2">If you don't have an account, Sign up here.</p> %>
     </div>
 
     <!-- Card Content -->
@@ -16,19 +14,37 @@
         <%= f.email_field :email,
             class: "w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400",
             placeholder: "you@example.com",
-            required: true %>
+            required: true,
+            data: { login_form_target: "email", action: "input->login-form#emailChanged" } %>
       </div>
 
-      <div class="space-y-2">
+      <!-- Dynamic Password Field -->
+      <div data-login-form-target="passwordContainer" class="space-y-2" style="display: none;">
         <%= f.label :password, "Password", class: "block text-sm font-medium text-gray-700" %>
         <%= f.password_field :password,
             class: "w-full px-4 py-3 rounded-lg border border-gray-300 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors placeholder-gray-400",
             placeholder: "Enter your password",
-            required: true %>
+            data: { login_form_target: "password" } %>
       </div>
 
-      <%= f.submit "Sign in",
-          class: "w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer" %>
+      <!-- Loading indicator -->
+      <div data-login-form-target="loadingIndicator" class="text-center text-gray-600" style="display: none;">
+        <div class="inline-flex items-center">
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Checking account...
+        </div>
+      </div>
+
+      <!-- Dynamic Submit Button -->
+      <div>
+        <%= f.submit "Continue", 
+            data: { login_form_target: "submitButton" },
+            class: "w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-pointer disabled:opacity-50 disabled:transform-none",
+            disabled: true %>
+      </div>
 
       <div class="text-center">
         <p class="text-sm text-gray-600">

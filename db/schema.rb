@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_14_234339) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_15_190334) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "fuzzystrmatch"
   enable_extension "pg_catalog.plpgsql"
@@ -428,8 +428,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_14_234339) do
     t.string "username", null: false
     t.string "confirmation_token"
     t.datetime "confirmation_sent_at"
+    t.string "magic_link_token"
+    t.datetime "magic_link_expires_at"
+    t.datetime "magic_link_sent_at"
+    t.datetime "magic_link_used_at"
     t.index ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["magic_link_token"], name: "index_users_on_magic_link_token", unique: true
     t.index ["pd_id"], name: "index_users_on_pd_id", unique: true
   end
 

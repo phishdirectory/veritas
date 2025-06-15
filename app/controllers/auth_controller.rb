@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class AuthController < ApplicationController
-  skip_before_action :authenticate_user!, only: [:login, :new_session, :oauth_login]
+  skip_before_action :authenticate_user!, only: [:login, :new_session, :oauth_login, :send_magic_link, :magic_link_login, :check_password_login]
 
   layout "sessions", only: [:new_session, :oauth_login]
 
@@ -39,37 +39,140 @@ class AuthController < ApplicationController
     user_email = params.dig(:user, :email)
     begin
       email = sanitize_input(user_email, email: user_email, field_name: "email")
-      password = sanitize_password(params.dig(:user, :password), email: user_email)
+      password = sanitize_password(params.dig(:user, :password), email: user_email) if params.dig(:user, :password).present?
     rescue SecurityError => e
       handle_login_error("Invalid input: #{e.message}", user_email)
       return
     end
 
-    if email.blank? || password.blank?
-      handle_login_error("Email and password are required", email)
+    if email.blank?
+      handle_login_error("Email is required", email)
+      return
+    end
+
+    user = User.find_by(email: email&.downcase)
+
+    # Handle password login attempts
+    if password.present?
+      if user.nil?
+        handle_login_error("No account found with this email", email)
+        return
+      end
+
+      if !user.password_login_enabled?
+        handle_login_error("Password login is not enabled for your account. Please use the magic link sent to your email.", email)
+        return
+      end
+
+      # Password login flow
+      if !user.authenticate(password)
+        handle_login_error("Incorrect password", email)
+        return
+      end
+      
+      complete_login(user)
+    else
+      # Magic link flow - handle non-existent emails gracefully
+      if user.nil?
+        # Don't reveal that email doesn't exist - show success message anyway
+        respond_to do |format|
+          format.html { redirect_to login_path, notice: "If an account with this email exists, a magic link has been sent." }
+          format.json { render json: { message: "If an account with this email exists, a magic link has been sent." }, status: :ok }
+        end
+        return
+      end
+
+      # Send magic link to existing user
+      if user.send_magic_link
+        respond_to do |format|
+          format.html { redirect_to login_path, notice: "Magic link sent! Check your email to continue." }
+          format.json { render json: { message: "Magic link sent to your email" }, status: :ok }
+        end
+      else
+        handle_login_error("Failed to send magic link", email)
+      end
+    end
+  end
+
+  def send_magic_link
+    user_email = params.dig(:user, :email) || params[:email]
+    begin
+      email = sanitize_input(user_email, email: user_email, field_name: "email")
+    rescue SecurityError => e
+      handle_login_error("Invalid input: #{e.message}", user_email)
+      return
+    end
+
+    if email.blank?
+      handle_login_error("Email is required", email)
       return
     end
 
     user = User.find_by(email: email&.downcase)
 
     if user.nil?
-      handle_login_error("No account found with this email", email)
-    elsif !user.authenticate(password)
-      handle_login_error("Incorrect password", email)
-    else
-      session[:user_id] = user.id
-
-      if user.email_verified?
-        respond_to do |format|
-          format.html { redirect_to root_path, notice: "Logged in successfully" }
-          format.json { render json: { user: user.as_json(except: :password_digest) } }
-        end
-      else
-        respond_to do |format|
-          format.html { redirect_to email_confirmation_path, notice: "Please confirm your email address to continue" }
-          format.json { render json: { message: "Email confirmation required", redirect_to: email_confirmation_path }, status: :forbidden }
-        end
+      # Don't reveal whether the email exists or not for security
+      respond_to do |format|
+        format.html { redirect_to login_path, notice: "If an account with this email exists, a magic link has been sent." }
+        format.json { render json: { message: "If an account with this email exists, a magic link has been sent." }, status: :ok }
       end
+      return
+    end
+
+    if user.send_magic_link
+      respond_to do |format|
+        format.html { redirect_to login_path, notice: "Magic link sent! Check your email to continue." }
+        format.json { render json: { message: "Magic link sent to your email" }, status: :ok }
+      end
+    else
+      handle_login_error("Failed to send magic link", email)
+    end
+  end
+
+  def magic_link_login
+    token = params[:token]
+    
+    if token.blank?
+      redirect_to login_path, alert: "Invalid magic link"
+      return
+    end
+
+    user = User.find_by(magic_link_token: token)
+
+    if user.nil? || !user.magic_link_valid?
+      redirect_to login_path, alert: "Invalid or expired magic link"
+      return
+    end
+
+    if user.consume_magic_link_token!
+      complete_login(user)
+    else
+      redirect_to login_path, alert: "Failed to process magic link"
+    end
+  end
+
+  def check_password_login
+    email = params[:email]
+    
+    if email.blank?
+      render json: { password_login_enabled: false, error: "Email required" }, status: :bad_request
+      return
+    end
+
+    begin
+      sanitized_email = sanitize_input(email, email: email, field_name: "email")
+    rescue SecurityError => e
+      render json: { password_login_enabled: false, error: "Invalid email" }, status: :bad_request
+      return
+    end
+
+    user = User.find_by(email: sanitized_email&.downcase)
+    
+    if user.nil?
+      # Don't reveal whether user exists - default to magic link
+      render json: { password_login_enabled: false, user_exists: false }, status: :ok
+    else
+      render json: { password_login_enabled: user.password_login_enabled?, user_exists: true }, status: :ok
     end
   end
 
@@ -99,6 +202,22 @@ class AuthController < ApplicationController
   end
 
   private
+
+  def complete_login(user)
+    session[:user_id] = user.id
+
+    if user.email_verified?
+      respond_to do |format|
+        format.html { redirect_to root_path, notice: "Logged in successfully" }
+        format.json { render json: { user: user.as_json(except: :password_digest) }, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.html { redirect_to email_confirmation_path, notice: "Please confirm your email address to continue" }
+        format.json { render json: { message: "Email confirmation required", redirect_to: email_confirmation_path }, status: :forbidden }
+      end
+    end
+  end
 
   def sanitize_input(input, options = {})
     return nil if input.nil?

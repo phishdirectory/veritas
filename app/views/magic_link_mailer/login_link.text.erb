@@ -1,0 +1,12 @@
+Sign in to your account
+
+Hi <%= @user.first_name %>,
+
+Click the link below to securely sign in to your account. This link will expire in 15 minutes for your security.
+
+<%= @magic_link_url %>
+
+If you didn't request this login link, you can safely ignore this email. The link will expire automatically.
+
+Thanks,
+The <%= Rails.application.class.module_parent_name %> Team

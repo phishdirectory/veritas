@@ -4,3 +4,4 @@
 
 pin "application"
 pin "controllers", to: "controllers/index.js"
+pin "mapkick/bundle", to: "mapkick.bundle.js"

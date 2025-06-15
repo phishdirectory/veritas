@@ -98,6 +98,7 @@ class User < ApplicationRecord
     with: /\APDU\d[a-zA-Z0-9]{7}\z/,
     message: "must be in the format PDU{digit}{7 alphanumeric characters}"
   }
+  validates :magic_link_token, uniqueness: true, allow_nil: true
   validates :profile_photo, content_type: { in: %w[image/jpeg image/jpeg image/png image/webp],
                                             message: "must be a JPEG, PNG, or WebP image"
 },
@@ -185,6 +186,10 @@ class User < ApplicationRecord
     pd_dev
   end
 
+  def password_login_enabled?
+    Flipper.enabled?(:password_login, self)
+  end
+
   def can_authenticate?
     active? && !locked?
   end
@@ -212,6 +217,34 @@ class User < ApplicationRecord
     self.confirmation_sent_at = Time.current
     save!
     EmailConfirmationJob.perform_later(self)
+  end
+
+  def generate_magic_link_token
+    self.magic_link_token = SecureRandom.urlsafe_base64(32)
+    self.magic_link_expires_at = 15.minutes.from_now
+    self.magic_link_sent_at = Time.current
+    self.magic_link_used_at = nil
+    save!
+  end
+
+  def magic_link_valid?
+    magic_link_token.present? &&
+      magic_link_expires_at.present? &&
+      magic_link_expires_at > Time.current &&
+      magic_link_used_at.nil?
+  end
+
+  def consume_magic_link_token!
+    return false unless magic_link_valid?
+
+    self.magic_link_used_at = Time.current
+    save!
+    true
+  end
+
+  def send_magic_link
+    generate_magic_link_token
+    MagicLinkJob.perform_later(self)
   end
 
   def confirmation_period_valid?
