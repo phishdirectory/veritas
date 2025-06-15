@@ -6,6 +6,9 @@ Rails.application.configure do
 
   if Rails.env.production? || ENV["ENABLE_API_METRICS_SCHEDULER"] == "true"
     Rails.application.config.after_initialize do
+      # Skip during asset precompilation or when database is not available
+      next if defined?(Rails::Console) || File.basename($0) == "rake" || ENV["SECRET_KEY_BASE_DUMMY"]
+
       # Schedule the first job and set up recurring execution
       ApiMetricsBatchJob.set(wait: 1.minute).perform_later
 
