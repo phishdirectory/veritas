@@ -277,6 +277,40 @@ class User < ApplicationRecord
     Rails.application.routes.url_helpers.user_initials_circle_url(pd_id: pd_id, variant: variant, **url_options)
   end
 
+  def is_impersonatable?(impersonator)
+    # Cannot impersonate yourself
+    return false if self == impersonator
+
+    impersonator_level = ACCESS_LEVELS[impersonator.access_level.to_sym]
+    target_level = ACCESS_LEVELS[access_level.to_sym]
+
+    case impersonator.access_level.to_sym
+    when :owner
+      true # Owner can impersonate anyone (except themselves)
+    when :superadmin
+      !owner? # Superadmin can impersonate anyone except owner
+    when :admin
+      !admin? # Admin can only impersonate trusted and regular users
+    else
+      false # trusted and user levels cannot impersonate
+    end
+  end
+
+
+  def can_impersonate?
+    # Determines if THIS user can impersonate others
+    # Only active, non-pretending admins and above can impersonate
+    return false unless can_authenticate? && !pretend_is_not_admin
+
+    admin?
+  end
+
+  def impersonatable?
+    # This is a convenience method for views - checks if user is impersonatable by the current admin
+    # This should be overridden by passing current_user context, but provides basic check
+    !admin?
+  end
+
   private
 
   def url_options
@@ -322,40 +356,6 @@ class User < ApplicationRecord
   def admin_override_pretend?
     ["admin"].include?(self.access_level)
   end
-
-  def can_impersonate?
-    # Determines if THIS user can impersonate others
-    # Only active, non-pretending admins and above can impersonate
-    return false unless can_authenticate? && !pretend_is_not_admin
-
-    admin?
-  end
-
-  def is_impersonatable?(impersonator)
-    # Cannot impersonate yourself
-    return false if self == impersonator
-
-    impersonator_level = ACCESS_LEVELS[impersonator.access_level.to_sym]
-    target_level = ACCESS_LEVELS[access_level.to_sym]
-
-    case impersonator.access_level.to_sym
-    when :owner
-      true # Owner can impersonate anyone (except themselves)
-    when :superadmin
-      !owner? # Superadmin can impersonate anyone except owner
-    when :admin
-      !admin? # Admin can only impersonate trusted and regular users
-    else
-      false # trusted and user levels cannot impersonate
-    end
-  end
-
-  def impersonatable?
-    # This is a convenience method for views - checks if user is impersonatable by the current admin
-    # This should be overridden by passing current_user context, but provides basic check
-    !admin?
-  end
-
 
   def make_trusted!
     trusted!

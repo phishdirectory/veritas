@@ -5,34 +5,33 @@
 # Table name: service_key_usages
 #
 #  id               :bigint           not null, primary key
+#  duration_ms      :integer
 #  ip_address       :string
+#  request_body     :text
+#  request_headers  :text
 #  request_method   :string
 #  request_path     :string
 #  requested_at     :datetime
-#  response_code    :integer
-#  user_agent       :text
-#  request_headers  :text
-#  request_body     :text
 #  response_body    :text
+#  response_code    :integer
 #  response_headers :text
-#  duration_ms      :integer
-#  user_id          :bigint
+#  user_agent       :text
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  key_id           :bigint           not null
+#  user_id          :bigint
 #
 # Indexes
 #
+#  index_service_key_usages_on_duration_ms   (duration_ms)
 #  index_service_key_usages_on_key_id        (key_id)
 #  index_service_key_usages_on_requested_at  (requested_at)
 #  index_service_key_usages_on_user_id       (user_id)
-#  index_service_key_usages_on_duration_ms   (duration_ms)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (key_id => service_keys.id)
-#  fk_rails_...  (user_id => users.id)
-#
+#  fk_rails_...  (user_id => users.id) ON DELETE => nullify
 #
 # # app/models/api_service/key_usage.rb
 class Service

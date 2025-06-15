@@ -288,6 +288,14 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
   mount OkComputer::Engine, at: "ok"
 
+  # Stop impersonating route (outside admin constraint)
+  namespace :admin do
+    resources :users, only: [] do
+      collection do
+        delete :stop_impersonating
+      end
+    end
+  end
 
   # Admin namespace with constraint
   constraints AdminConstraint.new do
@@ -297,10 +305,6 @@ Rails.application.routes.draw do
 
       # Resources and sub-resources
       resources :users do
-        collection do
-          delete :stop_impersonating
-          get :stop_impersonating
-        end
         member do
           post :impersonate
         end

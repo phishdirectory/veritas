@@ -40,7 +40,7 @@
         <dt class="text-sm font-medium text-gray-500">Scopes</dt>
         <dd class="mt-1 text-sm text-gray-900">
           <% if @application.scopes.present? %>
-            <% @application.scopes.split(' ').each do |scope| %>
+            <% @application.scopes.all.each do |scope| %>
               <span class="inline-flex px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full mr-2 mb-1">
                 <%= scope %>
               </span>
@@ -66,10 +66,11 @@
     <div class="flex justify-between items-center mb-4">
       <h3 class="text-lg font-semibold">Credentials</h3>
       <% if current_user.superadmin? %>
-        <%= link_to "Regenerate Secret", regenerate_secret_admin_oauth_application_path(@application), 
-            method: :patch,
-            data: { confirm: "Are you sure? This will invalidate all existing tokens." },
-            class: "text-sm glass-button px-3 py-1 rounded" %>
+        <%= form_with url: regenerate_secret_admin_oauth_application_path(@application), method: :patch, local: true, class: "inline" do |form| %>
+          <%= form.submit "Regenerate Secret", 
+              data: { confirm: "Are you sure? This will invalidate all existing tokens." },
+              class: "text-sm glass-button px-3 py-1 rounded cursor-pointer" %>
+        <% end %>
       <% end %>
     </div>
     

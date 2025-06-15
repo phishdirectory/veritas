@@ -4,7 +4,9 @@ class Admin::UsersController < Admin::BaseController
   before_action :set_user, only: [:show, :edit, :update, :destroy, :impersonate]
   before_action :ensure_can_impersonate, only: [:impersonate]
   before_action :ensure_not_already_impersonating, only: [:impersonate]
+  skip_before_action :authenticate_user!, only: [:stop_impersonating]
   skip_before_action :require_admin, only: [:stop_impersonating]
+  skip_before_action :ensure_ui_enabled_for_admin, only: [:stop_impersonating]
 
   def index
     @users = User.all
@@ -58,22 +60,41 @@ class Admin::UsersController < Admin::BaseController
   end
 
   def impersonate
+    Rails.logger.info "Attempting to impersonate user #{@user.id} as admin #{current_user.id}"
+    
     if @user.is_impersonatable?(current_user)
+      Rails.logger.info "Impersonation allowed, setting session variables"
       session[:admin_id] = current_user.id
       session[:user_id] = @user.id
-      redirect_to root_path, notice: "Now impersonating #{@user.full_name}"
+      Rails.logger.info "Session set: admin_id=#{session[:admin_id]}, user_id=#{session[:user_id]}"
+      
+      # Clear the current_user cache to force reload
+      @current_user = nil
+      
+      # Force a full page redirect
+      flash[:notice] = "Now impersonating #{@user.full_name}"
+      response.headers['Location'] = '/'
+      render status: :found, plain: ''
     else
+      Rails.logger.warn "Impersonation denied for user #{@user.id} by admin #{current_user.id}"
       redirect_to admin_users_path, alert: "Cannot impersonate this user"
     end
   end
 
   def stop_impersonating
+    Rails.logger.info "Stop impersonating called. Current session: admin_id=#{session[:admin_id]}, user_id=#{session[:user_id]}"
+    
     if session[:admin_id]
       admin_user = User.find(session[:admin_id])
+      Rails.logger.info "Found admin user: #{admin_user.full_name} (#{admin_user.id})"
+      
       session[:user_id] = session[:admin_id]
       session.delete(:admin_id)
+      
+      Rails.logger.info "Session reset. New session: admin_id=#{session[:admin_id]}, user_id=#{session[:user_id]}"
       redirect_to admin_root_path, notice: "Stopped impersonating. Welcome back, #{admin_user.full_name}!"
     else
+      Rails.logger.warn "No admin_id in session, cannot stop impersonating"
       redirect_to admin_root_path, alert: "You are not currently impersonating anyone"
     end
   end

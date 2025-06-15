@@ -15,7 +15,7 @@
 
 <div class="max-w-2xl">
   <div class="bg-white bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-lg p-6 border border-white border-opacity-50 shadow-lg">
-    <%= form_with model: [:admin, @application], local: true, class: "space-y-6" do |form| %>
+    <%= form_with model: @application, url: admin_oauth_application_path(@application), method: :patch, local: true, class: "space-y-6" do |form| %>
       <% if @application.errors.any? %>
         <div class="bg-red-50 border border-red-200 rounded-md p-4">
           <div class="flex">

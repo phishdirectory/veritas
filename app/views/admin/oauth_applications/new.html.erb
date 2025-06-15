@@ -14,7 +14,7 @@
 
 <div class="max-w-2xl">
   <div class="bg-white bg-opacity-40 backdrop-filter backdrop-blur-lg rounded-lg p-6 border border-white border-opacity-50 shadow-lg">
-    <%= form_with model: [:admin, @application], local: true, class: "space-y-6" do |form| %>
+    <%= form_with model: @application, url: admin_oauth_applications_path, local: true, class: "space-y-6" do |form| %>
       <% if @application.errors.any? %>
         <div class="bg-red-50 border border-red-200 rounded-md p-4">
           <div class="flex">
@@ -65,7 +65,10 @@
             placeholder: "profile email",
             value: form.object.scopes || "profile email" %>
         <p class="mt-2 text-sm text-gray-500">
-          Space-separated list of scopes. Available: <code>profile</code>, <code>email</code>, <code>admin</code>. 
+          Space-separated list of scopes. Available: 
+          <code>profile</code> (basic user info), 
+          <code>email</code> (user email address), 
+          <code>admin</code> (administrative access). 
           Leave empty to use defaults.
         </p>
       </div>
