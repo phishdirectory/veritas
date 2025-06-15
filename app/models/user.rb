@@ -46,6 +46,7 @@ class User < ApplicationRecord
   has_secure_password
 
   has_many :visits, class_name: "Ahoy::Visit", dependent: :destroy
+  has_many :user_sessions, class_name: "User::Session", dependent: :destroy
   has_one_attached :profile_photo
 
   # Define access level values centrally

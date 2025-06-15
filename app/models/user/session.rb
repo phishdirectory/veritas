@@ -41,7 +41,6 @@ class User
 
     belongs_to :user
     belongs_to :impersonated_by, class_name: "User", optional: true
-    has_many :user_sessions, dependent: :destroy
 
 
     scope :impersonated, -> { where.not(impersonated_by_id: nil) }
