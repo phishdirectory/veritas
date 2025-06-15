@@ -31,6 +31,9 @@
 #                                     login GET    /login(.:format)                                                                                  auth#new_session
 #                               oauth_login GET    /oauth/login(.:format)                                                                            auth#oauth_login
 #                                           POST   /login(.:format)                                                                                  auth#login
+#                           send_magic_link POST   /auth/magic_link(.:format)                                                                        auth#send_magic_link
+#                          magic_link_login GET    /auth/magic_link/:token(.:format)                                                                 auth#magic_link_login
+#                      check_password_login POST   /auth/check_password_login(.:format)                                                              auth#check_password_login
 #                                    logout DELETE /logout(.:format)                                                                                 auth#logout
 #                                        me GET    /auth/me(.:format)                                                                                auth#me
 #                                   profile GET    /profile(.:format)                                                                                users#show

@@ -15,6 +15,10 @@
 #  first_name               :string           not null
 #  last_name                :string           not null
 #  locked_at                :datetime
+#  magic_link_expires_at    :datetime
+#  magic_link_sent_at       :datetime
+#  magic_link_token         :string
+#  magic_link_used_at       :datetime
 #  password_digest          :string           not null
 #  pd_dev                   :boolean          default(FALSE), not null
 #  pretend_is_not_admin     :boolean          default(FALSE), not null
@@ -32,6 +36,7 @@
 #
 #  index_users_on_confirmation_token  (confirmation_token) UNIQUE
 #  index_users_on_email               (email) UNIQUE
+#  index_users_on_magic_link_token    (magic_link_token) UNIQUE
 #  index_users_on_pd_id               (pd_id) UNIQUE
 #
 class User < ApplicationRecord
