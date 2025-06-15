@@ -59,7 +59,7 @@
               <% if user.is_impersonatable?(current_user) && !impersonating? %>
                 <%= button_to 'Impersonate', impersonate_admin_user_path(user), method: :post,
                     class: 'text-orange-600 hover:text-orange-900',
-                    form: { class: 'inline-block' },
+                    form: { class: 'inline-block', data: { turbo: false } },
                     local: true,
                     data: { turbo_confirm: "Are you sure you want to impersonate #{user.full_name}?" } %>
               <% end %>

@@ -71,10 +71,8 @@ class Admin::UsersController < Admin::BaseController
       # Clear the current_user cache to force reload
       @current_user = nil
       
-      # Force a full page redirect
       flash[:notice] = "Now impersonating #{@user.full_name}"
-      response.headers['Location'] = '/'
-      render status: :found, plain: ''
+      redirect_to root_path, allow_other_host: true
     else
       Rails.logger.warn "Impersonation denied for user #{@user.id} by admin #{current_user.id}"
       redirect_to admin_users_path, alert: "Cannot impersonate this user"
