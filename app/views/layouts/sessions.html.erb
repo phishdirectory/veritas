@@ -27,12 +27,12 @@
   </head>
 
   <body class="h-full">
-    <!-- Flash messages positioned absolutely at top -->
-    <div id="flash">
+    <!-- Flash messages positioned completely outside main layout -->
+    <div id="flash" class="fixed top-0 left-0 w-full z-50 pointer-events-none">
       <%= render 'shared/flash' %>
     </div>
     
-    <main class="h-full flex items-center justify-center p-4">
+    <main class="h-full relative">
       <%= yield %>
     </main>
   </body>

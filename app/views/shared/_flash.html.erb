@@ -1,4 +1,5 @@
-<div id="flash-notifications" class="fixed top-4 right-4 z-50 space-y-2">
+<% if flash.any? %>
+<div id="flash-notifications" class="fixed top-4 right-4 space-y-2 pointer-events-auto">
   <% flash.each do |name, msg| %>
     <% 
       case name.to_s
@@ -66,6 +67,7 @@
     </div>
   <% end %>
 </div>
+<% end %>
 
 <style>
   .flash-notification {
