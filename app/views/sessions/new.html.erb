@@ -49,27 +49,26 @@
 <script>
   document.addEventListener('DOMContentLoaded', async () => {
     try {
-      const fpPromise = import('https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@3.X.X/dist/fp.esm.min.js').then(
-        FingerprintJS => FingerprintJS.load()
-      );
+      // Use the pre-loaded FingerprintJS from the npm package
+      if (window.FingerprintJS) {
+        const fp = await window.FingerprintJS.load();
+        const result = await fp.get();
+        
+        document.getElementById('fingerprint').value = result.visitorId;
+      }
 
-      const fp = await fpPromise;
-      const result = await fp.get();
+      if (window.UAParser) {
+        const parser = new UAParser();
+        const browser = parser.getBrowser();
+        const os = parser.getOS();
 
-      document.getElementById('fingerprint').value = result.visitorId;
-
-      const userAgent = navigator.userAgent;
-      const parser = new UAParser(userAgent);
-      const browser = parser.getBrowser();
-      const os = parser.getOS();
-
-      document.getElementById('device_info').value = `${browser.name} ${browser.version}`;
-      document.getElementById('os_info').value = `${os.name} ${os.version}`;
+        document.getElementById('device_info').value = `${browser.name} ${browser.version}`;
+        document.getElementById('os_info').value = `${os.name} ${os.version}`;
+      }
+      
       document.getElementById('timezone').value = Intl.DateTimeFormat().resolvedOptions().timeZone;
     } catch(e) {
       console.error('Error collecting fingerprint:', e);
     }
   });
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.35/dist/ua-parser.min.js"></script>

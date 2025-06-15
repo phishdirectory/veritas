@@ -46,6 +46,9 @@
     <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/ua-parser-js@1.0.35/dist/ua-parser.min.js"></script>
+    <script src="https://unpkg.com/mapkick@0.2.6/dist/mapkick.bundle.js"></script>
     <%= Sentry.get_trace_propagation_meta.html_safe %>
     <script
       src="https://js.sentry-cdn.com/f3324a4e0fd0f2d0802ab95547336c18.min.js"
