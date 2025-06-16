@@ -32,7 +32,7 @@ gem "jsbundling-rails", "~> 1.0"
 # SECURITY & AUTHENTICATION
 ###############################################################################
 gem "bcrypt", "~> 3.1.7"                 # Secure password hashing
-gem "webauthn", "~> 3.2"                 # WebAuthn support
+gem "webauthn", "~> 3.4"                 # WebAuthn support
 gem "doorkeeper"                         # OAuth 2.0 provider
 gem "rack-attack"                        # Rate limiting
 gem "rack-cors"                          # CORS management

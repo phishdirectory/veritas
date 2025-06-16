@@ -664,7 +664,7 @@ GEM
     thruster (0.1.13-x86_64-linux)
     tilt (2.6.0)
     timeout (0.4.3)
-    tpm-key_attestation (0.14.0)
+    tpm-key_attestation (0.14.1)
       bindata (~> 2.4)
       openssl (> 2.0)
       openssl-signature_algorithm (~> 1.0)
@@ -687,7 +687,7 @@ GEM
       activemodel (>= 6.0.0)
       bindex (>= 0.4.0)
       railties (>= 6.0.0)
-    webauthn (3.4.0)
+    webauthn (3.4.1)
       android_key_attestation (~> 0.3.0)
       bindata (~> 2.4)
       cbor (~> 0.5.9)
@@ -811,7 +811,7 @@ DEPENDENCIES
   tzinfo-data
   validates_email_format_of
   web-console
-  webauthn (~> 3.2)
+  webauthn (~> 3.4)
 
 RUBY VERSION
    ruby 3.4.3p32
