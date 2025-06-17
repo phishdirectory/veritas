@@ -8,7 +8,7 @@
 #  api_key    :string           not null
 #  hash_key   :string           not null
 #  notes      :text
-#  status     :string           default("active"), not null
+#  status     :enum             default("active"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  service_id :bigint           not null
@@ -21,7 +21,6 @@
 # Foreign Keys
 #
 #  fk_rails_...  (service_id => services.id)
-#
 #
 # app/models/api_service/key.rb
 

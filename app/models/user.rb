@@ -5,8 +5,8 @@
 # Table name: users
 #
 #  id                       :bigint           not null, primary key
-#  access_level             :integer          default("user"), not null
-#  api_access_level         :integer          default("user"), not null
+#  access_level             :enum             default("user"), not null
+#  api_access_level         :enum             default("user"), not null
 #  confirmation_sent_at     :datetime
 #  confirmation_token       :string
 #  email                    :string           not null
@@ -26,7 +26,7 @@
 #  session_duration_seconds :integer          default(2592000), not null
 #  signup_service           :integer
 #  staff                    :boolean          default(FALSE), not null
-#  status                   :string           default("active"), not null
+#  status                   :enum             default("active"), not null
 #  username                 :string           not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
@@ -54,14 +54,14 @@ class User < ApplicationRecord
   has_many :user_sessions, class_name: "User::Session", dependent: :destroy
   has_one_attached :profile_photo
 
-  # Define access level values centrally
-  ACCESS_LEVELS = { user: 0, trusted: 1, admin: 2, superadmin: 3, owner: 4 }.freeze
+  # Define access level values centrally - using strings to match database native enums
+  ACCESS_LEVELS = %w[user trusted admin superadmin owner].freeze
   ACCESS_LEVEL_FIELDS = [:access_level, :api_access_level].freeze
   PRIMARY_ACCESS_LEVEL = :access_level # Define which field is the primary one
 
-  # Define enums for all access level fields
-  enum :access_level, ACCESS_LEVELS, scopes: false, default: :user # global access level
-  enum :api_access_level, ACCESS_LEVELS, scopes: false, default: :user, prefix: :api # access level
+  # Define enums for all access level fields - using string values to match database native enums
+  enum :access_level, ACCESS_LEVELS.index_by(&:itself), scopes: false, default: :user # global access level
+  enum :api_access_level, ACCESS_LEVELS.index_by(&:itself), scopes: false, default: :user, prefix: :api # access level
 
   # Use virtual attributes to track which fields should be synced with global
   attr_accessor :api_access_level_synced
@@ -80,11 +80,11 @@ class User < ApplicationRecord
   scope :active, -> { last_seen_within(30.days.ago) }
   def active? = last_seen_at && (last_seen_at >= 30.days.ago)
 
-  scope :user, -> { where(access_level: %i[user trusted admin superadmin owner]) }
-  scope :trusted, -> { where(access_level: %i[trusted admin superadmin owner]) }
-  scope :admin, -> { where(access_level: %i[admin superadmin owner]) }
-  scope :superadmin, -> { where(access_level: %i[superadmin owner]) }
-  scope :owner, -> { where(access_level: :owner) }
+  scope :user, -> { where(access_level: %w[user trusted admin superadmin owner]) }
+  scope :trusted, -> { where(access_level: %w[trusted admin superadmin owner]) }
+  scope :admin, -> { where(access_level: %w[admin superadmin owner]) }
+  scope :superadmin, -> { where(access_level: %w[superadmin owner]) }
+  scope :owner, -> { where(access_level: 'owner') }
 
   validates :first_name, presence: true
   validates :last_name, presence: true
@@ -320,8 +320,8 @@ class User < ApplicationRecord
     # Cannot impersonate yourself
     return false if self == impersonator
 
-    impersonator_level = ACCESS_LEVELS[impersonator.access_level.to_sym]
-    target_level = ACCESS_LEVELS[access_level.to_sym]
+    impersonator_level = ACCESS_LEVELS.index(impersonator.access_level.to_s)
+    target_level = ACCESS_LEVELS.index(access_level.to_s)
 
     case impersonator.access_level.to_sym
     when :owner
@@ -340,8 +340,8 @@ class User < ApplicationRecord
     # you can view yourself
     return true if self == viewer
 
-    viewer_level = ACCESS_LEVELS[viewer.access_level.to_sym]
-    target_level = ACCESS_LEVELS[access_level.to_sym]
+    viewer_level = ACCESS_LEVELS.index(viewer.access_level.to_s)
+    target_level = ACCESS_LEVELS.index(access_level.to_s)
 
     case viewer.access_level.to_sym
     when :owner

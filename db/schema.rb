@@ -15,6 +15,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_15_190334) do
   enable_extension "fuzzystrmatch"
   enable_extension "pg_catalog.plpgsql"
 
+  # Custom types defined in this database.
+  # Note that some types may not work with other database engines. Be careful if changing database.
+  create_enum "access_level", ["owner", "superadmin", "admin", "trusted", "user"]
+  create_enum "service_key_status", ["active", "deprecated", "revoked"]
+  create_enum "service_status", ["active", "suspended", "decommissioned"]
+  create_enum "status", ["active", "suspended", "deactivated"]
+
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -342,7 +349,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_15_190334) do
     t.bigint "service_id", null: false
     t.string "api_key", null: false
     t.string "hash_key", null: false
-    t.string "status", default: "active", null: false
+    t.enum "status", default: "active", null: false, enum_type: "service_key_status"
     t.text "notes"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -362,7 +369,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_15_190334) do
 
   create_table "services", force: :cascade do |t|
     t.string "name", null: false
-    t.string "status", default: "active", null: false
+    t.enum "status", default: "active", null: false, enum_type: "service_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "keys_count", default: 0, null: false
@@ -413,11 +420,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_15_190334) do
     t.boolean "email_verified", default: false
     t.datetime "email_verified_at"
     t.string "password_digest", null: false
-    t.integer "access_level", default: 0, null: false
-    t.integer "api_access_level", default: 0, null: false
+    t.enum "access_level", default: "user", null: false, enum_type: "access_level"
+    t.enum "api_access_level", default: "user", null: false, enum_type: "access_level"
     t.boolean "pretend_is_not_admin", default: false, null: false
     t.integer "session_duration_seconds", default: 2592000, null: false
-    t.string "status", default: "active", null: false
+    t.enum "status", default: "active", null: false, enum_type: "status"
     t.datetime "locked_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

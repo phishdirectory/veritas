@@ -5,8 +5,8 @@
 # Table name: users
 #
 #  id                       :bigint           not null, primary key
-#  access_level             :integer          default("user"), not null
-#  api_access_level         :integer          default("user"), not null
+#  access_level             :enum             default("user"), not null
+#  api_access_level         :enum             default("user"), not null
 #  confirmation_sent_at     :datetime
 #  confirmation_token       :string
 #  email                    :string           not null
@@ -26,7 +26,7 @@
 #  session_duration_seconds :integer          default(2592000), not null
 #  signup_service           :integer
 #  staff                    :boolean          default(FALSE), not null
-#  status                   :string           default("active"), not null
+#  status                   :enum             default("active"), not null
 #  username                 :string           not null
 #  created_at               :datetime         not null
 #  updated_at               :datetime         not null
