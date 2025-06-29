@@ -1,0 +1,31 @@
+# .github/workflows/auto-approve-merge.yml
+name: Auto Approve and Merge PRs with 'merge' Label (by jaspermayone)
+
+on:
+  pull_request:
+    types:
+      - labeled
+
+jobs:
+  auto-approve-and-merge:
+    if: |
+      github.event.label.name == 'merge' &&
+      github.actor == 'jaspermayone'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
+
+    steps:
+      - name: Approve PR
+        uses: hmarr/auto-approve-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge PR
+        uses: pascalgn/automerge-action@v0.16.3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: merge
+          MERGE_METHOD: squash
+          MERGE_COMMIT_MESSAGE: pull-request-title
