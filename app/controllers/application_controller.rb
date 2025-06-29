@@ -13,7 +13,13 @@ class ApplicationController < ActionController::Base
   # end
 
   def find_current_auditor
-    current_user if current_user&.superadmin?
+    # For API routes, track the service making the change
+    if respond_to?(:current_service) && current_service
+      "Service: #{current_service.name}"
+    else
+      # For web routes, track all authenticated users
+      current_user
+    end
   end
 
   def not_found
