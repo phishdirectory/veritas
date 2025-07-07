@@ -156,7 +156,7 @@ group :development do
 
   # IDE Support
   gem "solargraph" # Ruby language server
-  gem "solargraph-rails", "~> 1.1.0", require: false
+  gem "solargraph-rails", "~> 1.2.0", require: false
   gem "htmlbeautifier", require: false # ERB formatting
 end
 

@@ -539,7 +539,7 @@ GEM
     rswag-ui (2.16.0)
       actionpack (>= 5.2, < 8.1)
       railties (>= 5.2, < 8.1)
-    rubocop (1.75.8)
+    rubocop (1.77.0)
       json (~> 2.3)
       language_server-protocol (~> 3.17.0.2)
       lint_roller (~> 1.1.0)
@@ -547,10 +547,10 @@ GEM
       parser (>= 3.3.0.2)
       rainbow (>= 2.2.2, < 4.0)
       regexp_parser (>= 2.9.3, < 3.0)
-      rubocop-ast (>= 1.44.0, < 2.0)
+      rubocop-ast (>= 1.45.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 4.0)
-    rubocop-ast (1.44.1)
+    rubocop-ast (1.45.1)
       parser (>= 3.3.7.2)
       prism (~> 1.4)
     rubocop-capybara (2.22.1)
@@ -602,28 +602,29 @@ GEM
       bigdecimal
       concurrent-ruby (~> 1.0, >= 1.0.2)
     simpleidn (0.2.3)
-    solargraph (0.52.0)
+    solargraph (0.56.0)
       backport (~> 1.2)
-      benchmark
+      benchmark (~> 0.4)
       bundler (~> 2.0)
       diff-lcs (~> 1.4)
-      jaro_winkler (~> 1.6)
+      jaro_winkler (~> 1.6, >= 1.6.1)
       kramdown (~> 2.3)
       kramdown-parser-gfm (~> 1.1)
       logger (~> 1.6)
       observer (~> 0.1)
       ostruct (~> 0.6)
       parser (~> 3.0)
-      rbs (~> 3.0)
-      reverse_markdown (>= 2.0, < 4)
+      prism (~> 1.4)
+      rbs (~> 3.3)
+      reverse_markdown (~> 3.0)
       rubocop (~> 1.38)
       thor (~> 1.0)
       tilt (~> 2.0)
       yard (~> 0.9, >= 0.9.24)
       yard-solargraph (~> 0.1)
-    solargraph-rails (1.1.2)
+    solargraph-rails (1.2.0)
       activesupport
-      solargraph (>= 0.48.0, < 0.53.0)
+      solargraph (= 0.56.0)
     solid_cable (3.0.11)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -799,7 +800,7 @@ DEPENDENCIES
   sentry-rails
   sentry-ruby
   solargraph
-  solargraph-rails (~> 1.1.0)
+  solargraph-rails (~> 1.2.0)
   solid_cable
   solid_queue
   stackprof
