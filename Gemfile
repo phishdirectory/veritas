@@ -23,7 +23,7 @@ gem "propshaft"                          # Modern asset pipeline
 gem "importmap-rails"                    # JavaScript with ESM import maps
 gem "turbo-rails"                        # Hotwire's SPA-like page accelerator
 gem "stimulus-rails"                     # Hotwire's modest JavaScript framework
-gem "tailwindcss-rails", "~> 4.2"        # CSS framework
+gem "tailwindcss-rails", "~> 4.3"        # CSS framework
 gem "tailwindcss-ruby", "~> 4.1", platforms: :ruby
 gem "jbuilder"                           # Build JSON APIs
 gem "jsbundling-rails", "~> 1.0"
