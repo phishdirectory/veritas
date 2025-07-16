@@ -193,7 +193,7 @@ GEM
     drb (2.2.3)
     ed25519 (1.4.0)
     email_reply_parser (0.5.11)
-    erb (5.0.1)
+    erb (5.0.2)
     erubi (1.13.1)
     et-orbi (1.2.11)
       tzinfo
@@ -254,7 +254,7 @@ GEM
     iniparse (1.5.0)
     invisible_captcha (2.3.0)
       rails (>= 5.2)
-    io-console (0.8.0)
+    io-console (0.8.1)
     irb (1.15.2)
       pp (>= 0.6.0)
       rdoc (>= 4.0.0)
@@ -408,11 +408,10 @@ GEM
       logger
       numo-narray (>= 0.9.1.7)
       rover-df
-    propshaft (1.1.0)
+    propshaft (1.2.0)
       actionpack (>= 7.0.0)
       activesupport (>= 7.0.0)
       rack
-      railties (>= 7.0.0)
     psych (5.2.6)
       date
       stringio
@@ -479,7 +478,7 @@ GEM
       ffi (~> 1.0)
     rbs (3.9.4)
       logger
-    rdoc (6.14.1)
+    rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
     redis (5.4.0)
