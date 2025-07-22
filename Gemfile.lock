@@ -479,7 +479,7 @@ GEM
       ffi (~> 1.0)
     rbs (3.9.4)
       logger
-    rdoc (6.14.1)
+    rdoc (6.14.2)
       erb
       psych (>= 4.0.0)
     redis (5.4.0)
@@ -650,7 +650,7 @@ GEM
     stringio (3.1.7)
     strong_migrations (2.4.0)
       activerecord (>= 7.1)
-    tailwindcss-rails (4.2.3)
+    tailwindcss-rails (4.3.0)
       railties (>= 7.0.0)
       tailwindcss-ruby (~> 4.0)
     tailwindcss-ruby (4.1.11)
@@ -806,7 +806,7 @@ DEPENDENCIES
   statsd-instrument (~> 3.9)
   stimulus-rails
   strong_migrations (~> 2.4)
-  tailwindcss-rails (~> 4.2)
+  tailwindcss-rails (~> 4.3)
   tailwindcss-ruby (~> 4.1)
   thruster
   turbo-rails
