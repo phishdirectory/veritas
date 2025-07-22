@@ -74,7 +74,7 @@ gem "safely_block"                       # Error handling
 # FILE & IMAGE PROCESSING
 ###############################################################################
 gem "image_processing", "~> 1.2" # Active Storage image transformations
-gem "active_storage_validations", "3.0.0" # File validations
+gem "active_storage_validations", "3.0.1" # File validations
 gem "rqrcode" # QR code generation
 
 ###############################################################################
